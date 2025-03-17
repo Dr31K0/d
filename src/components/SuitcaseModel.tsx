@@ -5,7 +5,7 @@ import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Mesh, MeshStandardMaterial } from 'three';
+import { Mesh, MeshStandardMaterial, Group } from 'three';
 
 // Update to use the GitHub hosted model
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -17,7 +17,7 @@ interface SuitcaseModelProps {
 const Model = () => {
   const { color } = useSuitcase();
   const { scene } = useGLTF(SUITCASE_MODEL_URL);
-  const modelRef = useRef<THREE.Group>(null);
+  const modelRef = useRef<Group>(null);
   
   // Map selected color to material color
   const getColorValue = () => {

@@ -1,7 +1,7 @@
 
 import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, Stage, PresentationControls } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
@@ -65,7 +65,7 @@ const Model = () => {
     }
   });
   
-  return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -1, 0]} />;
+  return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />;
 };
 
 // Fallback component to show while loading
@@ -106,10 +106,46 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         camera={{ position: [0, 0, 5], fov: 45 }}
         shadows
       >
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+        {/* Improved lighting setup for better realism */}
+        <ambientLight intensity={0.7} />
+        <spotLight 
+          position={[10, 10, 10]} 
+          angle={0.15} 
+          penumbra={1} 
+          intensity={1.5} 
+          castShadow 
+          shadow-mapSize={1024}
+        />
+        <spotLight 
+          position={[-10, 5, -10]} 
+          angle={0.15} 
+          penumbra={1} 
+          intensity={0.5} 
+          castShadow 
+        />
+        <directionalLight
+          position={[5, 5, 5]}
+          intensity={0.8}
+          castShadow
+          shadow-mapSize={1024}
+        />
+        
         <Suspense fallback={<ModelFallback />}>
-          <Model />
+          <group position={[0, -0.5, 0]}>
+            {/* Center-positioned Model */}
+            <Model />
+            
+            {/* Contact shadow beneath the model */}
+            <ContactShadows
+              position={[0, -1.4, 0]}
+              opacity={0.6}
+              scale={5}
+              blur={2.5}
+              far={4}
+              resolution={256}
+              color="#000000"
+            />
+          </group>
           <Environment preset="city" />
         </Suspense>
         <OrbitControls 
@@ -118,6 +154,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           maxPolarAngle={Math.PI / 2}
           minDistance={3}
           maxDistance={7}
+          target={[0, 0, 0]}
         />
       </Canvas>
       

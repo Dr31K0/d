@@ -5,10 +5,10 @@ import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
+import { Mesh, MeshStandardMaterial } from 'three';
 
-// Import suitcase GLB model
-// Note: You'll need to place the GLB file in the public folder
-const SUITCASE_MODEL_URL = '/suitcase.glb';
+// Update to use the GitHub hosted model
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -17,7 +17,7 @@ interface SuitcaseModelProps {
 const Model = () => {
   const { color } = useSuitcase();
   const { scene } = useGLTF(SUITCASE_MODEL_URL);
-  const modelRef = useRef();
+  const modelRef = useRef<THREE.Group>(null);
   
   // Map selected color to material color
   const getColorValue = () => {
@@ -38,11 +38,16 @@ const Model = () => {
     try {
       if (scene) {
         scene.traverse((node) => {
-          if (node.isMesh && node.material) {
+          // Use type assertion to fix TypeScript errors
+          if ((node as Mesh).isMesh && (node as Mesh).material) {
             // Assuming the main suitcase body has a specific material name
             // You may need to adjust this based on your actual model structure
-            if (node.material.name === 'SuitcaseBody' || node.name.includes('Body')) {
-              node.material.color.set(getColorValue());
+            const mesh = node as Mesh;
+            if (mesh.material instanceof MeshStandardMaterial || 
+                Array.isArray(mesh.material) === false) {
+              if (mesh.name.includes('Body')) {
+                (mesh.material as MeshStandardMaterial).color.set(getColorValue());
+              }
             }
           }
         });
@@ -67,24 +72,24 @@ const Model = () => {
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
-  // Get color-specific styles
-  const getColorStyle = () => {
+  // Get color value based on selection
+  const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return 'bg-crystal-purple';
+        return '#9333ea';
       case 'blue':
-        return 'bg-crystal-blue';
+        return '#2563eb';
       case 'orange':
-        return 'bg-crystal-orange';
+        return '#f97316';
       default:
-        return 'bg-crystal-purple';
+        return '#9333ea';
     }
   };
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorStyle().replace('bg-crystal-', '#')} />
+      <meshStandardMaterial color={getColorValue()} />
     </mesh>
   );
 };

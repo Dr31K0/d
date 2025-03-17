@@ -20,6 +20,13 @@ export const logError = (error: unknown, context?: string) => {
     console.error(`3D Rendering Error: This might be related to WebGL compatibility.`);
     console.error(`Try using a different browser or enabling hardware acceleration.`);
   }
+  
+  // Add detailed logging for GLB loading errors
+  if ((error instanceof Error && error.message.includes('Could not load')) ||
+      (error instanceof Error && error.message.includes('GLB'))) {
+    console.error(`3D Model Loading Error: Failed to load the suitcase model.`);
+    console.error(`Check network connection or try a different model format.`);
+  }
 };
 
 // Catch unhandled promise rejections

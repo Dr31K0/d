@@ -1,0 +1,916 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crystal Suitcase Configurator</title>
+    <meta name="description" content="Premium travel luggage crafted with crystal-inspired designs for the modern traveler.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* Base styles */
+      :root {
+        --crystal-purple: #9333ea;
+        --crystal-blue: #2563eb;
+        --crystal-orange: #f97316;
+        --crystal-pink: #ec4899;
+        --crystal-dark: #1e293b;
+        --crystal-medium: #64748b;
+        --crystal-light: #f8fafc;
+        --crystal-gray: #94a3b8;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        color: var(--crystal-dark);
+        background-color: var(--crystal-light);
+        line-height: 1.5;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+      
+      /* Layout */
+      .flex {
+        display: flex;
+      }
+      
+      .grid {
+        display: grid;
+      }
+      
+      .grid-cols-1 {
+        grid-template-columns: 1fr;
+      }
+      
+      @media (min-width: 1024px) {
+        .lg\:grid-cols-2 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      
+      .gap-12 {
+        gap: 3rem;
+      }
+      
+      .space-y-8 > * + * {
+        margin-top: 2rem;
+      }
+      
+      .space-y-6 > * + * {
+        margin-top: 1.5rem;
+      }
+      
+      .space-y-4 > * + * {
+        margin-top: 1rem;
+      }
+      
+      .space-y-3 > * + * {
+        margin-top: 0.75rem;
+      }
+      
+      .space-y-2 > * + * {
+        margin-top: 0.5rem;
+      }
+      
+      .space-x-4 > * + * {
+        margin-left: 1rem;
+      }
+      
+      .space-x-2 > * + * {
+        margin-left: 0.5rem;
+      }
+      
+      .flex-col {
+        flex-direction: column;
+      }
+      
+      .items-center {
+        align-items: center;
+      }
+      
+      .justify-center {
+        justify-content: center;
+      }
+      
+      .justify-between {
+        justify-content: space-between;
+      }
+      
+      .text-center {
+        text-align: center;
+      }
+      
+      .relative {
+        position: relative;
+      }
+      
+      .absolute {
+        position: absolute;
+      }
+      
+      .inset-0 {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      
+      .w-full {
+        width: 100%;
+      }
+      
+      .h-full {
+        height: 100%;
+      }
+      
+      .rounded-full {
+        border-radius: 9999px;
+      }
+      
+      .rounded-lg {
+        border-radius: 0.5rem;
+      }
+      
+      .rounded-xl {
+        border-radius: 0.75rem;
+      }
+      
+      .rounded-2xl {
+        border-radius: 1rem;
+      }
+      
+      .rounded-md {
+        border-radius: 0.375rem;
+      }
+      
+      .p-8 {
+        padding: 2rem;
+      }
+      
+      .p-6 {
+        padding: 1.5rem;
+      }
+      
+      .p-4 {
+        padding: 1rem;
+      }
+      
+      .px-8 {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+      
+      .px-6 {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+      
+      .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      
+      .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      
+      .py-1 {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+      }
+      
+      .pt-32 {
+        padding-top: 8rem;
+      }
+      
+      .pb-16 {
+        padding-bottom: 4rem;
+      }
+      
+      .py-16 {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+      }
+      
+      .py-20 {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+      }
+      
+      .pt-6 {
+        padding-top: 1.5rem;
+      }
+      
+      .pt-2 {
+        padding-top: 0.5rem;
+      }
+      
+      .mt-4 {
+        margin-top: 1rem;
+      }
+      
+      .mb-6 {
+        margin-bottom: 1.5rem;
+      }
+      
+      .mb-16 {
+        margin-bottom: 4rem;
+      }
+      
+      .mb-2 {
+        margin-bottom: 0.5rem;
+      }
+      
+      .mt-2 {
+        margin-top: 0.5rem;
+      }
+      
+      .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .border {
+        border-width: 1px;
+        border-style: solid;
+      }
+      
+      .border-t {
+        border-top-width: 1px;
+        border-top-style: solid;
+      }
+      
+      .border-crystal-gray\/10 {
+        border-color: rgba(148, 163, 184, 0.1);
+      }
+      
+      .border-white\/20 {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      .bg-crystal-purple {
+        background-color: var(--crystal-purple);
+      }
+      
+      .bg-crystal-blue {
+        background-color: var(--crystal-blue);
+      }
+      
+      .bg-crystal-orange {
+        background-color: var(--crystal-orange);
+      }
+      
+      .bg-crystal-light\/50 {
+        background-color: rgba(248, 250, 252, 0.5);
+      }
+      
+      .bg-crystal-purple\/10 {
+        background-color: rgba(147, 51, 234, 0.1);
+      }
+      
+      .bg-crystal-blue\/10 {
+        background-color: rgba(37, 99, 235, 0.1);
+      }
+      
+      .bg-crystal-orange\/10 {
+        background-color: rgba(249, 115, 22, 0.1);
+      }
+      
+      .bg-crystal-purple\/5 {
+        background-color: rgba(147, 51, 234, 0.05);
+      }
+      
+      .bg-crystal-pink\/5 {
+        background-color: rgba(236, 72, 153, 0.05);
+      }
+      
+      .bg-white {
+        background-color: #fff;
+      }
+      
+      .bg-white\/70 {
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .text-white {
+        color: #fff;
+      }
+      
+      .text-crystal-dark {
+        color: var(--crystal-dark);
+      }
+      
+      .text-crystal-medium\/70 {
+        color: rgba(100, 116, 139, 0.7);
+      }
+      
+      .text-crystal-medium\/50 {
+        color: rgba(100, 116, 139, 0.5);
+      }
+      
+      .text-crystal-purple {
+        color: var(--crystal-purple);
+      }
+      
+      .text-crystal-blue {
+        color: var(--crystal-blue);
+      }
+      
+      .text-crystal-orange {
+        color: var(--crystal-orange);
+      }
+      
+      .text-5xl {
+        font-size: 3rem;
+      }
+      
+      .text-4xl {
+        font-size: 2.25rem;
+      }
+      
+      .text-3xl {
+        font-size: 1.875rem;
+      }
+      
+      .text-2xl {
+        font-size: 1.5rem;
+      }
+      
+      .text-xl {
+        font-size: 1.25rem;
+      }
+      
+      .text-lg {
+        font-size: 1.125rem;
+      }
+      
+      .text-sm {
+        font-size: 0.875rem;
+      }
+      
+      .text-xs {
+        font-size: 0.75rem;
+      }
+      
+      .font-semibold {
+        font-weight: 600;
+      }
+      
+      .font-medium {
+        font-weight: 500;
+      }
+      
+      .font-display {
+        font-family: 'Playfair Display', serif;
+      }
+      
+      .capitalize {
+        text-transform: capitalize;
+      }
+      
+      .shadow-sm {
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+      
+      .shadow-crystal {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      
+      .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+      }
+      
+      .filter {
+        filter: blur(3xl);
+      }
+      
+      .transition-colors {
+        transition-property: color, background-color, border-color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+      }
+      
+      .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+      }
+      
+      .-z-10 {
+        z-index: -10;
+      }
+      
+      .crystal-card {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+      
+      .text-gradient {
+        background-image: linear-gradient(to right, var(--crystal-purple), var(--crystal-pink));
+        background-clip: text;
+        color: transparent;
+      }
+      
+      /* Component-specific styles */
+      .h-\[400px\] {
+        height: 400px;
+      }
+      
+      .w-16 {
+        width: 4rem;
+      }
+      
+      .h-16 {
+        height: 4rem;
+      }
+      
+      .w-12 {
+        width: 3rem;
+      }
+      
+      .h-12 {
+        height: 3rem;
+      }
+      
+      .w-8 {
+        width: 2rem;
+      }
+      
+      .h-8 {
+        height: 2rem;
+      }
+      
+      .ring-1 {
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+      }
+      
+      .ring-2 {
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+      }
+      
+      .ring-white\/30 {
+        --tw-ring-color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .ring-crystal-purple\/80 {
+        --tw-ring-color: rgba(147, 51, 234, 0.8);
+      }
+      
+      .ring-offset-2 {
+        --tw-ring-offset-width: 2px;
+      }
+      
+      .scale-110 {
+        transform: scale(1.1);
+      }
+      
+      .scale-105:hover {
+        transform: scale(1.05);
+      }
+      
+      .hover\:bg-crystal-purple\/90:hover {
+        background-color: rgba(147, 51, 234, 0.9);
+      }
+      
+      .max-w-3xl {
+        max-width: 48rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="min-h-screen flex flex-col pb-4">
+      <!-- Navbar placeholder -->
+      <header class="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-md z-10 border-b border-white/20">
+        <div class="container mx-auto px-6">
+          <div class="flex items-center justify-between h-20">
+            <a href="#" class="text-2xl font-display font-semibold text-crystal-dark">
+              Crystal<span class="text-gradient">Case</span>
+            </a>
+            <nav class="space-x-8">
+              <a href="#" class="text-crystal-medium hover:text-crystal-dark transition-colors">Home</a>
+              <a href="#" class="text-crystal-medium hover:text-crystal-dark transition-colors">Products</a>
+              <a href="#" class="text-crystal-medium hover:text-crystal-dark transition-colors">About</a>
+              <a href="#" class="text-crystal-medium hover:text-crystal-dark transition-colors">Contact</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Hero Section -->
+      <section class="relative pt-32 pb-16">
+        <div class="absolute inset-0 -z-10">
+          <div class="absolute top-20 left-10 w-64 h-64 bg-crystal-purple/5 rounded-full filter blur-3xl"></div>
+          <div class="absolute bottom-0 right-10 w-96 h-96 bg-crystal-pink/5 rounded-full filter blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-6">
+          <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-display font-semibold text-crystal-dark">
+              Customize Your <span class="text-gradient">Crystal</span>Case
+            </h1>
+            <p class="mt-4 text-lg text-crystal-medium/70">
+              Personalize every aspect of your travel companion to match your unique style.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Configuration Section -->
+      <section class="py-16">
+        <div class="container mx-auto px-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Suitcase Preview -->
+            <div class="space-y-8">
+              <div class="crystal-card p-6">
+                <div id="suitcase-view" class="w-full h-[400px] relative rounded-xl overflow-hidden bg-crystal-light/30">
+                  <!-- Shimmer effect overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-tr from-crystal-purple/5 to-crystal-pink/5"></div>
+                  
+                  <!-- Suitcase image (will be updated by JS) -->
+                  <div id="suitcase-display" class="w-full h-full flex items-center justify-center">
+                    <div id="suitcase-model" class="w-64 h-48 rounded-xl" style="background-color: #9333ea; box-shadow: 0 10px 25px rgba(0,0,0,0.1)">
+                      <div class="w-full h-full relative flex items-center justify-center">
+                        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 h-3 bg-white/30 rounded-full"></div>
+                        <div class="w-3/4 h-3/4 border-4 border-white/20 rounded-lg"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Decorative elements -->
+                  <div class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-white/20 to-transparent"></div>
+                </div>
+              </div>
+              
+              <div class="crystal-card p-6">
+                <div id="view-selector" class="space-y-4">
+                  <h3 class="text-lg font-display font-medium text-crystal-dark">Select View</h3>
+                  
+                  <div class="flex space-x-2">
+                    <button data-view="front" class="view-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-crystal-purple text-white shadow-sm">Front</button>
+                    <button data-view="side" class="view-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-crystal-light hover:bg-crystal-light/80 text-crystal-dark/70 hover:text-crystal-dark">Side</button>
+                    <button data-view="top" class="view-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-crystal-light hover:bg-crystal-light/80 text-crystal-dark/70 hover:text-crystal-dark">Top</button>
+                    <button data-view="inside" class="view-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-crystal-light hover:bg-crystal-light/80 text-crystal-dark/70 hover:text-crystal-dark">Inside</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Configuration Options -->
+            <div class="space-y-8">
+              <div class="crystal-card p-8">
+                <div class="space-y-6">
+                  <h2 class="text-2xl font-display font-semibold text-crystal-dark">
+                    Personalize Your CrystalCase
+                  </h2>
+                  
+                  <div id="color-picker" class="space-y-4">
+                    <h3 class="text-lg font-display font-medium text-crystal-dark">Select Color</h3>
+                    
+                    <div class="flex space-x-4">
+                      <button data-color="purple" class="color-btn group flex flex-col items-center space-y-2">
+                        <div class="w-12 h-12 rounded-full transition-all duration-200 bg-crystal-purple ring-2 ring-offset-2 ring-crystal-purple/80 scale-110"></div>
+                        <span class="text-xs font-medium transition-colors text-crystal-dark">Amethyst</span>
+                      </button>
+                      
+                      <button data-color="blue" class="color-btn group flex flex-col items-center space-y-2">
+                        <div class="w-12 h-12 rounded-full transition-all duration-200 bg-crystal-blue ring-1 ring-white/30 hover:scale-105"></div>
+                        <span class="text-xs font-medium transition-colors text-crystal-dark/60 group-hover:text-crystal-dark">Sapphire</span>
+                      </button>
+                      
+                      <button data-color="orange" class="color-btn group flex flex-col items-center space-y-2">
+                        <div class="w-12 h-12 rounded-full transition-all duration-200 bg-crystal-orange ring-1 ring-white/30 hover:scale-105"></div>
+                        <span class="text-xs font-medium transition-colors text-crystal-dark/60 group-hover:text-crystal-dark">Amber</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="pt-6 border-t border-crystal-gray/10">
+                    <h3 class="text-lg font-display font-medium text-crystal-dark">Specifications</h3>
+                    <ul class="mt-4 space-y-3">
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Material</span>
+                        <span class="font-medium text-crystal-dark">Aerospace-grade composite</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Dimensions</span>
+                        <span class="font-medium text-crystal-dark">56 × 45 × 25 cm</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Volume</span>
+                        <span class="font-medium text-crystal-dark">40 liters</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Weight</span>
+                        <span class="font-medium text-crystal-dark">2.7 kg</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Warranty</span>
+                        <span class="font-medium text-crystal-dark">Lifetime limited warranty</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="crystal-card p-8">
+                <div class="space-y-6">
+                  <h3 class="text-xl font-display font-medium text-crystal-dark">
+                    Selected Configuration
+                  </h3>
+                  
+                  <div class="bg-crystal-light/50 rounded-lg p-4">
+                    <ul class="space-y-2">
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Model</span>
+                        <span class="font-medium text-crystal-dark">CrystalCase Pro</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">Color</span>
+                        <span id="selected-color" class="font-medium text-crystal-dark capitalize">purple</span>
+                      </li>
+                      <li class="flex justify-between">
+                        <span class="text-crystal-medium/70">View</span>
+                        <span id="selected-view" class="font-medium text-crystal-dark capitalize">front</span>
+                      </li>
+                      <li class="flex justify-between border-t border-crystal-gray/10 pt-2 mt-2">
+                        <span class="text-crystal-medium/70">Price</span>
+                        <span class="font-semibold text-crystal-dark">$399.00</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <button id="complete-purchase" class="w-full h-12 rounded-xl px-8 text-base relative inline-flex items-center justify-center font-medium transition-all bg-crystal-purple hover:bg-crystal-purple/90 text-white shadow-sm">
+                    <span class="absolute inset-0 overflow-hidden rounded-xl">
+                      <span class="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent"></span>
+                    </span>
+                    Complete Purchase
+                  </button>
+                  
+                  <p class="text-xs text-crystal-medium/50 text-center">
+                    Free shipping worldwide. 30-day money-back guarantee.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Additional Features -->
+      <section class="py-20 bg-crystal-light/50">
+        <div class="container mx-auto px-6">
+          <div class="max-w-3xl mx-auto text-center mb-16">
+            <h2 class="text-3xl font-display font-semibold text-crystal-dark">
+              Included with Every CrystalCase
+            </h2>
+            <p class="mt-4 text-crystal-medium/70">
+              Standard features that come with your purchase, regardless of configuration.
+            </p>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="crystal-card p-8 flex flex-col items-center text-center">
+              <div class="w-16 h-16 bg-crystal-purple/10 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-8 h-8 text-crystal-purple" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M16 12L12 8L8 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M12 16L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-display font-medium text-crystal-dark mb-2">
+                Lifetime Warranty
+              </h3>
+              <p class="text-crystal-medium/70">
+                We stand behind our quality with an industry-leading lifetime limited warranty.
+              </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="crystal-card p-8 flex flex-col items-center text-center">
+              <div class="w-16 h-16 bg-crystal-blue/10 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-8 h-8 text-crystal-blue" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-display font-medium text-crystal-dark mb-2">
+                24/7 Support
+              </h3>
+              <p class="text-crystal-medium/70">
+                Our dedicated team is available around the clock to assist with any questions or concerns.
+              </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="crystal-card p-8 flex flex-col items-center text-center">
+              <div class="w-16 h-16 bg-crystal-orange/10 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-8 h-8 text-crystal-orange" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-display font-medium text-crystal-dark mb-2">
+                Free Global Shipping
+              </h3>
+              <p class="text-crystal-medium/70">
+                Enjoy complimentary express shipping to any destination worldwide.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Footer placeholder -->
+      <footer class="py-16 bg-crystal-light">
+        <div class="container mx-auto px-6">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="text-2xl font-display font-semibold text-crystal-dark mb-4 md:mb-0">
+              Crystal<span class="text-gradient">Case</span>
+            </div>
+            <div class="text-sm text-crystal-medium/70">
+              &copy; 2023 CrystalCase. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Toast notification container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+
+    <script>
+      // Application state
+      const state = {
+        color: 'purple',
+        view: 'front'
+      };
+
+      // DOM Elements
+      const suitcaseModel = document.getElementById('suitcase-model');
+      const selectedColorText = document.getElementById('selected-color');
+      const selectedViewText = document.getElementById('selected-view');
+      const colorButtons = document.querySelectorAll('.color-btn');
+      const viewButtons = document.querySelectorAll('.view-btn');
+      const completePurchaseButton = document.getElementById('complete-purchase');
+      const toastContainer = document.getElementById('toast-container');
+
+      // Color mapping
+      const colorValues = {
+        'purple': '#9333ea',
+        'blue': '#2563eb',
+        'orange': '#f97316'
+      };
+
+      // Color name mapping
+      const colorNames = {
+        'purple': 'Amethyst',
+        'blue': 'Sapphire',
+        'orange': 'Amber'
+      };
+
+      // Update the suitcase color
+      function updateColor(color) {
+        state.color = color;
+        suitcaseModel.style.backgroundColor = colorValues[color];
+        selectedColorText.textContent = color;
+        
+        // Update UI for color buttons
+        colorButtons.forEach(btn => {
+          const btnColor = btn.getAttribute('data-color');
+          const colorCircle = btn.querySelector('div');
+          const colorText = btn.querySelector('span');
+          
+          if (btnColor === color) {
+            colorCircle.classList.add('ring-2', 'ring-offset-2', 'ring-crystal-purple/80', 'scale-110');
+            colorCircle.classList.remove('ring-1', 'ring-white/30', 'hover:scale-105');
+            colorText.classList.add('text-crystal-dark');
+            colorText.classList.remove('text-crystal-dark/60', 'group-hover:text-crystal-dark');
+          } else {
+            colorCircle.classList.remove('ring-2', 'ring-offset-2', 'ring-crystal-purple/80', 'scale-110');
+            colorCircle.classList.add('ring-1', 'ring-white/30', 'hover:scale-105');
+            colorText.classList.remove('text-crystal-dark');
+            colorText.classList.add('text-crystal-dark/60', 'group-hover:text-crystal-dark');
+          }
+        });
+      }
+
+      // Update the suitcase view
+      function updateView(view) {
+        state.view = view;
+        selectedViewText.textContent = view;
+        
+        // In a real app, this would change the 3D model view
+        // For this demo, we'll just update the UI buttons
+        
+        viewButtons.forEach(btn => {
+          const btnView = btn.getAttribute('data-view');
+          
+          if (btnView === view) {
+            btn.classList.add('bg-crystal-purple', 'text-white', 'shadow-sm');
+            btn.classList.remove('bg-crystal-light', 'hover:bg-crystal-light/80', 'text-crystal-dark/70', 'hover:text-crystal-dark');
+          } else {
+            btn.classList.remove('bg-crystal-purple', 'text-white', 'shadow-sm');
+            btn.classList.add('bg-crystal-light', 'hover:bg-crystal-light/80', 'text-crystal-dark/70', 'hover:text-crystal-dark');
+          }
+        });
+      }
+
+      // Show toast notification
+      function showToast(message, description, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `${type === 'success' ? 'bg-crystal-purple' : 'bg-crystal-orange'} text-white p-4 mb-2 rounded-lg shadow-lg transition-all duration-300 opacity-0 transform translate-y-2`;
+        
+        toast.innerHTML = `
+          <div class="flex">
+            <div class="flex-1">
+              <p class="font-semibold">${message}</p>
+              ${description ? `<p class="text-sm mt-1 opacity-90">${description}</p>` : ''}
+            </div>
+            <button class="ml-4 text-white/70 hover:text-white">×</button>
+          </div>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => {
+          toast.classList.remove('opacity-0', 'translate-y-2');
+        }, 10);
+        
+        // Add close button functionality
+        const closeBtn = toast.querySelector('button');
+        closeBtn.addEventListener('click', () => {
+          removeToast(toast);
+        });
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          removeToast(toast);
+        }, 5000);
+      }
+
+      // Remove toast with animation
+      function removeToast(toast) {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }
+
+      // Event listeners
+      colorButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const color = btn.getAttribute('data-color');
+          updateColor(color);
+        });
+      });
+
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const view = btn.getAttribute('data-view');
+          updateView(view);
+        });
+      });
+
+      completePurchaseButton.addEventListener('click', () => {
+        showToast(
+          "Configuration saved! Redirecting to checkout...",
+          `You selected the ${state.color} CrystalCase`,
+          "success"
+        );
+      });
+
+      // Initialize UI with default state
+      updateColor(state.color);
+      updateView(state.view);
+    </script>
+  </body>
+</html>

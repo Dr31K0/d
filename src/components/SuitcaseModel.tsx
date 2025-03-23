@@ -1,5 +1,5 @@
 
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 
-// Update to use the GitHub hosted model
-const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
+// Update to use a more reliable model source with CORS support
+const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -16,7 +16,7 @@ interface SuitcaseModelProps {
 
 const Model = () => {
   const { color } = useSuitcase();
-  const { scene } = useGLTF(SUITCASE_MODEL_URL);
+  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL);
   const modelRef = useRef<Group>(null);
   
   // Map selected color to material color
@@ -33,26 +33,30 @@ const Model = () => {
     }
   };
   
-  // Apply color to the model
-  React.useEffect(() => {
+  // Apply color to the model and log model structure to debug
+  useEffect(() => {
     try {
       if (scene) {
+        console.log('Model loaded:', scene);
+        
         scene.traverse((node) => {
-          // Use type assertion to fix TypeScript errors
-          if ((node as Mesh).isMesh && (node as Mesh).material) {
-            // Assuming the main suitcase body has a specific material name
-            // You may need to adjust this based on your actual model structure
+          if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
-            if (mesh.material instanceof MeshStandardMaterial || 
-                Array.isArray(mesh.material) === false) {
-              if (mesh.name.includes('Body')) {
-                (mesh.material as MeshStandardMaterial).color.set(getColorValue());
+            console.log('Found mesh:', mesh.name);
+            
+            // Apply material color to all meshes for visibility
+            if (mesh.material) {
+              if (mesh.material instanceof MeshStandardMaterial) {
+                mesh.material.color.set(getColorValue());
+                mesh.material.needsUpdate = true;
+                console.log('Applied color to:', mesh.name);
               }
             }
           }
         });
       }
     } catch (error) {
+      console.error('Error in model effect:', error);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
   }, [scene, color]);
@@ -106,13 +110,13 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         camera={{ position: [0, 0, 5], fov: 45 }}
         shadows
       >
-        {/* Improved lighting setup for better realism */}
-        <ambientLight intensity={0.7} />
+        {/* Enhanced lighting setup for better realism */}
+        <ambientLight intensity={1} />
         <spotLight 
           position={[10, 10, 10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={1.5} 
+          intensity={2} 
           castShadow 
           shadow-mapSize={1024}
         />
@@ -120,29 +124,30 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           position={[-10, 5, -10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={0.5} 
+          intensity={1} 
           castShadow 
         />
+        <pointLight position={[0, 5, 0]} intensity={1} />
         <directionalLight
           position={[5, 5, 5]}
-          intensity={0.8}
+          intensity={1.2}
           castShadow
           shadow-mapSize={1024}
         />
         
         <Suspense fallback={<ModelFallback />}>
-          <group position={[0, -0.5, 0]}>
+          <group position={[0, 0, 0]}>
             {/* Center-positioned Model */}
             <Model />
             
             {/* Contact shadow beneath the model */}
             <ContactShadows
               position={[0, -1.4, 0]}
-              opacity={0.6}
-              scale={5}
+              opacity={0.8}
+              scale={10}
               blur={2.5}
               far={4}
-              resolution={256}
+              resolution={512}
               color="#000000"
             />
           </group>
@@ -168,5 +173,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-// Preload the model
-useGLTF.preload(SUITCASE_MODEL_URL);
+// Preload the model with error handling
+try {
+  useGLTF.preload(SUITCASE_MODEL_URL);
+} catch (error) {
+  console.error("Failed to preload model:", error);
+}

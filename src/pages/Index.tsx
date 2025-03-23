@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -100,7 +99,7 @@ const Index = () => {
             {/* Suitcase image */}
             <div ref={heroRef} className="relative">
               <div className="absolute -z-10 inset-0 transform -translate-y-6 translate-x-6 rotate-1">
-                <div className="w-full h-full bg-crystal-light/50 rounded-2xl shadow-inner-glow animate-pulse-slow" />
+                <div className="w-full h-full bg-crystal-light/50 dark:bg-crystal-dark/30 rounded-2xl shadow-inner-glow animate-pulse-slow" />
               </div>
               <div className="crystal-card p-6 card-3d backdrop-blur-xl bg-white/70 border border-white/30 shadow-floating">
                 <SuitcaseView className="w-full h-[400px]" />
@@ -252,3 +251,4 @@ const Index = () => {
 };
 
 export default Index;
+

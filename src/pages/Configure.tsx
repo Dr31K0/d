@@ -45,7 +45,7 @@ const Configure = () => {
         
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-display font-semibold text-crystal-dark">
+            <h1 className="text-4xl md:text-5xl font-futuristic font-semibold text-crystal-dark">
               Customize Your <span className="text-gradient">Crystal</span>Case
             </h1>
             <p className="mt-4 text-lg text-crystal-medium/70">
@@ -74,14 +74,14 @@ const Configure = () => {
             <div className="space-y-8">
               <div className="crystal-card p-8">
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-display font-semibold text-crystal-dark">
+                  <h2 className="text-2xl font-futuristic font-semibold text-crystal-dark">
                     Personalize Your CrystalCase
                   </h2>
                   
                   <ColorPicker />
                   
                   <div className="pt-6 border-t border-crystal-gray/10">
-                    <h3 className="text-lg font-display font-medium text-crystal-dark">Specifications</h3>
+                    <h3 className="text-lg font-futuristic font-medium text-crystal-dark">Specifications</h3>
                     <ul className="mt-4 space-y-3">
                       {[
                         { label: 'Material', value: 'Aerospace-grade composite' },
@@ -102,7 +102,7 @@ const Configure = () => {
               
               <div className="crystal-card p-8">
                 <div className="space-y-6">
-                  <h3 className="text-xl font-display font-medium text-crystal-dark">
+                  <h3 className="text-xl font-futuristic font-medium text-crystal-dark">
                     Selected Configuration
                   </h3>
                   
@@ -145,7 +145,7 @@ const Configure = () => {
       <section className="py-20 bg-crystal-light/50">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-display font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
               Included with Every CrystalCase
             </h2>
             <p className="mt-4 text-crystal-medium/70">
@@ -163,7 +163,7 @@ const Configure = () => {
                   <path d="M12 16L12 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                 Lifetime Warranty
               </h3>
               <p className="text-crystal-medium/70">
@@ -179,7 +179,7 @@ const Configure = () => {
                   <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                 24/7 Support
               </h3>
               <p className="text-crystal-medium/70">
@@ -195,7 +195,7 @@ const Configure = () => {
                   <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                 Free Global Shipping
               </h3>
               <p className="text-crystal-medium/70">

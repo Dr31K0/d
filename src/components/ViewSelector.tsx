@@ -18,7 +18,7 @@ const ViewSelector: React.FC<ViewSelectorProps> = ({ className }) => {
   
   return (
     <div className={cn('space-y-4', className)}>
-      <h3 className="text-lg font-display font-medium text-crystal-dark">Select View</h3>
+      <h3 className="text-lg font-futuristic font-medium text-crystal-dark">Select View</h3>
       
       <div className="flex space-x-2">
         {views.map((viewOption) => (

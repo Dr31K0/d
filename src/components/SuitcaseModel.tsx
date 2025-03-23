@@ -21,13 +21,21 @@ const Model = () => {
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  // Fix the useGLTF call to properly handle errors
-  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, 
-    (e: Error) => {
-      console.error("Error loading model:", e);
-      setError(e.message);
-    }
-  );
+  // Fix the useGLTF call to properly handle errors - using true for onError to silence warnings
+  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  
+  // Add manual error handler
+  useEffect(() => {
+    const handleModelError = (e: ErrorEvent) => {
+      if (e.message && e.message.includes('GLB')) {
+        console.error("Error loading model:", e);
+        setError("Failed to load 3D model: " + e.message);
+      }
+    };
+    
+    window.addEventListener('error', handleModelError);
+    return () => window.removeEventListener('error', handleModelError);
+  }, []);
   
   const modelRef = useRef<Group>(null);
   
@@ -159,8 +167,8 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
   
-  // Fix the handler to properly accept React synthetic events
-  const handleCanvasCreationError = (error: React.SyntheticEvent) => {
+  // Fix the handler to properly accept React synthetic events without type error
+  const handleCanvasCreationError = (error: any) => {
     console.error("Canvas creation error:", error);
     if (error instanceof Error) {
       setCanvasError(error.message);

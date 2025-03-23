@@ -14,7 +14,6 @@ const ViewSelector: React.FC<ViewSelectorProps> = ({ className }) => {
     { id: 'front', name: 'Front' },
     { id: 'side', name: 'Side' },
     { id: 'top', name: 'Top' },
-    { id: 'inside', name: 'Inside' },
   ];
   
   return (

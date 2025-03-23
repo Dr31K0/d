@@ -5,7 +5,7 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 export type SuitcaseColor = 'purple' | 'blue' | 'orange';
 
 // Define available views for the suitcase
-export type SuitcaseView = 'front' | 'side' | 'top' | 'inside';
+export type SuitcaseView = 'front' | 'side' | 'top';
 
 // Define the context shape
 interface SuitcaseContextType {

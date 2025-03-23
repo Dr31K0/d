@@ -507,7 +507,7 @@
       activeColorEl.querySelector('.color-label').classList.add('font-medium');
       
       // Update selected color in summary
-      selectedColorEl.textContent = state.color;
+      selectedColorEl.textContent = state.colors.find(c => c.id === colorId).name;
       
       // Update suitcase image
       updateSuitcaseImage();
@@ -564,7 +564,7 @@
     purchaseButtonEl.addEventListener('click', () => {
       showToast(
         'Configuration saved!', 
-        `You selected the ${state.color} CrystalCase. Redirecting to checkout...`,
+        `You selected the ${state.colors.find(c => c.id === state.color).name} CrystalCase. Redirecting to checkout...`,
         'success'
       );
     });

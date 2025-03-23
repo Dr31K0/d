@@ -84,13 +84,13 @@ const Details = () => {
       </section>
       
       {/* Features Section */}
-      <section className="py-20 bg-crystal-light/50">
+      <section className="py-20 bg-crystal-light/50 dark:bg-crystal-dark/70">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark dark:text-white">
               Unmatched Features
             </h2>
-            <p className="mt-4 text-crystal-medium/70">
+            <p className="mt-4 text-crystal-medium/70 dark:text-gray-300">
               Every aspect of the CrystalCase has been thoughtfully designed to enhance your travel experience.
             </p>
           </div>

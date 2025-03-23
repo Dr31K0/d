@@ -1,15 +1,21 @@
+
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
 import SuitcaseModel from '@/components/SuitcaseModel';
 import AnimatedTransition from '@/components/AnimatedTransition';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSuitcase } from '@/context/SuitcaseContext';
+import ColorPicker from '@/components/ColorPicker';
 
 const Details = () => {
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { color } = useSuitcase();
 
   return (
     <AnimatedTransition>
@@ -40,7 +46,14 @@ const Details = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* 3D Interactive Model */}
             <div className="crystal-card p-6">
+              <h3 className="text-xl font-display font-medium text-crystal-dark mb-4">
+                Interactive Suitcase Model
+              </h3>
               <SuitcaseModel />
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-crystal-dark mb-2">Choose a color:</h4>
+                <ColorPicker />
+              </div>
             </div>
             
             {/* Description */}
@@ -54,6 +67,9 @@ const Details = () => {
                 </h2>
                 <p className="text-crystal-medium/70">
                   Interact with our 3D model to examine the meticulous details of the CrystalCase. Rotate, zoom, and appreciate the harmonious blend of form and function that defines our revolutionary design.
+                </p>
+                <p className="text-crystal-medium/70 mt-2">
+                  Try changing the color to see how the {color} CrystalCase will complement your personal style. Our premium materials maintain their vibrant appearance through years of use.
                 </p>
               </div>
               
@@ -73,6 +89,20 @@ const Details = () => {
                   </li>
                 ))}
               </ul>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Innovative Design</CardTitle>
+                  <CardDescription>Discover what makes our suitcase special</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-crystal-medium/70">
+                    The Crystal suitcase features a patented internal frame that distributes weight evenly, 
+                    reducing strain on your arms and shoulders. Our exclusive material is 40% lighter than
+                    traditional polycarbonate while offering superior impact resistance.
+                  </p>
+                </CardContent>
+              </Card>
               
               <Button asLink to="/configure">
                 Customize Your CrystalCase

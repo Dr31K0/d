@@ -89,6 +89,12 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -99,10 +105,16 @@
 @layer components {
   .crystal-card {
     @apply relative bg-white/70 backdrop-blur-md border border-white/20 rounded-2xl shadow-crystal overflow-hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .crystal-card:hover {
+    @apply shadow-crystal-hover transform -translate-y-1;
   }
   
   .glass-effect {
     @apply relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
   }
   
   .crystal-shimmer {
@@ -111,6 +123,58 @@
   
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-crystal-purple to-crystal-pink;
+  }
+  
+  .animated-gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(90deg, #8B5CF6, #D946EF, #0EA5E9, #8B5CF6);
+    background-size: 300% 100%;
+    animation: gradient-shift 8s linear infinite;
+  }
+  
+  .button-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button-glow::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+    transform: rotate(30deg);
+    animation: button-shine 3s ease-in-out infinite;
+  }
+  
+  .card-3d {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  
+  .card-3d:hover {
+    transform: rotateX(5deg) rotateY(5deg);
+  }
+  
+  .feature-card {
+    @apply crystal-card p-6 transition-all duration-300;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .feature-card:hover {
+    @apply border-crystal-purple/20;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+  }
+  
+  .feature-icon {
+    @apply rounded-full p-3 mb-4 transition-all duration-300;
+  }
+  
+  .feature-card:hover .feature-icon {
+    @apply scale-110;
   }
 }
 
@@ -139,6 +203,7 @@
 /* 3D model container */
 .model-container {
   @apply relative w-full h-[500px] rounded-xl overflow-hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
 /* Page transitions */
@@ -147,7 +212,7 @@
 }
 
 .page-enter-active {
-  @apply opacity-100 transition-opacity duration-300;
+  @apply opacity-100 transition-opacity duration-500;
 }
 
 .page-exit {
@@ -156,4 +221,88 @@
 
 .page-exit-active {
   @apply opacity-0 transition-opacity duration-300;
+}
+
+/* Custom animations */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes button-shine {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
+  50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.8); }
+}
+
+/* Utility animations */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Enhanced card and container styling */
+.shadow-crystal {
+  box-shadow: 0 8px 25px rgba(31, 38, 135, 0.1);
+}
+
+.shadow-crystal-hover {
+  box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15);
+}
+
+/* Enhanced background gradients */
+.bg-gradient-purple {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(217, 70, 239, 0.1));
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(139, 92, 246, 0.1));
+}
+
+.bg-gradient-orange {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(217, 70, 239, 0.1));
+}
+
+/* Button animations */
+.btn-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Animated background */
+.animated-bg {
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  background-image: linear-gradient(-45deg, 
+    rgba(139, 92, 246, 0.05) 0%, 
+    rgba(217, 70, 239, 0.05) 25%, 
+    rgba(14, 165, 233, 0.05) 50%, 
+    rgba(249, 115, 22, 0.05) 75%, 
+    rgba(139, 92, 246, 0.05) 100%
+  );
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

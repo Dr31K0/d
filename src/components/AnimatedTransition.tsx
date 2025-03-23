@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logError } from '@/utils/errorLogger';
@@ -8,31 +8,21 @@ interface AnimatedTransitionProps {
   children: React.ReactNode;
 }
 
-const pageVariants = {
+const fadeVariants = {
   initial: {
     opacity: 0,
-    y: 15,
-    scale: 0.98,
   },
   in: {
     opacity: 1,
-    y: 0,
-    scale: 1,
   },
   exit: {
     opacity: 0,
-    y: -15,
-    scale: 0.98,
-    transition: {
-      duration: 0.3,
-    }
   }
 };
 
-const pageTransition = {
-  type: "tween",
-  ease: "anticipate",
-  duration: 0.5,
+const fadeTransition = {
+  duration: 0.3,
+  ease: "easeInOut",
 };
 
 const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => {
@@ -66,8 +56,8 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => 
         initial="initial"
         animate="in"
         exit="exit"
-        variants={pageVariants}
-        transition={pageTransition}
+        variants={fadeVariants}
+        transition={fadeTransition}
         className="min-h-screen flex flex-col pb-4"
       >
         {children}

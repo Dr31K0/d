@@ -16,9 +16,10 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   const { color, view } = useSuitcase();
   const [imgError, setImgError] = useState(false);
   
-  // Get the image URL based on color and view
+  // Get the image URL based on color and view - using the same location as the GLB file
   const getImageUrl = () => {
-    return `images/suitcase-${color}-${view}.png`;
+    // Updated URL format to match location alongside GLB file
+    return `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-${color}-${view}.png`;
   };
   
   // Fallback image if the specific combination doesn't exist
@@ -26,7 +27,8 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
     logError(`Image for ${color} ${view} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    e.currentTarget.src = `images/suitcase-purple-front.png`;
+    // Fallback to a common CDN URL
+    e.currentTarget.src = `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-purple-front.png`;
   };
   
   return (
@@ -42,7 +44,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
       
       {/* Suitcase image */}
       <img
-        src={imgError ? `images/suitcase-purple-front.png` : getImageUrl()}
+        src={imgError ? `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-purple-front.png` : getImageUrl()}
         alt={`${color} suitcase ${view} view`}
         className="w-full h-full object-contain"
         style={{ mixBlendMode: 'multiply' }}

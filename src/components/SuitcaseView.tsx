@@ -20,7 +20,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   const [currentView, setCurrentView] = useState(view);
   const [currentColor, setCurrentColor] = useState(color);
   
-  // Update current view/color with animation when props change
+  // Update current view/color with improved animations when props change
   useEffect(() => {
     if (currentView !== view || currentColor !== color) {
       setIsChanging(true);
@@ -50,30 +50,46 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
     e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png`;
   };
   
-  // Animation variants
+  // Improved animation variants
   const containerVariants = {
-    hover: { scale: 1.02, transition: { duration: 0.3 } },
-    tap: { scale: 0.98, transition: { duration: 0.2 } }
+    hover: { 
+      scale: 1.03, 
+      transition: { 
+        duration: 0.4,
+        ease: [0.25, 0.1, 0.25, 1.0]
+      } 
+    },
+    tap: { 
+      scale: 0.97, 
+      transition: { 
+        duration: 0.2,
+        ease: [0.25, 0.1, 0.25, 1.0]
+      } 
+    }
   };
   
   const imageVariants = {
-    initial: { opacity: 0, scale: 0.95, y: 10 },
+    initial: { 
+      opacity: 0, 
+      scale: 0.92, 
+      y: 15
+    },
     animate: { 
       opacity: 1, 
       scale: 1, 
       y: 0,
       transition: { 
-        duration: 0.4, 
-        ease: [0.2, 0.65, 0.3, 0.9] 
+        duration: 0.5, 
+        ease: [0.25, 0.1, 0.25, 1.0] 
       } 
     },
     exit: { 
       opacity: 0, 
       scale: 0.95, 
-      y: -10,
+      y: -15,
       transition: { 
-        duration: 0.25, 
-        ease: [0.6, 0.15, 0.4, 0.9] 
+        duration: 0.3, 
+        ease: [0.25, 0.1, 0.25, 1.0] 
       } 
     }
   };
@@ -81,20 +97,21 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   return (
     <motion.div 
       className={cn(
-        'relative rounded-xl overflow-hidden bg-crystal-light/30',
+        'relative rounded-xl overflow-hidden bg-crystal-light/20 backdrop-blur-sm',
         interactive ? 'cursor-grab active:cursor-grabbing' : '',
         className
       )}
       variants={containerVariants}
       whileHover={interactive ? "hover" : undefined}
       whileTap={interactive ? "tap" : undefined}
+      transition={{ duration: 0.3 }}
     >
-      {/* Shimmer effect overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-crystal-purple/5 to-crystal-pink/5" />
+      {/* Improved shimmer effect overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-crystal-purple/5 via-transparent to-crystal-pink/5" />
       
-      {/* Floating particles effect */}
+      {/* Enhanced floating particles effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 rounded-full bg-white/10"
@@ -104,10 +121,11 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
             }}
             animate={{
               y: [0, -20, 0],
-              opacity: [0.5, 0.8, 0.5],
+              x: [0, Math.random() * 10 - 5, 0],
+              opacity: [0.4, 0.7, 0.4],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: 3 + Math.random() * 3,
               repeat: Infinity,
               delay: Math.random() * 2,
               ease: "easeInOut",
@@ -116,7 +134,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         ))}
       </div>
       
-      {/* Suitcase image with animation */}
+      {/* Suitcase image with enhanced animation */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${currentColor}-${currentView}`}
@@ -136,19 +154,35 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         </motion.div>
       </AnimatePresence>
       
-      {/* Decorative elements */}
-      <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-white/20 to-transparent" />
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-shine bg-[length:200%_200%] animate-shimmer opacity-20" />
+      {/* Enhanced decorative elements */}
+      <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-white/10 to-transparent" />
+      <motion.div 
+        className="absolute top-0 left-0 w-full h-full bg-gradient-shine bg-[length:200%_200%]" 
+        animate={{ 
+          backgroundPosition: ['0% 0%', '100% 100%'] 
+        }}
+        transition={{ 
+          duration: 8, 
+          repeat: Infinity, 
+          repeatType: "reverse",
+          ease: "easeInOut" 
+        }}
+        style={{ opacity: 0.15 }}
+      />
       
-      {/* Glow effect */}
-      <div className="absolute inset-0 bg-gradient-radial from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* Improved glow effect */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
       
       {interactive && (
         <motion.div 
           className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
+          transition={{ 
+            delay: 0.5, 
+            duration: 0.4,
+            ease: "easeOut"
+          }}
         >
           Drag to rotate
         </motion.div>

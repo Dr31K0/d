@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -25,36 +27,65 @@ const Navbar = () => {
   };
   
   return (
-    <nav 
+    <motion.nav 
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+        'fixed top-0 left-0 right-0 z-50 transition-all',
         scrolled 
-          ? 'py-3 backdrop-blur-xl bg-white/10 dark:bg-black/10 border-b border-white/10 dark:border-gray-800/10 shadow-sm' 
-          : 'py-5 bg-transparent'
+          ? 'py-2 backdrop-blur-2xl bg-white/5 dark:bg-black/5 border-b border-white/5 dark:border-gray-800/5 shadow-sm' 
+          : 'py-4 bg-transparent'
       )}
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link 
           to="/" 
-          className="font-futuristic text-xl font-semibold text-crystal-dark dark:text-white group"
+          className="font-futuristic text-xl font-semibold text-crystal-dark dark:text-white group overflow-hidden"
         >
-          <span className="relative">
-            Crystal<span className="text-crystal-purple font-medium">Case</span>
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-crystal-purple via-crystal-pink to-crystal-blue group-hover:w-full transition-all duration-300"></span>
+          <span className="relative inline-block">
+            <motion.span 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0], delay: 0.1 }}
+            >
+              Crystal<span className="text-crystal-purple font-medium">Case</span>
+            </motion.span>
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-crystal-purple via-crystal-pink to-crystal-blue group-hover:w-full transition-all duration-300 ease-out"></span>
           </span>
         </Link>
         
         <div className="lg:hidden">
-          <button 
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 dark:border-crystal-medium/20 text-crystal-dark dark:text-white hover:bg-white/20 dark:hover:bg-crystal-medium/20 transition-all"
+          <motion.button 
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 dark:border-crystal-medium/10 text-crystal-dark dark:text-white hover:bg-white/10 dark:hover:bg-crystal-medium/10 transition-all"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </button>
+            <AnimatePresence mode="wait">
+              {mobileMenuOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu className="w-5 h-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
         </div>
         
         <div className="hidden lg:flex items-center space-x-8">
@@ -70,38 +101,51 @@ const Navbar = () => {
         </div>
       </div>
       
-      <div 
-        className={cn(
-          "lg:hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-40 transition-all duration-300",
-          mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-2xl z-40"
+            style={{ top: '64px' }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'calc(100vh - 64px)' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1.0] }}
+          >
+            <motion.div 
+              className="container mx-auto px-6 py-8 flex flex-col items-center space-y-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <MobileNavLink 
+                to="/" 
+                active={isActiveLink('/')} 
+                onClick={() => setMobileMenuOpen(false)}
+                delay={0.1}
+              >
+                Home
+              </MobileNavLink>
+              <MobileNavLink 
+                to="/details" 
+                active={isActiveLink('/details')} 
+                onClick={() => setMobileMenuOpen(false)}
+                delay={0.2}
+              >
+                Details
+              </MobileNavLink>
+              <MobileNavLink 
+                to="/configure" 
+                active={isActiveLink('/configure')} 
+                onClick={() => setMobileMenuOpen(false)}
+                delay={0.3}
+              >
+                Customize
+              </MobileNavLink>
+            </motion.div>
+          </motion.div>
         )}
-        style={{ top: '64px' }}
-      >
-        <div className="container mx-auto px-6 py-8 flex flex-col items-center space-y-6">
-          <MobileNavLink 
-            to="/" 
-            active={isActiveLink('/')} 
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Home
-          </MobileNavLink>
-          <MobileNavLink 
-            to="/details" 
-            active={isActiveLink('/details')} 
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Details
-          </MobileNavLink>
-          <MobileNavLink 
-            to="/configure" 
-            active={isActiveLink('/configure')} 
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Customize
-          </MobileNavLink>
-        </div>
-      </div>
-    </nav>
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 
@@ -124,13 +168,16 @@ const NavLink = ({
           : 'text-crystal-dark/80 dark:text-white/80 hover:text-crystal-purple dark:hover:text-crystal-purple'
       )}
     >
-      {children}
-      <span 
-        className={cn(
-          'absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-crystal-purple via-crystal-pink to-crystal-blue transition-all duration-300',
-          active ? 'w-full' : 'w-0 group-hover:w-full'
-        )}
-      />
+      <span className="relative inline-block overflow-hidden">
+        {children}
+        <motion.span 
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-crystal-purple via-crystal-pink to-crystal-blue"
+          initial={{ width: active ? "100%" : "0%" }}
+          animate={{ width: active ? "100%" : "0%" }}
+          whileHover={{ width: "100%" }}
+          transition={{ duration: 0.3 }}
+        />
+      </span>
     </Link>
   );
 };
@@ -139,26 +186,41 @@ const MobileNavLink = ({
   to, 
   active, 
   onClick,
+  delay,
   children 
 }: { 
   to: string; 
   active: boolean;
   onClick: () => void;
+  delay: number;
   children: React.ReactNode 
 }) => {
   return (
-    <Link
-      to={to}
-      onClick={onClick}
-      className={cn(
-        'relative py-3 px-5 text-lg font-medium transition-all rounded-full w-full text-center',
-        active 
-          ? 'bg-white/10 text-white' 
-          : 'text-white/70 hover:bg-white/5 hover:text-white'
-      )}
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay, duration: 0.3 }}
+      className="w-full"
     >
-      {children}
-    </Link>
+      <Link
+        to={to}
+        onClick={onClick}
+        className={cn(
+          'relative py-3 px-5 text-lg font-medium transition-all rounded-full w-full flex items-center justify-center',
+          active 
+            ? 'bg-white/10 text-white' 
+            : 'text-white/70 hover:bg-white/5 hover:text-white'
+        )}
+      >
+        <motion.span
+          whileHover={{ x: 5 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+        >
+          {children}
+        </motion.span>
+      </Link>
+    </motion.div>
   );
 };
 

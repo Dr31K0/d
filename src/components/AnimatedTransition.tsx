@@ -41,7 +41,7 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => 
         exit="exit"
         variants={fadeVariants}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="min-h-screen flex flex-col pb-4 bg-black text-white"
+        className="min-h-screen flex flex-col pb-4"
       >
         {children}
         

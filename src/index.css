@@ -120,6 +120,17 @@
   .font-futuristic {
     font-family: 'Orbitron', sans-serif;
   }
+  
+  /* Make text colors properly work in dark mode */
+  .dark .text-crystal-medium,
+  .dark .text-crystal-medium\/80,
+  .dark .text-crystal-medium\/70,
+  .dark .text-crystal-medium\/60,
+  .dark .text-crystal-medium\/50,
+  .dark .text-crystal-dark,
+  .dark [class*="text-crystal-medium"] {
+    @apply text-white;
+  }
 }
 
 @layer components {
@@ -390,4 +401,3 @@
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-

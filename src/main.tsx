@@ -14,6 +14,21 @@ if (!rootElement) {
   document.body.appendChild(newRoot);
 }
 
+// Ensure Lovable script is loaded
+const ensureLovableScript = () => {
+  const scriptId = 'lovable-script';
+  if (!document.getElementById(scriptId)) {
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://cdn.gpteng.co/gptengineer.js';
+    script.type = 'module';
+    document.head.appendChild(script);
+    console.log('Lovable script added to document');
+  }
+};
+
+ensureLovableScript();
+
 // Render the app with improved error handling
 try {
   console.log('Mounting React application...');

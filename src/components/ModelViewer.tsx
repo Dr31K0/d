@@ -1,10 +1,11 @@
 
-import React, { Suspense, useRef, useEffect } from 'react';
+import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 interface ModelViewerProps {
   className?: string;
@@ -13,7 +14,17 @@ interface ModelViewerProps {
 const SuitcaseModel = () => {
   const { color, isRotating, rotationSpeed } = useSuitcase();
   const modelRef = useRef<Group>(null);
-  const { scene } = useGLTF('/models/suitcase.glb');
+  const [modelError, setModelError] = useState<boolean>(false);
+  
+  // Use a try/catch block to handle potential model loading errors
+  let scene;
+  try {
+    const result = useGLTF('/models/suitcase.glb');
+    scene = result.scene;
+  } catch (error) {
+    console.error("Error loading model:", error);
+    setModelError(true);
+  }
   
   // Apply color to the model
   useEffect(() => {
@@ -43,7 +54,41 @@ const SuitcaseModel = () => {
     }
   });
   
-  return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />;
+  if (modelError) {
+    return (
+      <mesh>
+        <boxGeometry args={[1.5, 1, 0.5]} />
+        <meshStandardMaterial color="red" />
+        <Html position={[0, 0, 1]}>
+          <div className="bg-black/75 text-white p-2 rounded text-xs">
+            Error loading model
+          </div>
+        </Html>
+      </mesh>
+    );
+  }
+  
+  return scene ? (
+    <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />
+  ) : null;
+};
+
+// Helper component to display HTML content within the 3D scene
+const Html = ({ children, position = [0, 0, 0] }: { children: React.ReactNode, position?: [number, number, number] }) => {
+  return (
+    <group position={position}>
+      <div
+        className="html-content"
+        style={{
+          position: 'absolute',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+        }}
+      >
+        {children}
+      </div>
+    </group>
+  );
 };
 
 // Helper function to get color value based on selected color
@@ -67,10 +112,9 @@ const getColorValue = (color: string) => {
 // Loading placeholder
 const ModelFallback = () => {
   return (
-    <mesh>
-      <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color="#9333ea" />
-    </mesh>
+    <div className="h-full w-full flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-crystal-purple" />
+    </div>
   );
 };
 
@@ -93,7 +137,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className }) => {
         />
         <pointLight position={[0, 5, 0]} intensity={1.5} />
         
-        <Suspense fallback={<ModelFallback />}>
+        <Suspense fallback={<></>}>
           <group position={[0, 0, 0]}>
             <SuitcaseModel />
             <ContactShadows
@@ -116,6 +160,13 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className }) => {
           maxDistance={7}
         />
       </Canvas>
+      
+      {/* 2D fallback content */}
+      <Suspense fallback={<ModelFallback />}>
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <ModelFallback />
+        </div>
+      </Suspense>
       
       {/* Controls */}
       <div className="absolute bottom-4 left-4 space-x-2">
@@ -151,4 +202,8 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className }) => {
 export default ModelViewer;
 
 // Preload the model
-useGLTF.preload('/models/suitcase.glb');
+try {
+  useGLTF.preload('/models/suitcase.glb');
+} catch (error) {
+  console.error("Error preloading model:", error);
+}

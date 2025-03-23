@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -11,23 +12,30 @@ interface SuitcaseModelProps {
 }
 
 const Model = () => {
-  const { color, modelUrl } = useSuitcase();
+  const { color, modelUrl, setModelLoading } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  const { scene, nodes } = useGLTF(modelUrl, undefined, true);
+  const { scene, nodes } = useGLTF(modelUrl, undefined, true, 
+    () => {
+      console.log('Model loaded successfully via callback');
+      setLoaded(true);
+      setModelLoading(false);
+    }
+  );
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
       if (e.message && e.message.includes('GLB')) {
         console.error("Error loading model:", e);
         setError("Failed to load 3D model: " + e.message);
+        setModelLoading(false);
       }
     };
     
     window.addEventListener('error', handleModelError);
     return () => window.removeEventListener('error', handleModelError);
-  }, []);
+  }, [setModelLoading]);
   
   const modelRef = useRef<Group>(null);
   
@@ -69,6 +77,7 @@ const Model = () => {
         });
         
         setLoaded(true);
+        setModelLoading(false);
       } else {
         console.warn('Scene is undefined');
       }
@@ -76,9 +85,10 @@ const Model = () => {
       const error = e as Error;
       console.error('Error in model effect:', error);
       setError(error.message);
+      setModelLoading(false);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
-  }, [scene, color]);
+  }, [scene, color, setModelLoading]);
   
   useFrame((state) => {
     if (modelRef.current) {
@@ -151,6 +161,7 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
 
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
+  const { isModelLoading } = useSuitcase();
   
   const handleCanvasCreationError = (error: any) => {
     console.error("Canvas creation error:", error);
@@ -194,6 +205,22 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           <p className="mt-2 text-sm">
             Try using a modern browser like Chrome, Firefox, or Edge with hardware acceleration enabled.
           </p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Show placeholder while the model is loading
+  if (isModelLoading) {
+    return (
+      <div className={cn(
+        'relative w-full h-[500px] rounded-xl overflow-hidden bg-crystal-light/30 flex items-center justify-center',
+        className
+      )}>
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-16 h-16 border-4 border-crystal-purple/30 border-t-crystal-purple rounded-full animate-spin mb-4"></div>
+          <p className="text-crystal-medium font-medium">Loading 3D Model...</p>
+          <p className="text-crystal-medium/60 text-sm mt-2">This may take a moment</p>
         </div>
       </div>
     );

@@ -12,8 +12,10 @@ interface SuitcaseContextType {
   color: SuitcaseColor;
   view: SuitcaseView;
   modelUrl: string;
+  isModelLoading: boolean;
   setColor: (color: SuitcaseColor) => void;
   setView: (view: SuitcaseView) => void;
+  setModelLoading: (loading: boolean) => void;
 }
 
 // Create the context with a default value
@@ -23,6 +25,7 @@ const SuitcaseContext = createContext<SuitcaseContextType | undefined>(undefined
 export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
   const [color, setColor] = useState<SuitcaseColor>('purple');
   const [view, setView] = useState<SuitcaseView>('front');
+  const [isModelLoading, setModelLoading] = useState<boolean>(true);
   
   // Use a local model path that will work with GitHub Pages
   const modelUrl = '/models/suitcase.glb';
@@ -31,8 +34,10 @@ export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
     color,
     view,
     modelUrl,
+    isModelLoading,
     setColor,
     setView,
+    setModelLoading,
   };
 
   return (

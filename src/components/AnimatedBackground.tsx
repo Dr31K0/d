@@ -127,7 +127,7 @@ const AnimatedBackground: React.FC = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 blur-[2px]" // Added blur effect and reduced opacity
+      className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 blur-[4px]" // Increased blur from 2px to 4px
     />
   );
 };

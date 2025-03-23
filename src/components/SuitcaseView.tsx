@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
+import { logError } from '@/utils/errorLogger';
 
 interface SuitcaseViewProps {
   className?: string;
@@ -13,6 +14,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   interactive = false
 }) => {
   const { color, view } = useSuitcase();
+  const [imgError, setImgError] = useState(false);
   
   // Get the image URL based on color and view
   const getImageUrl = () => {
@@ -21,7 +23,9 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   
   // Fallback image if the specific combination doesn't exist
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    console.log(`Image for ${color} ${view} not found, using fallback`);
+    logError(`Image for ${color} ${view} not found, using fallback`, 'SuitcaseView');
+    console.log(`Image not found: ${getImageUrl()}`);
+    setImgError(true);
     e.currentTarget.src = `/images/suitcase-purple-front.png`;
   };
   
@@ -38,7 +42,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
       
       {/* Suitcase image */}
       <img
-        src={getImageUrl()}
+        src={imgError ? `/images/suitcase-purple-front.png` : getImageUrl()}
         alt={`${color} suitcase ${view} view`}
         className="w-full h-full object-contain"
         style={{ mixBlendMode: 'multiply' }}

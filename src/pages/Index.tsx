@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -6,9 +7,11 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import { AlertCircle, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const { isDark } = useTheme();
   
   // Parallax effect on scroll
   useEffect(() => {
@@ -111,11 +114,17 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Scroll indicator */}
+        {/* Scroll indicator - theme-aware colors */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 animate-bounce-subtle">
-          <span className="text-xs font-medium text-white/70">Scroll to explore</span>
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-white/60 rounded-full mt-2 animate-pulse-slow" />
+          <span className={`text-xs font-medium ${isDark ? 'text-white/70' : 'text-crystal-medium/60'}`}>
+            Scroll to explore
+          </span>
+          <div className={`w-6 h-10 border-2 rounded-full flex justify-center ${
+            isDark ? 'border-white/30' : 'border-crystal-medium/20'
+          }`}>
+            <div className={`w-1 h-2 rounded-full mt-2 animate-pulse-slow ${
+              isDark ? 'bg-white/60' : 'bg-crystal-medium/40'
+            }`} />
           </div>
         </div>
       </section>

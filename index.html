@@ -10,13 +10,15 @@
     <meta property="og:image" content="/og-image.png" />
     <!-- Base URL for GitHub Pages -->
     <base href="./" />
+    <!-- Load stylesheet -->
+    <link rel="stylesheet" href="./dist/assets/index.css" />
   </head>
 
   <body>
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Load main entry point -->
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Load bundled JavaScript instead of TypeScript source -->
+    <script type="module" src="./dist/assets/index.js"></script>
   </body>
 </html>

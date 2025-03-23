@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +36,7 @@ const Navbar = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
         scrolled 
-          ? 'py-3 backdrop-blur-xl bg-white/10 border-b border-white/10 shadow-sm' 
+          ? 'py-3 backdrop-blur-xl bg-white/10 dark:bg-black/10 border-b border-white/10 dark:border-gray-800/10 shadow-sm' 
           : 'py-5 bg-transparent'
       )}
     >
@@ -43,7 +44,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link 
           to="/" 
-          className="font-display text-xl font-semibold text-crystal-dark group"
+          className="font-display text-xl font-semibold text-crystal-dark dark:text-white group"
         >
           <span className="relative">
             Crystal<span className="text-crystal-purple font-medium">Case</span>
@@ -51,17 +52,23 @@ const Navbar = () => {
           </span>
         </Link>
         
-        {/* Mobile menu button */}
-        <button 
-          className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-crystal-dark hover:bg-white/20 transition-all"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? (
-            <X className="w-5 h-5" />
-          ) : (
-            <Menu className="w-5 h-5" />
-          )}
-        </button>
+        {/* Navigation and Theme Toggle */}
+        <div className="flex items-center gap-4">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+          
+          {/* Mobile menu button */}
+          <button 
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 dark:border-crystal-medium/20 text-crystal-dark dark:text-white hover:bg-white/20 dark:hover:bg-crystal-medium/20 transition-all"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
         
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center space-x-8">
@@ -129,8 +136,8 @@ const NavLink = ({
       className={cn(
         'relative py-2 text-sm font-medium transition-colors',
         active 
-          ? 'text-crystal-purple' 
-          : 'text-crystal-dark/80 hover:text-crystal-purple'
+          ? 'text-crystal-purple dark:text-crystal-purple' 
+          : 'text-crystal-dark/80 dark:text-white/80 hover:text-crystal-purple dark:hover:text-crystal-purple'
       )}
     >
       {children}
@@ -173,4 +180,3 @@ const MobileNavLink = ({
 };
 
 export default Navbar;
-

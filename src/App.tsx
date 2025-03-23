@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { SuitcaseProvider } from "@/context/SuitcaseContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import Index from "./pages/Index";
@@ -29,9 +30,9 @@ const ErrorFallback = ({ error }: { error: Error }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="crystal-card p-6 max-w-md">
-        <h2 className="text-xl font-semibold text-crystal-dark mb-4">Something went wrong</h2>
-        <p className="text-crystal-medium mb-4">We're sorry, but an error occurred while loading the page.</p>
-        <pre className="bg-crystal-light/50 p-3 rounded-md text-sm overflow-auto mb-4">
+        <h2 className="text-xl font-semibold text-crystal-dark dark:text-white mb-4">Something went wrong</h2>
+        <p className="text-crystal-medium dark:text-gray-300 mb-4">We're sorry, but an error occurred while loading the page.</p>
+        <pre className="bg-crystal-light/50 dark:bg-crystal-dark/50 p-3 rounded-md text-sm overflow-auto mb-4">
           {error.message}
         </pre>
         <motion.button 
@@ -87,21 +88,23 @@ const App = () => {
     <SafeComponent>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <SuitcaseProvider>
-            <AnimatedBackground />
-            <Toaster />
-            <Sonner position="top-center" closeButton theme="light" />
-            <HashRouter>
-              <AnimatedTransition>
-                <Routes>
-                  <Route path="/" element={<SafeComponent><Index /></SafeComponent>} />
-                  <Route path="/details" element={<SafeComponent><Details /></SafeComponent>} />
-                  <Route path="/configure" element={<SafeComponent><Configure /></SafeComponent>} />
-                  <Route path="*" element={<SafeComponent><NotFound /></SafeComponent>} />
-                </Routes>
-              </AnimatedTransition>
-            </HashRouter>
-          </SuitcaseProvider>
+          <ThemeProvider>
+            <SuitcaseProvider>
+              <AnimatedBackground />
+              <Toaster />
+              <Sonner position="top-center" closeButton theme="light" />
+              <HashRouter>
+                <AnimatedTransition>
+                  <Routes>
+                    <Route path="/" element={<SafeComponent><Index /></SafeComponent>} />
+                    <Route path="/details" element={<SafeComponent><Details /></SafeComponent>} />
+                    <Route path="/configure" element={<SafeComponent><Configure /></SafeComponent>} />
+                    <Route path="*" element={<SafeComponent><NotFound /></SafeComponent>} />
+                  </Routes>
+                </AnimatedTransition>
+              </HashRouter>
+            </SuitcaseProvider>
+          </ThemeProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </SafeComponent>

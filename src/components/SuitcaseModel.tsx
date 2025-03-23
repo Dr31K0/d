@@ -39,17 +39,17 @@ const Model = () => {
   
   const modelRef = useRef<Group>(null);
   
-  // Map selected color to material color
+  // Map selected color to material color with increased brightness
   const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#9333ea'; // crystal-purple
+        return '#B794F6'; // Lighter crystal-purple
       case 'blue':
-        return '#2563eb'; // crystal-blue
+        return '#7AB7FF'; // Lighter crystal-blue
       case 'orange':
-        return '#f97316'; // crystal-orange
+        return '#FFAC74'; // Lighter crystal-orange
       default:
-        return '#9333ea'; // default to crystal-purple
+        return '#B794F6'; // default to lighter crystal-purple
     }
   };
   
@@ -64,12 +64,19 @@ const Model = () => {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Apply material color to all meshes for visibility
+            // Apply material color to all meshes with increased emissive for brightness
             if (mesh.material) {
               if (mesh.material instanceof MeshStandardMaterial) {
+                // Set base color
                 mesh.material.color.set(getColorValue());
+                // Add subtle emissive glow to brighten
+                mesh.material.emissive.set(getColorValue());
+                mesh.material.emissiveIntensity = 0.2;
+                // Increase reflectivity for a more vibrant look
+                mesh.material.metalness = 0.4;
+                mesh.material.roughness = 0.3;
                 mesh.material.needsUpdate = true;
-                console.log('Applied color to:', mesh.name);
+                console.log('Applied brightened color to:', mesh.name);
               } else {
                 console.log('Material is not MeshStandardMaterial:', mesh.material);
               }
@@ -113,25 +120,25 @@ const Model = () => {
     );
   }
   
-  // Modified position by adjusting the Y value (from -0.5 to -0.1) to move the model up
+  // Modified position by adjusting the Y value to move the model up
   return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.1, 0]} />;
 };
 
-// Fallback component to show while loading
+// Fallback component to show while loading with brighter colors
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
-  // Get color value based on selection
+  // Get brighter color value based on selection
   const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#9333ea';
+        return '#B794F6';
       case 'blue':
-        return '#2563eb';
+        return '#7AB7FF';
       case 'orange':
-        return '#f97316';
+        return '#FFAC74';
       default:
-        return '#9333ea';
+        return '#B794F6';
     }
   };
   
@@ -140,7 +147,7 @@ const ModelFallback = () => {
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} />
+      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
     </mesh>
   );
 };
@@ -235,13 +242,13 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onError={handleCanvasCreationError}
       >
-        {/* Enhanced lighting setup for better realism */}
-        <ambientLight intensity={1.5} />
+        {/* Enhanced lighting setup for better brightness */}
+        <ambientLight intensity={2.0} />
         <spotLight 
           position={[10, 10, 10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={2.5} 
+          intensity={3.5} 
           castShadow 
           shadow-mapSize={1024}
         />
@@ -249,15 +256,21 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           position={[-10, 5, -10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={1.5} 
+          intensity={2.5} 
           castShadow 
         />
-        <pointLight position={[0, 5, 0]} intensity={1.5} />
+        <pointLight position={[0, 5, 0]} intensity={2.5} />
         <directionalLight
           position={[5, 5, 5]}
-          intensity={1.5}
+          intensity={2.5}
           castShadow
           shadow-mapSize={1024}
+        />
+        {/* Add a fill light from below to eliminate dark shadows */}
+        <directionalLight
+          position={[0, -3, 0]}
+          intensity={1.0}
+          castShadow={false}
         />
         
         <Suspense fallback={<ModelFallback />}>
@@ -265,18 +278,18 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
             {/* Center-positioned Model */}
             <Model />
             
-            {/* Contact shadow beneath the model - adjusted upward */}
+            {/* Contact shadow beneath the model - adjusted upward and lighter */}
             <ContactShadows
               position={[0, -1.0, 0]}
-              opacity={0.8}
+              opacity={0.6}
               scale={10}
-              blur={2.5}
+              blur={3}
               far={4}
               resolution={512}
-              color="#000000"
+              color="#555"
             />
           </group>
-          <Environment preset="city" />
+          <Environment preset="city" intensity={1.5} />
         </Suspense>
         <OrbitControls 
           enablePan={false}

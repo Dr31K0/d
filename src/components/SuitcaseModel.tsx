@@ -25,31 +25,28 @@ const Model = () => {
   // Use a ref to track retry attempts
   const retryCount = useRef(0);
   
-  // Fix the useGLTF call to properly handle errors with better error handling
-  const { scene, nodes } = useGLTF(modelUrl, true, (e) => {
-    console.error("Error loading model:", e);
-    setError(`Failed to load 3D model: ${e.message || 'Unknown error'}`);
-    
-    // Try fallback URL if main URL fails and we haven't tried it yet
-    if (modelUrl !== FALLBACK_MODEL_URL && retryCount.current < 1) {
-      console.log("Trying fallback model URL");
-      setModelUrl(FALLBACK_MODEL_URL);
-      retryCount.current += 1;
-    }
-  });
+  // Fix the useGLTF call to properly handle errors
+  const { scene, nodes } = useGLTF(modelUrl, true);
   
-  // Add manual error handler
+  // Add manual error handler for model loading
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
       if (e.message && e.message.includes('GLB')) {
         console.error("GLB loading error:", e);
         setError("Failed to load 3D model: " + e.message);
+        
+        // Try fallback URL if main URL fails and we haven't tried it yet
+        if (modelUrl === SUITCASE_MODEL_URL && retryCount.current < 1) {
+          console.log("Trying fallback model URL");
+          setModelUrl(FALLBACK_MODEL_URL);
+          retryCount.current += 1;
+        }
       }
     };
     
     window.addEventListener('error', handleModelError);
     return () => window.removeEventListener('error', handleModelError);
-  }, []);
+  }, [modelUrl]);
   
   const modelRef = useRef<Group>(null);
   

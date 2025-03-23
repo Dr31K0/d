@@ -16,10 +16,10 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   const { color, view } = useSuitcase();
   const [imgError, setImgError] = useState(false);
   
-  // Get the image URL based on color and view - using the same location as the GLB file
+  // Get the image URL based on color and view - using the correct repository
   const getImageUrl = () => {
-    // Updated URL format to match location alongside GLB file
-    return `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-${color}-${view}.png`;
+    // Updated URL format to point to the 'models' repository
+    return `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-${color}-${view}.png`;
   };
   
   // Fallback image if the specific combination doesn't exist
@@ -27,8 +27,8 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
     logError(`Image for ${color} ${view} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    // Fallback to a common CDN URL
-    e.currentTarget.src = `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-purple-front.png`;
+    // Fallback to a known image in the repository
+    e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png`;
   };
   
   return (
@@ -44,7 +44,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
       
       {/* Suitcase image */}
       <img
-        src={imgError ? `https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase-purple-front.png` : getImageUrl()}
+        src={imgError ? `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png` : getImageUrl()}
         alt={`${color} suitcase ${view} view`}
         className="w-full h-full object-contain"
         style={{ mixBlendMode: 'multiply' }}

@@ -10,15 +10,39 @@
     <meta property="og:image" content="/og-image.png" />
     <!-- Base URL for GitHub Pages -->
     <base href="./" />
-    <!-- Load stylesheet -->
-    <link rel="stylesheet" href="./dist/assets/index.css" />
   </head>
 
   <body>
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Load bundled JavaScript instead of TypeScript source -->
-    <script type="module" src="./dist/assets/index.js"></script>
+    <!-- Dynamically load the right script based on environment -->
+    <script type="module">
+      // Check if we're running in development or production
+      const isLocalDev = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.hostname.includes('lovable');
+      
+      // Create the appropriate script element based on environment
+      const script = document.createElement('script');
+      script.type = 'module';
+      
+      // Create stylesheet link for production
+      if (!isLocalDev) {
+        const styleLink = document.createElement('link');
+        styleLink.rel = 'stylesheet';
+        styleLink.href = './dist/assets/index.css';
+        document.head.appendChild(styleLink);
+        
+        // Use the built assets for production/GitHub Pages
+        script.src = './dist/assets/index.js';
+      } else {
+        // Use source files for local development
+        script.src = '/src/main.tsx';
+      }
+      
+      // Add the script to the document
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>

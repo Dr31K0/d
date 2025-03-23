@@ -11,6 +11,7 @@ export type SuitcaseView = 'front' | 'side' | 'top' | 'inside';
 interface SuitcaseContextType {
   color: SuitcaseColor;
   view: SuitcaseView;
+  modelUrl: string;
   setColor: (color: SuitcaseColor) => void;
   setView: (view: SuitcaseView) => void;
 }
@@ -22,10 +23,14 @@ const SuitcaseContext = createContext<SuitcaseContextType | undefined>(undefined
 export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
   const [color, setColor] = useState<SuitcaseColor>('purple');
   const [view, setView] = useState<SuitcaseView>('front');
+  
+  // Use a local model path that will work with GitHub Pages
+  const modelUrl = '/models/suitcase.glb';
 
   const value = {
     color,
     view,
+    modelUrl,
     setColor,
     setView,
   };

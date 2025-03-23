@@ -267,7 +267,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
             
             {/* Contact shadow beneath the model - adjusted upward */}
             <ContactShadows
-              position={[0, -1.0, 0]}  {/* Adjusted from -1.4 to -1.0 */}
+              position={[0, -1.0, 0]}
               opacity={0.8}
               scale={10}
               blur={2.5}

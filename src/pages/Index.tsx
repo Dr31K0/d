@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -51,7 +50,7 @@ const Index = () => {
                     Introducing Revolutionary Luggage
                   </span>
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold leading-tight">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-futuristic font-semibold leading-tight">
                   The Future of <span className="animated-gradient-text font-bold">Crystal</span> Travel
                 </h1>
                 <p className="text-lg text-crystal-medium/80 max-w-lg">
@@ -128,7 +127,7 @@ const Index = () => {
             <div className="inline-block px-4 py-1.5 bg-crystal-blue/10 rounded-full border border-crystal-blue/20 mb-4">
               <span className="text-sm font-medium text-crystal-blue">Premium Features</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-semibold text-crystal-dark">
+            <h2 className="text-3xl md:text-4xl font-futuristic font-semibold text-crystal-dark">
               Crafted with Precision
             </h2>
             <p className="mt-4 text-crystal-medium/70">
@@ -137,6 +136,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Feature cards */}
             {/* Feature 1 */}
             <div className="feature-card flex flex-col items-center text-center group">
               <div className="feature-icon w-16 h-16 bg-crystal-purple/10 text-crystal-purple group-hover:bg-crystal-purple/20">
@@ -146,7 +146,7 @@ const Index = () => {
                   <path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-purple transition-colors">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-purple transition-colors">
                 Crystal Structure
               </h3>
               <p className="text-crystal-medium/70">
@@ -163,7 +163,7 @@ const Index = () => {
                   <path d="M17.5 15H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-blue transition-colors">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-blue transition-colors">
                 Adaptive Design
               </h3>
               <p className="text-crystal-medium/70">
@@ -182,7 +182,7 @@ const Index = () => {
                   <path d="M7.5 5.5C7.19058 4.8156 7.10904 4.05381 7.26572 3.32224C7.4224 2.59068 7.80866 1.92566 8.36403 1.43281C8.9194 0.939954 9.61428 0.642246 10.3459 0.579061C11.0776 0.515875 11.8095 0.690431 12.433 1.078C12.433 1.078 12.433 6.21 7.5 5.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-display font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-orange transition-colors">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mt-6 mb-3 group-hover:text-crystal-orange transition-colors">
                 Advanced Materials
               </h3>
               <p className="text-crystal-medium/70">
@@ -217,7 +217,7 @@ const Index = () => {
                 <div className="inline-block px-4 py-1.5 bg-crystal-pink/10 rounded-full border border-crystal-pink/20 mb-6">
                   <span className="text-sm font-medium text-crystal-pink">Limited Time Offer</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-display font-semibold text-crystal-dark">
+                <h2 className="text-3xl md:text-4xl font-futuristic font-semibold text-crystal-dark">
                   Ready to Experience the Future of Travel?
                 </h2>
                 <p className="mt-4 text-lg text-crystal-medium/70">

@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -114,7 +115,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-medium;
+    @apply font-futuristic font-medium;
   }
 
   .font-futuristic {

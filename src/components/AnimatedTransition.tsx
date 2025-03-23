@@ -21,7 +21,7 @@ const fadeVariants = {
 };
 
 const fadeTransition = {
-  duration: 0.2, // Made fade faster (from 0.3 to 0.2)
+  duration: 0.3,
   ease: "easeInOut",
 };
 

@@ -25,7 +25,7 @@ const Details = () => {
         
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-display font-semibold text-crystal-dark">
+            <h1 className="text-4xl md:text-5xl font-futuristic font-semibold text-crystal-dark">
               The <span className="text-gradient">Crystal</span> Experience
             </h1>
             <p className="mt-4 text-lg text-crystal-medium/70">
@@ -50,7 +50,7 @@ const Details = () => {
                 <div className="inline-block px-3 py-1 bg-crystal-purple/10 rounded-full">
                   <span className="text-xs font-medium text-crystal-purple">Interactive Experience</span>
                 </div>
-                <h2 className="text-3xl font-display font-semibold text-crystal-dark">
+                <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
                   Explore Every Angle
                 </h2>
                 <p className="text-crystal-medium/70">
@@ -87,7 +87,7 @@ const Details = () => {
       <section className="py-20 bg-crystal-light/50">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-display font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
               Unmatched Features
             </h2>
             <p className="mt-4 text-crystal-medium/70">
@@ -107,7 +107,7 @@ const Details = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+                  <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                     Crystal Structure Technology
                   </h3>
                   <p className="text-crystal-medium/70">
@@ -127,7 +127,7 @@ const Details = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+                  <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                     Premium Materials
                   </h3>
                   <p className="text-crystal-medium/70">
@@ -148,7 +148,7 @@ const Details = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+                  <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                     Smart Organization
                   </h3>
                   <p className="text-crystal-medium/70">
@@ -168,7 +168,7 @@ const Details = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-display font-medium text-crystal-dark mb-2">
+                  <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
                     Integrated Technology
                   </h3>
                   <p className="text-crystal-medium/70">
@@ -185,7 +185,7 @@ const Details = () => {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-display font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
               What Our Customers Say
             </h2>
             <p className="mt-4 text-crystal-medium/70">
@@ -267,7 +267,7 @@ const Details = () => {
       <section className="py-20 bg-crystal-gradient">
         <div className="container mx-auto px-6">
           <div className="crystal-card p-12 max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-display font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
               Ready to Experience the Difference?
             </h2>
             <p className="mt-4 text-crystal-medium/70">

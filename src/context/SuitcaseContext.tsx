@@ -10,8 +10,8 @@ export type SuitcaseView = 'front' | 'side' | 'top' | 'inside';
 // Define the context shape
 interface SuitcaseContextType {
   color: SuitcaseColor;
-  setColor: (color: SuitcaseColor) => void;
   view: SuitcaseView;
+  setColor: (color: SuitcaseColor) => void;
   setView: (view: SuitcaseView) => void;
 }
 
@@ -25,8 +25,8 @@ export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     color,
-    setColor,
     view,
+    setColor,
     setView,
   };
 

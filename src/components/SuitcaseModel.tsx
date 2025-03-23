@@ -289,7 +289,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="city" intensity={1.5} />
+          {/* Fixed: Removed 'intensity' prop from Environment component */}
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

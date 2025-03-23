@@ -27,16 +27,13 @@ const Navbar = () => {
   };
   
   return (
-    <motion.nav 
+    <nav 
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all',
         scrolled 
           ? 'py-2 backdrop-blur-2xl bg-white/5 dark:bg-black/5 border-b border-white/5 dark:border-gray-800/5 shadow-sm' 
           : 'py-4 bg-transparent'
       )}
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0] }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link 
@@ -44,23 +41,15 @@ const Navbar = () => {
           className="font-futuristic text-xl font-semibold text-crystal-dark dark:text-white group overflow-hidden"
         >
           <span className="relative inline-block">
-            <motion.span 
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0], delay: 0.1 }}
-            >
-              Crystal<span className="text-crystal-purple font-medium">Case</span>
-            </motion.span>
+            Crystal<span className="text-crystal-purple font-medium">Case</span>
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-crystal-purple via-crystal-pink to-crystal-blue group-hover:w-full transition-all duration-300 ease-out"></span>
           </span>
         </Link>
         
         <div className="lg:hidden">
-          <motion.button 
+          <button 
             className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 dark:border-crystal-medium/10 text-crystal-dark dark:text-white hover:bg-white/10 dark:hover:bg-crystal-medium/10 transition-all"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             <AnimatePresence mode="wait">
               {mobileMenuOpen ? (
@@ -85,7 +74,7 @@ const Navbar = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.button>
+          </button>
         </div>
         
         <div className="hidden lg:flex items-center space-x-8">
@@ -145,7 +134,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   );
 };
 

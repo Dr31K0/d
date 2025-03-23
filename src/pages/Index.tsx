@@ -113,9 +113,9 @@ const Index = () => {
         
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 animate-bounce-subtle">
-          <span className="text-xs font-medium text-crystal-medium/60">Scroll to explore</span>
-          <div className="w-6 h-10 border-2 border-crystal-medium/20 rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-crystal-medium/40 rounded-full mt-2 animate-pulse-slow" />
+          <span className="text-xs font-medium text-white/70">Scroll to explore</span>
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+            <div className="w-1 h-2 bg-white/60 rounded-full mt-2 animate-pulse-slow" />
           </div>
         </div>
       </section>
@@ -251,4 +251,3 @@ const Index = () => {
 };
 
 export default Index;
-

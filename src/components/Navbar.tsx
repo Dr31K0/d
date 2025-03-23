@@ -17,8 +17,16 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Check if link is active
-  const isActiveLink = (path: string) => location.pathname === path;
+  // Check if link is active - with HashRouter, the pathname includes the hash
+  const isActiveLink = (path: string) => {
+    // For HashRouter we need to check against the path after the hash
+    // For the root path, match either '/' or '#/' or just empty hash
+    if (path === '/') {
+      return location.pathname === '/' || location.hash === '#/' || location.hash === '';
+    }
+    // For other paths, check if the hash includes the path
+    return location.hash.includes(path);
+  };
   
   return (
     <nav 

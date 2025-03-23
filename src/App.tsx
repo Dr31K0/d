@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { SuitcaseProvider } from "@/context/SuitcaseContext";
 import { useState, useEffect } from "react";
 import Index from "./pages/Index";
@@ -11,7 +10,6 @@ import Details from "./pages/Details";
 import Configure from "./pages/Configure";
 import NotFound from "./pages/NotFound";
 
-// Create error boundary component
 const ErrorFallback = ({ error }: { error: Error }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -32,7 +30,6 @@ const ErrorFallback = ({ error }: { error: Error }) => {
   );
 };
 
-// Create a wrapper component with error handling
 const SafeComponent = ({ children }: { children: React.ReactNode }) => {
   const [error, setError] = useState<Error | null>(null);
 
@@ -66,7 +63,6 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  // Add logging to track component lifecycle
   console.log("App component rendering");
   
   return (
@@ -76,14 +72,14 @@ const App = () => {
           <SuitcaseProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <HashRouter>
               <Routes>
                 <Route path="/" element={<SafeComponent><Index /></SafeComponent>} />
                 <Route path="/details" element={<SafeComponent><Details /></SafeComponent>} />
                 <Route path="/configure" element={<SafeComponent><Configure /></SafeComponent>} />
                 <Route path="*" element={<SafeComponent><NotFound /></SafeComponent>} />
               </Routes>
-            </BrowserRouter>
+            </HashRouter>
           </SuitcaseProvider>
         </TooltipProvider>
       </QueryClientProvider>

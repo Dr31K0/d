@@ -7,38 +7,39 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 
+// Try different model sources to ensure compatibility
+const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
+// Fallback URL if needed
+const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
+
 interface SuitcaseModelProps {
   className?: string;
 }
 
 const Model = () => {
-  const { color, modelUrl, setModelLoading } = useSuitcase();
+  const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  const { scene, nodes } = useGLTF(modelUrl, undefined, true, 
-    () => {
-      console.log('Model loaded successfully via callback');
-      setLoaded(true);
-      setModelLoading(false);
-    }
-  );
+  // Fix the useGLTF call to properly handle errors - using true for onError to silence warnings
+  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
   
+  // Add manual error handler
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
       if (e.message && e.message.includes('GLB')) {
         console.error("Error loading model:", e);
         setError("Failed to load 3D model: " + e.message);
-        setModelLoading(false);
       }
     };
     
     window.addEventListener('error', handleModelError);
     return () => window.removeEventListener('error', handleModelError);
-  }, [setModelLoading]);
+  }, []);
   
   const modelRef = useRef<Group>(null);
   
+  // Map selected color to material color
   const getColorValue = () => {
     switch (color) {
       case 'purple':
@@ -52,6 +53,7 @@ const Model = () => {
     }
   };
   
+  // Apply color to the model and log model structure to debug
   useEffect(() => {
     try {
       if (scene) {
@@ -62,6 +64,7 @@ const Model = () => {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
+            // Apply material color to all meshes for visibility
             if (mesh.material) {
               if (mesh.material instanceof MeshStandardMaterial) {
                 mesh.material.color.set(getColorValue());
@@ -77,7 +80,6 @@ const Model = () => {
         });
         
         setLoaded(true);
-        setModelLoading(false);
       } else {
         console.warn('Scene is undefined');
       }
@@ -85,11 +87,11 @@ const Model = () => {
       const error = e as Error;
       console.error('Error in model effect:', error);
       setError(error.message);
-      setModelLoading(false);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
-  }, [scene, color, setModelLoading]);
+  }, [scene, color]);
   
+  // Add subtle animation
   useFrame((state) => {
     if (modelRef.current) {
       const t = state.clock.getElapsedTime();
@@ -114,9 +116,11 @@ const Model = () => {
   return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />;
 };
 
+// Fallback component to show while loading
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
+  // Get color value based on selection
   const getColorValue = () => {
     switch (color) {
       case 'purple':
@@ -140,6 +144,7 @@ const ModelFallback = () => {
   );
 };
 
+// Add Html component for debugging
 const Html = ({ children, position }: { children: React.ReactNode, position: [number, number, number] }) => {
   return (
     <group position={position}>
@@ -161,8 +166,8 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
 
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
-  const { isModelLoading } = useSuitcase();
   
+  // Fix the handler to properly accept React synthetic events without type error
   const handleCanvasCreationError = (error: any) => {
     console.error("Canvas creation error:", error);
     if (error instanceof Error) {
@@ -175,6 +180,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   };
   
   useEffect(() => {
+    // Check WebGL support
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -190,6 +196,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     }
     
     return () => {
+      // Clean up any resources or listeners
     };
   }, []);
   
@@ -205,22 +212,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           <p className="mt-2 text-sm">
             Try using a modern browser like Chrome, Firefox, or Edge with hardware acceleration enabled.
           </p>
-        </div>
-      </div>
-    );
-  }
-  
-  // Show placeholder while the model is loading
-  if (isModelLoading) {
-    return (
-      <div className={cn(
-        'relative w-full h-[500px] rounded-xl overflow-hidden bg-crystal-light/30 flex items-center justify-center',
-        className
-      )}>
-        <div className="flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-crystal-purple/30 border-t-crystal-purple rounded-full animate-spin mb-4"></div>
-          <p className="text-crystal-medium font-medium">Loading 3D Model...</p>
-          <p className="text-crystal-medium/60 text-sm mt-2">This may take a moment</p>
         </div>
       </div>
     );
@@ -243,6 +234,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onError={handleCanvasCreationError}
       >
+        {/* Enhanced lighting setup for better realism */}
         <ambientLight intensity={1.5} />
         <spotLight 
           position={[10, 10, 10]} 
@@ -269,7 +261,10 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>
+            {/* Center-positioned Model */}
             <Model />
+            
+            {/* Contact shadow beneath the model */}
             <ContactShadows
               position={[0, -1.4, 0]}
               opacity={0.8}
@@ -292,6 +287,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         />
       </Canvas>
       
+      {/* Instruction */}
       <div className="absolute bottom-4 right-4 bg-black/10 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs">
         Drag to rotate • Scroll to zoom
       </div>
@@ -301,10 +297,17 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
+// Fix preload error handling
 try {
-  const { modelUrl } = useSuitcase();
-  console.log("Attempting to preload model:", modelUrl);
-  useGLTF.preload(modelUrl);
+  console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
+  useGLTF.preload(SUITCASE_MODEL_URL);
 } catch (error) {
   console.error("Failed to preload model:", error);
+  // Try loading with the fallback URL
+  try {
+    console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
+    useGLTF.preload(FALLBACK_MODEL_URL);
+  } catch (fallbackError) {
+    console.error("Failed to preload fallback model:", fallbackError);
+  }
 }

@@ -17,13 +17,13 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   // Get the image URL based on color and view
   const getImageUrl = () => {
     // Use the real image paths instead of placeholders
-    return `/images/suitcase-${color}-${view}.jpg`;
+    return `/images/suitcase-${color}-${view}.png`;
   };
   
   // Fallback image if the specific combination doesn't exist
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     console.log(`Image for ${color} ${view} not found, using fallback`);
-    e.currentTarget.src = `/images/suitcase-purple-front.jpg`;
+    e.currentTarget.src = `/images/suitcase-purple-front.png`;
   };
   
   return (

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 
-// Try different model sources to ensure compatibility
+// Updated model URL from user's previous link
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 // Fallback URL if needed
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -20,15 +20,29 @@ const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [modelUrl, setModelUrl] = useState(SUITCASE_MODEL_URL);
   
-  // Fix the useGLTF call to properly handle errors - using true for onError to silence warnings
-  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  // Use a ref to track retry attempts
+  const retryCount = useRef(0);
+  
+  // Fix the useGLTF call to properly handle errors with better error handling
+  const { scene, nodes } = useGLTF(modelUrl, true, (e) => {
+    console.error("Error loading model:", e);
+    setError(`Failed to load 3D model: ${e.message || 'Unknown error'}`);
+    
+    // Try fallback URL if main URL fails and we haven't tried it yet
+    if (modelUrl !== FALLBACK_MODEL_URL && retryCount.current < 1) {
+      console.log("Trying fallback model URL");
+      setModelUrl(FALLBACK_MODEL_URL);
+      retryCount.current += 1;
+    }
+  });
   
   // Add manual error handler
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
       if (e.message && e.message.includes('GLB')) {
-        console.error("Error loading model:", e);
+        console.error("GLB loading error:", e);
         setError("Failed to load 3D model: " + e.message);
       }
     };
@@ -103,7 +117,7 @@ const Model = () => {
     return (
       <mesh>
         <boxGeometry args={[1, 0.6, 0.2]} />
-        <meshStandardMaterial color="red" />
+        <meshStandardMaterial color={getColorValue()} />
         <Html position={[0, 1, 0]}>
           <div style={{ color: 'white', background: 'rgba(0,0,0,0.7)', padding: '10px', borderRadius: '5px' }}>
             Error loading model: {error}
@@ -167,20 +181,8 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
   
-  // Fix the handler to properly accept React synthetic events without type error
-  const handleCanvasCreationError = (error: any) => {
-    console.error("Canvas creation error:", error);
-    if (error instanceof Error) {
-      setCanvasError(error.message);
-      logError(error, 'SuitcaseModel:CanvasCreation');
-    } else {
-      setCanvasError("Unknown canvas error occurred");
-      logError(new Error("Unknown canvas error"), 'SuitcaseModel:CanvasCreation');
-    }
-  };
-  
+  // Check WebGL support on component mount
   useEffect(() => {
-    // Check WebGL support
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -194,11 +196,19 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     } catch (e) {
       console.error("Error checking WebGL support:", e);
     }
-    
-    return () => {
-      // Clean up any resources or listeners
-    };
   }, []);
+  
+  // Fix the handler to properly accept React synthetic events without type error
+  const handleCanvasCreationError = (error: any) => {
+    console.error("Canvas creation error:", error);
+    if (error instanceof Error) {
+      setCanvasError(error.message);
+      logError(error, 'SuitcaseModel:CanvasCreation');
+    } else {
+      setCanvasError("Unknown canvas error occurred");
+      logError(new Error("Unknown canvas error"), 'SuitcaseModel:CanvasCreation');
+    }
+  };
   
   if (canvasError) {
     return (
@@ -216,8 +226,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       </div>
     );
   }
-  
-  console.log("Rendering SuitcaseModel component");
   
   return (
     <div 

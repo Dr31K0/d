@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -106,7 +105,7 @@ const Configure = () => {
                     Selected Configuration
                   </h3>
                   
-                  <div className="bg-crystal-light/50 rounded-lg p-4">
+                  <div className="bg-crystal-light/50 dark:bg-crystal-dark/50 rounded-lg p-4">
                     <ul className="space-y-2">
                       <li className="flex justify-between">
                         <span className="text-crystal-medium/70">Model</span>

@@ -1,13 +1,12 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
-import SuitcaseModel from '@/components/SuitcaseModel';
 import AnimatedTransition from '@/components/AnimatedTransition';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import ColorPicker from '@/components/ColorPicker';
+import ModelViewer from '@/components/ModelViewer';
 
 const Details = () => {
   // Scroll to top on page load
@@ -49,7 +48,7 @@ const Details = () => {
               <h3 className="text-xl font-display font-medium text-crystal-dark mb-4">
                 Interactive Suitcase Model
               </h3>
-              <SuitcaseModel />
+              <ModelViewer />
               <div className="mt-4">
                 <h4 className="text-sm font-medium text-crystal-dark mb-2">Choose a color:</h4>
                 <ColorPicker />

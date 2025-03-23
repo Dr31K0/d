@@ -14,10 +14,16 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
 }) => {
   const { color, view } = useSuitcase();
   
-  // Determine which image to show based on color and view
+  // Get the image URL based on color and view
   const getImageUrl = () => {
-    // This is a placeholder - in a real app, you'd have actual images
-    return `https://placehold.co/600x400/e2e8f0/1e293b?text=${color.toUpperCase()}+${view.toUpperCase()}+View`;
+    // Use the real image paths instead of placeholders
+    return `/images/suitcase-${color}-${view}.jpg`;
+  };
+  
+  // Fallback image if the specific combination doesn't exist
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.log(`Image for ${color} ${view} not found, using fallback`);
+    e.currentTarget.src = `/images/suitcase-purple-front.jpg`;
   };
   
   return (
@@ -37,6 +43,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         alt={`${color} suitcase ${view} view`}
         className="w-full h-full object-contain"
         style={{ mixBlendMode: 'multiply' }}
+        onError={handleImageError}
       />
       
       {/* Decorative elements */}

@@ -38,16 +38,16 @@ const AnimatedBackground: React.FC = () => {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
+        this.size = Math.random() * 2 + 0.5; // Reduced particle size
+        this.speedX = Math.random() * 0.3 - 0.15; // Reduced speed
+        this.speedY = Math.random() * 0.3 - 0.15; // Reduced speed
         
-        // Gradient colors
+        // Gradient colors with reduced opacity
         const colors = [
-          'rgba(139, 92, 246, 0.5)',  // crystal-purple
-          'rgba(217, 70, 239, 0.5)',  // crystal-pink
-          'rgba(14, 165, 233, 0.5)',  // crystal-blue
-          'rgba(249, 115, 22, 0.5)'   // crystal-orange
+          'rgba(139, 92, 246, 0.2)',  // crystal-purple with lower opacity
+          'rgba(217, 70, 239, 0.2)',  // crystal-pink with lower opacity
+          'rgba(14, 165, 233, 0.2)',  // crystal-blue with lower opacity
+          'rgba(249, 115, 22, 0.2)'   // crystal-orange with lower opacity
         ];
         
         this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -72,8 +72,8 @@ const AnimatedBackground: React.FC = () => {
       }
     }
 
-    // Initialize particles
-    const particleCount = Math.min(Math.floor(width * height / 15000), 150);
+    // Initialize particles with reduced count
+    const particleCount = Math.min(Math.floor(width * height / 25000), 100); // Reduced particle count
     const particles: Particle[] = [];
     
     for (let i = 0; i < particleCount; i++) {
@@ -84,8 +84,8 @@ const AnimatedBackground: React.FC = () => {
     const animate = () => {
       if (!ctx) return;
       
-      // Clear canvas with a semi-transparent background to create trails
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
+      // Clear canvas with a more transparent background
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.005)'; // More transparent background
       ctx.fillRect(0, 0, width, height);
       
       // Update and draw particles
@@ -94,18 +94,18 @@ const AnimatedBackground: React.FC = () => {
         particle.draw();
       });
       
-      // Connect particles with lines if they're close enough
+      // Connect particles with lines if they're close enough (with lower opacity)
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 100) {
+          if (distance < 80) { // Reduced connection distance
             if (!ctx) return;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(139, 92, 246, ${0.1 * (1 - distance / 100)})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(139, 92, 246, ${0.05 * (1 - distance / 80)})`; // Lower opacity
+            ctx.lineWidth = 0.3; // Thinner lines
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.stroke();
@@ -127,7 +127,7 @@ const AnimatedBackground: React.FC = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full -z-10 opacity-60"
+      className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 blur-[2px]" // Added blur effect and reduced opacity
     />
   );
 };

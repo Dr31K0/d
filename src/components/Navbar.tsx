@@ -1,16 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   
-  // Update scrolled state on scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -20,14 +17,10 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Check if link is active - with HashRouter, the pathname includes the hash
   const isActiveLink = (path: string) => {
-    // For HashRouter we need to check against the path after the hash
-    // For the root path, match either '/' or '#/' or just empty hash
     if (path === '/') {
       return location.pathname === '/' || location.hash === '#/' || location.hash === '';
     }
-    // For other paths, check if the hash includes the path
     return location.hash.includes(path);
   };
   
@@ -41,10 +34,9 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
         <Link 
           to="/" 
-          className="font-display text-xl font-semibold text-crystal-dark dark:text-white group"
+          className="font-futuristic text-xl font-semibold text-crystal-dark dark:text-white group"
         >
           <span className="relative">
             Crystal<span className="text-crystal-purple font-medium">Case</span>
@@ -52,14 +44,9 @@ const Navbar = () => {
           </span>
         </Link>
         
-        {/* Navigation and Theme Toggle */}
-        <div className="flex items-center gap-4">
-          {/* Theme Toggle */}
-          <ThemeToggle />
-          
-          {/* Mobile menu button */}
+        <div className="lg:hidden">
           <button 
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 dark:border-crystal-medium/20 text-crystal-dark dark:text-white hover:bg-white/20 dark:hover:bg-crystal-medium/20 transition-all"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 dark:border-crystal-medium/20 text-crystal-dark dark:text-white hover:bg-white/20 dark:hover:bg-crystal-medium/20 transition-all"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
@@ -70,7 +57,6 @@ const Navbar = () => {
           </button>
         </div>
         
-        {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center space-x-8">
           <NavLink to="/" active={isActiveLink('/')}>
             Home
@@ -84,7 +70,6 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile menu */}
       <div 
         className={cn(
           "lg:hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-40 transition-all duration-300",
@@ -120,7 +105,6 @@ const Navbar = () => {
   );
 };
 
-// NavLink component with animation
 const NavLink = ({ 
   to, 
   active, 
@@ -151,7 +135,6 @@ const NavLink = ({
   );
 };
 
-// Mobile NavLink component
 const MobileNavLink = ({ 
   to, 
   active, 

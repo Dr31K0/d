@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,8 +13,8 @@ import Configure from "./pages/Configure";
 import NotFound from "./pages/NotFound";
 import AnimatedBackground from "./components/AnimatedBackground";
 import AnimatedTransition from "./components/AnimatedTransition";
+import FixedThemeToggle from "./components/FixedThemeToggle";
 
-// Loading spinner for lazy-loaded components
 const LazyLoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
     <motion.div
@@ -91,6 +90,7 @@ const App = () => {
           <ThemeProvider>
             <SuitcaseProvider>
               <AnimatedBackground />
+              <FixedThemeToggle />
               <Toaster />
               <Sonner position="top-center" closeButton theme="light" />
               <HashRouter>

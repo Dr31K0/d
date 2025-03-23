@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
@@ -20,37 +19,29 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   const [currentView, setCurrentView] = useState(view);
   const [currentColor, setCurrentColor] = useState(color);
   
-  // Update current view/color with improved animations when props change
   useEffect(() => {
     if (currentView !== view || currentColor !== color) {
       setIsChanging(true);
-      // Wait for exit animation before updating the view/color
       const timer = setTimeout(() => {
         setCurrentView(view);
         setCurrentColor(color);
         setIsChanging(false);
-      }, 200); // Match duration with animation
-      
+      }, 200);
       return () => clearTimeout(timer);
     }
   }, [view, color, currentView, currentColor]);
   
-  // Get the image URL based on color and view - using the correct repository
   const getImageUrl = useCallback(() => {
-    // Updated URL format to point to the 'models' repository
     return `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-${currentColor}-${currentView}.png`;
   }, [currentColor, currentView]);
   
-  // Fallback image if the specific combination doesn't exist
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     logError(`Image for ${currentColor} ${currentView} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    // Fallback to a known image in the repository
     e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png`;
   };
   
-  // Improved animation variants
   const containerVariants = {
     hover: { 
       scale: 1.03, 
@@ -106,10 +97,8 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
       whileTap={interactive ? "tap" : undefined}
       transition={{ duration: 0.3 }}
     >
-      {/* Improved shimmer effect overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-crystal-purple/5 via-transparent to-crystal-pink/5" />
       
-      {/* Enhanced floating particles effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
@@ -134,7 +123,6 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         ))}
       </div>
       
-      {/* Suitcase image with enhanced animation */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${currentColor}-${currentView}`}
@@ -154,7 +142,6 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         </motion.div>
       </AnimatePresence>
       
-      {/* Enhanced decorative elements */}
       <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-white/10 to-transparent" />
       <motion.div 
         className="absolute top-0 left-0 w-full h-full bg-gradient-shine bg-[length:200%_200%]" 
@@ -170,23 +157,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         style={{ opacity: 0.15 }}
       />
       
-      {/* Improved glow effect */}
       <div className="absolute inset-0 bg-gradient-radial from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out" />
-      
-      {interactive && (
-        <motion.div 
-          className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            delay: 0.5, 
-            duration: 0.4,
-            ease: "easeOut"
-          }}
-        >
-          Drag to rotate
-        </motion.div>
-      )}
     </motion.div>
   );
 };

@@ -1,7 +1,7 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, Html as DreiHtml } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { cn } from '@/lib/utils';
@@ -61,11 +61,11 @@ const SuitcaseModel = ({ modelUrl = '/models/suitcase.glb' }) => {
       <mesh>
         <boxGeometry args={[1.5, 1, 0.5]} />
         <meshStandardMaterial color="red" />
-        <DreiHtml position={[0, 0, 1]}>
+        <Html position={[0, 0, 1]}>
           <div className="bg-black/75 text-white p-2 rounded text-xs">
             Error loading model from {modelUrl}
           </div>
-        </DreiHtml>
+        </Html>
       </mesh>
     );
   }
@@ -73,26 +73,6 @@ const SuitcaseModel = ({ modelUrl = '/models/suitcase.glb' }) => {
   return scene ? (
     <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />
   ) : null;
-};
-
-// Helper component to display HTML content within the 3D scene
-const HtmlContent = ({ children, position = [0, 0, 0] }: { children: React.ReactNode, position?: [number, number, number] }) => {
-  return (
-    <group position={position}>
-      <DreiHtml>
-        <div
-          className="html-content"
-          style={{
-            position: 'absolute',
-            transform: 'translate(-50%, -50%)',
-            pointerEvents: 'none',
-          }}
-        >
-          {children}
-        </div>
-      </DreiHtml>
-    </group>
-  );
 };
 
 // Helper function to get color value based on selected color
@@ -126,7 +106,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className, modelUrl }) => {
   const { isRotating, toggleRotation, zoom, setZoom } = useSuitcase();
   
   return (
-    <div className={cn('relative w-full h-[400px] rounded-xl overflow-hidden bg-gradient-to-br from-crystal-light/40 to-white shadow-lg', className)}>
+    <div className={cn('relative w-full h-[400px] rounded-xl overflow-hidden bg-gradient-to-br from-crystal-purple/10 to-crystal-pink/10 shadow-2xl border border-white/20', className)}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 45, zoom }}
         shadows
@@ -173,30 +153,30 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className, modelUrl }) => {
       </Suspense>
       
       {/* Controls */}
-      <div className="absolute bottom-4 left-4 space-x-2">
+      <div className="absolute bottom-4 left-4 space-x-2 z-10">
         <button 
           onClick={toggleRotation}
-          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
+          className="bg-crystal-purple/80 text-white px-4 py-2 rounded-full text-sm hover:bg-crystal-purple transition-colors hover:-translate-y-1 transform duration-200 shadow-lg backdrop-blur-sm"
         >
           {isRotating ? 'Stop Rotation' : 'Auto Rotate'}
         </button>
         
         <button 
           onClick={() => setZoom(Math.min(zoom + 0.1, 1.5))}
-          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
+          className="bg-crystal-pink/80 text-white px-4 py-2 rounded-full text-sm hover:bg-crystal-pink transition-colors hover:-translate-y-1 transform duration-200 shadow-lg backdrop-blur-sm"
         >
           Zoom In
         </button>
         
         <button 
           onClick={() => setZoom(Math.max(zoom - 0.1, 0.5))}
-          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
+          className="bg-crystal-blue/80 text-white px-4 py-2 rounded-full text-sm hover:bg-crystal-blue transition-colors hover:-translate-y-1 transform duration-200 shadow-lg backdrop-blur-sm"
         >
           Zoom Out
         </button>
       </div>
       
-      <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs shadow-lg">
+      <div className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm shadow-lg">
         Drag to rotate • Scroll to zoom
       </div>
     </div>

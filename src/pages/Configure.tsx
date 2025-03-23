@@ -142,13 +142,13 @@ const Configure = () => {
       </section>
       
       {/* Additional Features */}
-      <section className="py-20 bg-crystal-light/50">
+      <section className="py-20 bg-crystal-light/50 dark:bg-crystal-dark/70">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark">
+            <h2 className="text-3xl font-futuristic font-semibold text-crystal-dark dark:text-white">
               Included with Every CrystalCase
             </h2>
-            <p className="mt-4 text-crystal-medium/70">
+            <p className="mt-4 text-crystal-medium/70 dark:text-gray-300">
               Standard features that come with your purchase, regardless of configuration.
             </p>
           </div>
@@ -163,10 +163,10 @@ const Configure = () => {
                   <path d="M12 16L12 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark dark:text-white mb-2">
                 Lifetime Warranty
               </h3>
-              <p className="text-crystal-medium/70">
+              <p className="text-crystal-medium/70 dark:text-gray-300">
                 We stand behind our quality with an industry-leading lifetime limited warranty.
               </p>
             </div>
@@ -179,10 +179,10 @@ const Configure = () => {
                   <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark dark:text-white mb-2">
                 24/7 Support
               </h3>
-              <p className="text-crystal-medium/70">
+              <p className="text-crystal-medium/70 dark:text-gray-300">
                 Our dedicated team is available around the clock to assist with any questions or concerns.
               </p>
             </div>
@@ -195,10 +195,10 @@ const Configure = () => {
                   <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="text-xl font-futuristic font-medium text-crystal-dark mb-2">
+              <h3 className="text-xl font-futuristic font-medium text-crystal-dark dark:text-white mb-2">
                 Free Global Shipping
               </h3>
-              <p className="text-crystal-medium/70">
+              <p className="text-crystal-medium/70 dark:text-gray-300">
                 Enjoy complimentary express shipping to any destination worldwide.
               </p>
             </div>

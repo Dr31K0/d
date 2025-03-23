@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -12,12 +11,15 @@ const Navbar = () => {
   
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const isScrolled = window.scrollY > 20;
+      if (scrolled !== isScrolled) {
+        setScrolled(isScrolled);
+      }
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [scrolled]);
 
   const isActiveLink = (path: string) => {
     if (path === '/') {
@@ -29,11 +31,14 @@ const Navbar = () => {
   return (
     <nav 
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all',
+        'fixed top-0 left-0 right-0 z-50 will-change-transform',
         scrolled 
-          ? 'py-2 backdrop-blur-2xl bg-white/5 dark:bg-black/5 border-b border-white/5 dark:border-gray-800/5 shadow-sm' 
+          ? 'py-2 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-white/10 dark:border-gray-800/10 shadow-sm' 
           : 'py-4 bg-transparent'
       )}
+      style={{
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link 

@@ -18,7 +18,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ className }) => {
   
   return (
     <div className={cn('space-y-4', className)}>
-      <h3 className="text-lg font-display font-medium text-crystal-dark">Select Color</h3>
+      <h3 className="text-lg font-futuristic font-medium text-crystal-dark dark:text-white">Select Color</h3>
       
       <div className="flex space-x-4">
         {colors.map((colorOption) => (

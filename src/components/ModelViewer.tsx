@@ -9,9 +9,10 @@ import { Loader2 } from 'lucide-react';
 
 interface ModelViewerProps {
   className?: string;
+  modelUrl?: string;
 }
 
-const SuitcaseModel = () => {
+const SuitcaseModel = ({ modelUrl = '/models/suitcase.glb' }) => {
   const { color, isRotating, rotationSpeed } = useSuitcase();
   const modelRef = useRef<Group>(null);
   const [modelError, setModelError] = useState<boolean>(false);
@@ -19,7 +20,8 @@ const SuitcaseModel = () => {
   // Use a try/catch block to handle potential model loading errors
   let scene;
   try {
-    const result = useGLTF('/models/suitcase.glb');
+    // Use the prop-provided modelUrl instead of hardcoded path
+    const result = useGLTF(modelUrl);
     scene = result.scene;
   } catch (error) {
     console.error("Error loading model:", error);
@@ -61,7 +63,7 @@ const SuitcaseModel = () => {
         <meshStandardMaterial color="red" />
         <Html position={[0, 0, 1]}>
           <div className="bg-black/75 text-white p-2 rounded text-xs">
-            Error loading model
+            Error loading model from {modelUrl}
           </div>
         </Html>
       </mesh>
@@ -118,7 +120,7 @@ const ModelFallback = () => {
   );
 };
 
-const ModelViewer: React.FC<ModelViewerProps> = ({ className }) => {
+const ModelViewer: React.FC<ModelViewerProps> = ({ className, modelUrl }) => {
   const { isRotating, toggleRotation, zoom, setZoom } = useSuitcase();
   
   return (
@@ -139,7 +141,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className }) => {
         
         <Suspense fallback={<></>}>
           <group position={[0, 0, 0]}>
-            <SuitcaseModel />
+            <SuitcaseModel modelUrl={modelUrl} />
             <ContactShadows
               position={[0, -1.4, 0]}
               opacity={0.8}

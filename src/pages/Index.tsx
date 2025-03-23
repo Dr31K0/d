@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -106,9 +105,6 @@ const Index = () => {
               </div>
               <div className="crystal-card p-6 card-3d backdrop-blur-xl bg-white/70 border border-white/30 shadow-floating">
                 <SuitcaseView className="w-full h-[400px]" />
-                <div className="absolute bottom-4 right-4 bg-black/10 backdrop-blur-sm text-white/80 px-3 py-1 rounded-full text-xs">
-                  Interactive 3D View
-                </div>
               </div>
             </div>
           </div>

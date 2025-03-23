@@ -113,7 +113,8 @@ const Model = () => {
     );
   }
   
-  return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.5, 0]} />;
+  // Modified position by adjusting the Y value (from -0.5 to -0.1) to move the model up
+  return <primitive ref={modelRef} object={scene} scale={1.5} position={[0, -0.1, 0]} />;
 };
 
 // Fallback component to show while loading
@@ -264,9 +265,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
             {/* Center-positioned Model */}
             <Model />
             
-            {/* Contact shadow beneath the model */}
+            {/* Contact shadow beneath the model - adjusted upward */}
             <ContactShadows
-              position={[0, -1.4, 0]}
+              position={[0, -1.0, 0]}  {/* Adjusted from -1.4 to -1.0 */}
               opacity={0.8}
               scale={10}
               blur={2.5}

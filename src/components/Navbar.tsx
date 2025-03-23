@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -33,7 +34,7 @@ const Navbar = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 will-change-transform',
         scrolled 
-          ? 'py-2 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-white/10 dark:border-gray-800/10 shadow-sm' 
+          ? 'py-2 bg-white/20 dark:bg-black/20 backdrop-blur-xl border-b border-white/10 dark:border-gray-800/10 shadow-sm' 
           : 'py-4 bg-transparent'
       )}
       style={{

@@ -112,6 +112,22 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-crystal-purple to-crystal-pink;
   }
+  
+  .fancy-border {
+    @apply relative before:absolute before:inset-0 before:p-[2px] before:rounded-[inherit] before:bg-gradient-to-r before:from-crystal-purple before:to-crystal-pink before:-z-10;
+  }
+  
+  .hover-float {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)];
+  }
+  
+  .banner-gradient {
+    @apply bg-gradient-to-r from-crystal-light via-white to-crystal-light/50;
+  }
 }
 
 /* Smooth scrolling and transitions */
@@ -156,4 +172,74 @@
 
 .page-exit-active {
   @apply opacity-0 transition-opacity duration-300;
+}
+
+/* Fancy animations */
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-animation {
+  animation: floating 6s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 6s infinite linear;
+}
+
+/* Glassmorphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
+/* Button hover effects */
+.btn-hover-slide {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-hover-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.7s;
+  z-index: -1;
+}
+
+.btn-hover-slide:hover::before {
+  left: 100%;
 }

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -12,7 +13,7 @@ const Details = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-crystal-light/50">
+      <section className="pt-24 pb-16 bg-gradient-to-b from-crystal-light/80 to-white backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-display font-semibold text-crystal-dark mb-6">
@@ -23,7 +24,7 @@ const Details = () => {
               From breakthrough materials to smart design, we've rethought every aspect of the travel experience.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button asLink to="/configure" size="lg">
+              <Button asLink to="/configure" size="lg" className="bg-crystal-purple hover:bg-crystal-purple/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 Configure Yours
               </Button>
             </div>
@@ -68,9 +69,9 @@ const Details = () => {
                 </li>
               </ul>
               <div>
-                <a href="#" className="text-crystal-purple hover:text-crystal-purple/80 font-medium inline-flex items-center">
+                <a href="#" className="text-crystal-purple hover:text-crystal-purple/80 font-medium inline-flex items-center group">
                   Learn more about our materials
-                  <svg className="ml-1 w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="ml-1 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
@@ -78,8 +79,8 @@ const Details = () => {
             </div>
             
             {/* Interactive 3D Model */}
-            <div className="crystal-card p-6">
-              <ModelViewer className="w-full h-[400px]" modelUrl="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf" />
+            <div className="crystal-card p-6 shadow-xl backdrop-blur-lg border border-white/20 hover:shadow-2xl transition-all duration-500">
+              <ModelViewer className="w-full h-[500px]" modelUrl="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf" />
               <div className="mt-4 text-sm text-crystal-medium/60 text-center">
                 Interactive 3D model - Drag to rotate, scroll to zoom
               </div>
@@ -89,11 +90,11 @@ const Details = () => {
       </section>
       
       {/* Smart Storage Section */}
-      <section className="py-20 bg-crystal-light/50">
+      <section className="py-20 bg-gradient-to-r from-crystal-light/50 to-white/70">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1">
-              <div className="crystal-card overflow-hidden">
+              <div className="crystal-card overflow-hidden shadow-xl rounded-2xl transform hover:scale-105 transition-all duration-500">
                 <img 
                   src="https://placehold.co/800x600/e2e8f0/1e293b?text=Smart+Storage+System" 
                   alt="Smart Storage System" 
@@ -135,9 +136,9 @@ const Details = () => {
                 </li>
               </ul>
               <div>
-                <a href="#" className="text-crystal-blue hover:text-crystal-blue/80 font-medium inline-flex items-center">
+                <a href="#" className="text-crystal-blue hover:text-crystal-blue/80 font-medium inline-flex items-center group">
                   See storage options
-                  <svg className="ml-1 w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="ml-1 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
@@ -151,10 +152,10 @@ const Details = () => {
       <section className="py-24">
         <div className="container mx-auto px-6">
           <div className="crystal-card overflow-hidden">
-            <div className="relative p-12 md:p-16 bg-crystal-gradient">
+            <div className="relative p-12 md:p-16 bg-gradient-to-r from-crystal-purple/10 to-crystal-pink/10">
               {/* Background decorative elements */}
-              <div className="absolute -top-16 -right-16 w-64 h-64 bg-crystal-purple/10 rounded-full filter blur-3xl" />
-              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-crystal-pink/10 rounded-full filter blur-3xl" />
+              <div className="absolute -top-16 -right-16 w-64 h-64 bg-crystal-purple/10 rounded-full filter blur-3xl animate-pulse-slow" />
+              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-crystal-pink/10 rounded-full filter blur-3xl animate-pulse-slow" />
               
               <div className="relative max-w-3xl mx-auto text-center">
                 <h2 className="text-3xl md:text-4xl font-display font-semibold text-crystal-dark">
@@ -164,7 +165,7 @@ const Details = () => {
                   Customize your CrystalCase with the features that matter most to you.
                 </p>
                 <div className="mt-8">
-                  <Button size="lg" asLink to="/configure">
+                  <Button size="lg" asLink to="/configure" className="bg-gradient-to-r from-crystal-purple to-crystal-pink text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                     Configure Your CrystalCase
                   </Button>
                 </div>

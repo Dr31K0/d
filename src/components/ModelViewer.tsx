@@ -1,7 +1,7 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { cn } from '@/lib/utils';

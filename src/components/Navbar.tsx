@@ -21,9 +21,9 @@ const Navbar = () => {
 
   const isActiveLink = (path: string) => {
     if (path === '/') {
-      return location.pathname === '/' || location.hash === '#/' || location.hash === '';
+      return location.pathname === '/' || location.pathname === '';
     }
-    return location.hash.includes(path);
+    return location.pathname === path;
   };
   
   return (

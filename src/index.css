@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -89,6 +88,10 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -98,11 +101,23 @@
 
 @layer components {
   .crystal-card {
-    @apply relative bg-white/70 backdrop-blur-md border border-white/20 rounded-2xl shadow-crystal overflow-hidden;
+    @apply relative bg-white/90 backdrop-blur-md border border-white/20 rounded-2xl shadow-crystal overflow-hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 
+                0 1px 3px rgba(0, 0, 0, 0.02), 
+                0 0 1px rgba(147, 51, 234, 0.2) inset;
+    transition: all 0.3s ease;
+  }
+  
+  .crystal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), 
+                0 3px 5px rgba(0, 0, 0, 0.03), 
+                0 0 2px rgba(147, 51, 234, 0.3) inset;
   }
   
   .glass-effect {
-    @apply relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden;
+    @apply relative bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl overflow-hidden;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
   }
   
   .crystal-shimmer {
@@ -110,7 +125,7 @@
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-crystal-purple to-crystal-pink;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-crystal-purple to-crystal-blue;
   }
   
   .fancy-border {
@@ -127,6 +142,67 @@
   
   .banner-gradient {
     @apply bg-gradient-to-r from-crystal-light via-white to-crystal-light/50;
+  }
+
+  .animated-gradient-bg {
+    background: linear-gradient(-45deg, #9333ea20, #6b46c120, #3b82f620, #6366f120);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+
+  .nav-glass {
+    @apply bg-white/70 backdrop-blur-md border-b border-white/20;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  }
+
+  .card-highlight {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-highlight::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+  }
+
+  .card-highlight:hover::after {
+    left: 100%;
+  }
+
+  .pulsing-btn {
+    position: relative;
+  }
+
+  .pulsing-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+    animation: pulse 2s infinite;
+  }
+
+  .card-3d {
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+  }
+
+  .card-3d:hover {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
   }
 }
 
@@ -155,6 +231,7 @@
 /* 3D model container */
 .model-container {
   @apply relative w-full h-[500px] rounded-xl overflow-hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
 /* Page transitions */
@@ -205,19 +282,37 @@
   background: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.5) 50%,
     rgba(255, 255, 255, 0) 100%
   );
   background-size: 200% 100%;
   animation: shine 6s infinite linear;
 }
 
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(147, 51, 234, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0);
+  }
+}
+
 /* Glassmorphism effects */
 .glass-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 }
 
@@ -235,7 +330,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left 0.7s;
   z-index: -1;
 }

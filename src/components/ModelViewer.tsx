@@ -1,7 +1,7 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, Html as DreiHtml } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { Group, Mesh, MeshStandardMaterial } from 'three';
 import { cn } from '@/lib/utils';
@@ -61,11 +61,11 @@ const SuitcaseModel = ({ modelUrl = '/models/suitcase.glb' }) => {
       <mesh>
         <boxGeometry args={[1.5, 1, 0.5]} />
         <meshStandardMaterial color="red" />
-        <Html position={[0, 0, 1]}>
+        <DreiHtml position={[0, 0, 1]}>
           <div className="bg-black/75 text-white p-2 rounded text-xs">
             Error loading model from {modelUrl}
           </div>
-        </Html>
+        </DreiHtml>
       </mesh>
     );
   }
@@ -76,19 +76,21 @@ const SuitcaseModel = ({ modelUrl = '/models/suitcase.glb' }) => {
 };
 
 // Helper component to display HTML content within the 3D scene
-const Html = ({ children, position = [0, 0, 0] }: { children: React.ReactNode, position?: [number, number, number] }) => {
+const HtmlContent = ({ children, position = [0, 0, 0] }: { children: React.ReactNode, position?: [number, number, number] }) => {
   return (
     <group position={position}>
-      <div
-        className="html-content"
-        style={{
-          position: 'absolute',
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-        }}
-      >
-        {children}
-      </div>
+      <DreiHtml>
+        <div
+          className="html-content"
+          style={{
+            position: 'absolute',
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none',
+          }}
+        >
+          {children}
+        </div>
+      </DreiHtml>
     </group>
   );
 };
@@ -124,7 +126,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className, modelUrl }) => {
   const { isRotating, toggleRotation, zoom, setZoom } = useSuitcase();
   
   return (
-    <div className={cn('relative w-full h-[400px] rounded-xl overflow-hidden bg-crystal-light/30', className)}>
+    <div className={cn('relative w-full h-[400px] rounded-xl overflow-hidden bg-gradient-to-br from-crystal-light/40 to-white shadow-lg', className)}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 45, zoom }}
         shadows
@@ -174,27 +176,27 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ className, modelUrl }) => {
       <div className="absolute bottom-4 left-4 space-x-2">
         <button 
           onClick={toggleRotation}
-          className="bg-black/10 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs hover:bg-black/20 transition-colors"
+          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
         >
           {isRotating ? 'Stop Rotation' : 'Auto Rotate'}
         </button>
         
         <button 
           onClick={() => setZoom(Math.min(zoom + 0.1, 1.5))}
-          className="bg-black/10 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs hover:bg-black/20 transition-colors"
+          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
         >
           Zoom In
         </button>
         
         <button 
           onClick={() => setZoom(Math.max(zoom - 0.1, 0.5))}
-          className="bg-black/10 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs hover:bg-black/20 transition-colors"
+          className="bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs hover:bg-black/30 transition-colors hover:-translate-y-0.5 transform duration-200 shadow-lg"
         >
           Zoom Out
         </button>
       </div>
       
-      <div className="absolute bottom-4 right-4 bg-black/10 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs">
+      <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs shadow-lg">
         Drag to rotate • Scroll to zoom
       </div>
     </div>

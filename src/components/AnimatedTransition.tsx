@@ -1,27 +1,48 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { logError } from '@/utils/errorLogger';
 
 interface AnimatedTransitionProps {
   children: React.ReactNode;
 }
 
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 15,
+    scale: 0.98,
+  },
+  in: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  },
+  exit: {
+    opacity: 0,
+    y: -15,
+    scale: 0.98,
+    transition: {
+      duration: 0.3,
+    }
+  }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5,
+};
+
 const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => {
   const location = useLocation();
-  const containerRef = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
   
+  // Add scroll to top effect on route change
   useEffect(() => {
     try {
-      // On route change, apply animation
-      const container = containerRef.current;
-      if (container) {
-        // Reset animation by triggering reflow
-        container.classList.remove('animate-fade-in');
-        void container.offsetWidth; // Trigger reflow
-        container.classList.add('animate-fade-in');
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       logError(error, 'AnimatedTransition');
       setHasError(true);
@@ -39,13 +60,26 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => 
   }
   
   return (
-    <div 
-      ref={containerRef} 
-      className="min-h-screen flex flex-col pb-4"
-      style={{ opacity: 1 }} // Ensure initial visibility
-    >
-      {children}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial="initial"
+        animate="in"
+        exit="exit"
+        variants={pageVariants}
+        transition={pageTransition}
+        className="min-h-screen flex flex-col pb-4"
+      >
+        {children}
+        
+        {/* Hero gradient blob */}
+        <div className="fixed -z-10 top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-crystal-purple/10 to-transparent rounded-full filter blur-3xl opacity-30 animate-float" />
+          <div className="absolute bottom-1/3 right-1/3 w-1/3 h-1/3 bg-gradient-radial from-crystal-pink/10 to-transparent rounded-full filter blur-3xl opacity-30 animate-pulse-slow" />
+          <div className="absolute top-1/3 right-1/4 w-1/4 h-1/4 bg-gradient-radial from-crystal-blue/10 to-transparent rounded-full filter blur-3xl opacity-30 animate-pulse-slow delay-700" />
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

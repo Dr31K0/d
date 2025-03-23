@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface AnimatedTransitionProps {
@@ -8,36 +7,8 @@ interface AnimatedTransitionProps {
 }
 
 const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => {
-  const pageVariants = {
-    initial: {
-      opacity: 0,
-      y: 10,
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.25, 0.1, 0.25, 1.0], // Custom easing function for smoother motion
-      }
-    },
-    exit: {
-      opacity: 0,
-      y: -10,
-      transition: {
-        duration: 0.3,
-      }
-    }
-  };
-
   return (
-    <motion.div 
-      className="min-h-screen flex flex-col pb-4"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-    >
+    <div className="min-h-screen flex flex-col pb-4">
       {children}
       
       {/* Hero gradient blob with improved animations */}
@@ -85,7 +56,7 @@ const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => 
           }}
         />
       </div>
-    </motion.div>
+    </div>
   );
 };
 

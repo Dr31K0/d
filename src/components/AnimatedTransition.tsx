@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logError } from '@/utils/errorLogger';
@@ -12,7 +12,7 @@ const fadeVariants = {
   initial: {
     opacity: 0,
   },
-  in: {
+  animate: {
     opacity: 1,
   },
   exit: {
@@ -20,45 +20,28 @@ const fadeVariants = {
   }
 };
 
-const fadeTransition = {
-  duration: 0.3,
-  ease: "easeInOut",
-};
-
 const AnimatedTransition: React.FC<AnimatedTransitionProps> = ({ children }) => {
   const location = useLocation();
-  const [hasError, setHasError] = useState(false);
   
   // Add scroll to top effect on route change
   useEffect(() => {
     try {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
     } catch (error) {
       logError(error, 'AnimatedTransition');
-      setHasError(true);
     }
   }, [location.pathname]);
   
-  if (hasError) {
-    return (
-      <div className="min-h-screen flex flex-col pb-4">
-        <div className="flex-1 flex items-center justify-center">
-          <p>Something went wrong with the page transition. Try refreshing the page.</p>
-        </div>
-      </div>
-    );
-  }
-  
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={location.pathname}
         initial="initial"
-        animate="in"
+        animate="animate"
         exit="exit"
         variants={fadeVariants}
-        transition={fadeTransition}
-        className="min-h-screen flex flex-col pb-4"
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="min-h-screen flex flex-col pb-4 bg-black text-white"
       >
         {children}
         

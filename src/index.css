@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -100,6 +99,10 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-medium;
   }
+
+  .font-futuristic {
+    font-family: 'Orbitron', sans-serif;
+  }
 }
 
 @layer components {
@@ -176,6 +179,14 @@
   .feature-card:hover .feature-icon {
     @apply scale-110;
   }
+  
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl shadow-md;
+  }
+  
+  .glass-button {
+    @apply backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/30 transition-all;
+  }
 }
 
 /* Smooth scrolling and transitions */
@@ -246,13 +257,57 @@
   50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.8); }
 }
 
-/* Utility animations */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* New futuristic animations */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.7), 0 0 20px rgba(139, 92, 246, 0.5), 0 0 30px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(139, 92, 246, 0.9), 0 0 25px rgba(139, 92, 246, 0.7), 0 0 35px rgba(139, 92, 246, 0.5);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Utility classes for new animations */
+.animate-glitch {
+  animation: glitch 1s infinite;
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s infinite;
+}
+
+.animate-scanline {
+  animation: scanline 8s linear infinite;
 }
 
 /* Enhanced card and container styling */

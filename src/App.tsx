@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +10,7 @@ import Index from "./pages/Index";
 import Details from "./pages/Details";
 import Configure from "./pages/Configure";
 import NotFound from "./pages/NotFound";
+import AnimatedBackground from "./components/AnimatedBackground";
 
 const ErrorFallback = ({ error }: { error: Error }) => {
   return (
@@ -70,6 +72,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <SuitcaseProvider>
+            <AnimatedBackground />
             <Toaster />
             <Sonner />
             <HashRouter>

@@ -16,7 +16,6 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   
   // Get the image URL based on color and view
   const getImageUrl = () => {
-    // Use the real image paths instead of placeholders
     return `/images/suitcase-${color}-${view}.png`;
   };
   

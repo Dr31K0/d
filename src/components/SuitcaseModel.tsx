@@ -21,9 +21,9 @@ const Model = () => {
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  // Use error boundary for GLTF loading
+  // Fix the useGLTF call to properly handle errors
   const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, 
-    (e) => {
+    (e: Error) => {
       console.error("Error loading model:", e);
       setError(e.message);
     }
@@ -159,11 +159,16 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
   
-  // Handle canvas errors
-  const handleCanvasCreationError = (error: Error) => {
+  // Fix the handler to properly accept React synthetic events
+  const handleCanvasCreationError = (error: React.SyntheticEvent) => {
     console.error("Canvas creation error:", error);
-    setCanvasError(error.message);
-    logError(error, 'SuitcaseModel:CanvasCreation');
+    if (error instanceof Error) {
+      setCanvasError(error.message);
+      logError(error, 'SuitcaseModel:CanvasCreation');
+    } else {
+      setCanvasError("Unknown canvas error occurred");
+      logError(new Error("Unknown canvas error"), 'SuitcaseModel:CanvasCreation');
+    }
   };
   
   useEffect(() => {
@@ -284,7 +289,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-// Preload the model with improved error handling
+// Fix preload error handling
 try {
   console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
   useGLTF.preload(SUITCASE_MODEL_URL);

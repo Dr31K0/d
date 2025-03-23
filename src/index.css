@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -108,10 +107,10 @@
 
   .dark body {
     background-image: 
-      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.1) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.2) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.2) 0px, transparent 50%);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -124,21 +123,30 @@
     text-transform: uppercase;
   }
   
-  /* Make text colors properly work in dark mode */
+  /* Dark mode text improvements */
+  .dark .text-crystal-dark {
+    @apply text-white;
+  }
+  
   .dark .text-crystal-medium,
   .dark .text-crystal-medium\/80,
   .dark .text-crystal-medium\/70,
   .dark .text-crystal-medium\/60,
-  .dark .text-crystal-medium\/50,
-  .dark .text-crystal-dark,
-  .dark [class*="text-crystal-medium"] {
-    @apply text-white;
+  .dark .text-crystal-medium\/50 {
+    @apply text-gray-300;
+  }
+  
+  /* Improved dark mode border colors */
+  .dark .border-white\/20,
+  .dark .border-white\/10,
+  .dark .border-crystal-gray\/20 {
+    @apply border-gray-700/40;
   }
 }
 
 @layer components {
   .crystal-card {
-    @apply relative bg-white/70 dark:bg-crystal-dark/70 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-crystal overflow-hidden;
+    @apply relative bg-white/70 dark:bg-crystal-dark/70 backdrop-blur-md border border-white/20 dark:border-gray-700/40 rounded-2xl overflow-hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
@@ -147,8 +155,12 @@
   }
   
   .glass-effect {
-    @apply relative bg-white/10 dark:bg-crystal-dark/30 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl overflow-hidden;
+    @apply relative bg-white/10 dark:bg-crystal-dark/30 backdrop-blur-md border border-white/20 dark:border-gray-700/40 rounded-2xl overflow-hidden;
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+  }
+  
+  .dark .glass-effect {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   
   .crystal-shimmer {
@@ -183,6 +195,10 @@
     animation: button-shine 3s ease-in-out infinite;
   }
   
+  .dark .button-glow::after {
+    background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+  }
+  
   .card-3d {
     transition: transform 0.3s ease;
     transform-style: preserve-3d;
@@ -198,9 +214,18 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
+  .dark .feature-card {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
   .feature-card:hover {
     @apply border-crystal-purple/20;
     box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+  }
+  
+  .dark .feature-card:hover {
+    @apply border-crystal-purple/30;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
   }
   
   .feature-icon {
@@ -212,11 +237,11 @@
   }
   
   .glass-card {
-    @apply backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl shadow-md;
+    @apply backdrop-blur-xl bg-white/5 dark:bg-black/20 border border-white/20 dark:border-white/10 rounded-xl shadow-md;
   }
   
   .glass-button {
-    @apply backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/30 transition-all;
+    @apply backdrop-blur-md bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/30 border border-white/30 dark:border-white/10 transition-all;
   }
 }
 

@@ -4,45 +4,576 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>crystal-suitcase-</title>
-    <meta name="description" content="Lovable Generated Project" />
+    <title>Crystal Suitcase</title>
+    <meta name="description" content="Luxury crystal suitcases for the modern traveler" />
     <meta name="author" content="Lovable" />
     <meta property="og:image" content="/og-image.png" />
-    <!-- Base URL for GitHub Pages -->
-    <base href="./" />
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Dynamically load the right script based on environment -->
-    <script type="module">
-      // Check if we're running in development or production
-      const isLocalDev = window.location.hostname === 'localhost' || 
-                         window.location.hostname === '127.0.0.1' ||
-                         window.location.hostname.includes('lovable');
-      
-      // Create the appropriate script element based on environment
-      const script = document.createElement('script');
-      script.type = 'module';
-      
-      // Create stylesheet link for production
-      if (!isLocalDev) {
-        const styleLink = document.createElement('link');
-        styleLink.rel = 'stylesheet';
-        styleLink.href = './dist/assets/index.css';
-        document.head.appendChild(styleLink);
-        
-        // Use the built assets for production/GitHub Pages
-        script.src = './dist/assets/index.js';
-      } else {
-        // Use source files for local development
-        script.src = '/src/main.tsx';
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Base styles */
+      :root {
+        --crystal-purple: #8A2BE2;
+        --crystal-blue: #1E90FF;
+        --crystal-orange: #FF8C00;
+        --crystal-pink: #FF69B4;
+        --crystal-light: #F8F9FC;
+        --crystal-medium: #6B7280;
+        --crystal-dark: #1E293B;
+        --crystal-gray: #94A3B8;
       }
       
-      // Add the script to the document
-      document.body.appendChild(script);
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: color 0.2s, background-color 0.2s;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        color: var(--crystal-dark);
+        background-color: #f8fafc;
+        line-height: 1.5;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 500;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+      
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        padding: 1.25rem 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s;
+      }
+      
+      nav.scrolled {
+        padding: 0.75rem 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--crystal-dark);
+      }
+      
+      .logo span {
+        color: var(--crystal-purple);
+        font-weight: 500;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+      
+      .nav-link {
+        position: relative;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: rgba(30, 41, 59, 0.8);
+        text-decoration: none;
+        padding: 0.5rem 0;
+      }
+      
+      .nav-link:hover {
+        color: var(--crystal-purple);
+      }
+      
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--crystal-purple);
+        transition: width 0.3s;
+      }
+      
+      .nav-link.active {
+        color: var(--crystal-purple);
+      }
+      
+      .nav-link.active::after {
+        width: 100%;
+      }
+      
+      /* Hero Section */
+      .hero {
+        padding: 8rem 0 4rem;
+        text-align: center;
+      }
+      
+      .hero-title {
+        font-size: 3rem;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, var(--crystal-purple), var(--crystal-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--crystal-medium);
+        max-width: 36rem;
+        margin: 0 auto 2.5rem;
+      }
+      
+      .hero-cta {
+        display: inline-block;
+        background-color: var(--crystal-purple);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+      
+      .hero-cta:hover {
+        background-color: rgba(138, 43, 226, 0.9);
+      }
+      
+      /* Suitcase View */
+      .suitcase-container {
+        position: relative;
+        height: 24rem;
+        background-color: rgba(226, 232, 240, 0.3);
+        border-radius: 1rem;
+        overflow: hidden;
+        margin: 3rem 0;
+      }
+      
+      .suitcase-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(255, 105, 180, 0.05));
+      }
+      
+      .suitcase-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+      
+      .suitcase-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+      
+      /* Color Picker */
+      .color-picker {
+        margin-bottom: 2rem;
+      }
+      
+      .color-title {
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+      }
+      
+      .colors {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .color-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+      
+      .color-circle {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .color-circle:hover {
+        transform: scale(1.05);
+      }
+      
+      .color-circle.selected {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px white, 0 0 0 4px var(--crystal-purple);
+      }
+      
+      .color-purple {
+        background-color: var(--crystal-purple);
+      }
+      
+      .color-blue {
+        background-color: var(--crystal-blue);
+      }
+      
+      .color-orange {
+        background-color: var(--crystal-orange);
+      }
+      
+      .color-name {
+        font-size: 0.75rem;
+        color: var(--crystal-medium);
+      }
+      
+      /* View Controls */
+      .view-controls {
+        margin-bottom: 2rem;
+      }
+      
+      .view-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+      
+      .view-button {
+        padding: 0.5rem 1rem;
+        background-color: rgba(226, 232, 240, 0.5);
+        color: var(--crystal-dark);
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s;
+      }
+      
+      .view-button:hover {
+        background-color: rgba(226, 232, 240, 0.8);
+      }
+      
+      .view-button.selected {
+        background-color: var(--crystal-purple);
+        color: white;
+      }
+      
+      /* Features Section */
+      .features {
+        padding: 4rem 0;
+      }
+      
+      .section-title {
+        font-size: 2.25rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+      
+      .feature-card {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.07), 0 15px 20px rgba(0, 0, 0, 0.04);
+      }
+      
+      .feature-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      .feature-description {
+        color: var(--crystal-medium);
+      }
+      
+      /* Footer */
+      footer {
+        background-color: rgba(226, 232, 240, 0.5);
+        padding: 3rem 0;
+        margin-top: 4rem;
+      }
+      
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+      }
+      
+      .footer-brand p {
+        margin-top: 1rem;
+        color: var(--crystal-medium);
+        font-size: 0.875rem;
+        max-width: 20rem;
+      }
+      
+      .footer-links h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .footer-links a {
+        display: block;
+        color: var(--crystal-medium);
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        transition: color 0.2s;
+      }
+      
+      .footer-links a:hover {
+        color: var(--crystal-purple);
+      }
+      
+      .footer-copy {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.1);
+        text-align: center;
+        color: var(--crystal-medium);
+        font-size: 0.75rem;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2.25rem;
+        }
+        
+        .hero-subtitle {
+          font-size: 1rem;
+        }
+        
+        .suitcase-controls {
+          grid-template-columns: 1fr;
+        }
+        
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="navbar">
+      <div class="container nav-container">
+        <div class="logo">Crystal<span>Case</span></div>
+        <div class="nav-links">
+          <a href="#home" class="nav-link active">Home</a>
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#customize" class="nav-link">Customize</a>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container">
+      <section id="home" class="hero">
+        <h1 class="hero-title">Luxury Travel Redefined</h1>
+        <p class="hero-subtitle">
+          Experience the perfect blend of elegance and durability with our crystal-inspired luxury suitcases.
+        </p>
+        <a href="#customize" class="hero-cta">Customize Your Suitcase</a>
+      </section>
+      
+      <section id="customize" class="customize">
+        <div class="suitcase-container">
+          <img id="suitcaseImage" class="suitcase-image" src="https://placehold.co/600x400/e2e8f0/1e293b?text=PURPLE+FRONT+View" alt="Suitcase view">
+        </div>
+        
+        <div class="suitcase-controls">
+          <div class="color-picker">
+            <h3 class="color-title">Select Color</h3>
+            <div class="colors">
+              <div class="color-option" data-color="purple">
+                <div class="color-circle color-purple selected"></div>
+                <span class="color-name">Amethyst</span>
+              </div>
+              <div class="color-option" data-color="blue">
+                <div class="color-circle color-blue"></div>
+                <span class="color-name">Sapphire</span>
+              </div>
+              <div class="color-option" data-color="orange">
+                <div class="color-circle color-orange"></div>
+                <span class="color-name">Amber</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="view-controls">
+            <h3 class="color-title">Select View</h3>
+            <div class="view-buttons">
+              <button class="view-button selected" data-view="front">Front</button>
+              <button class="view-button" data-view="side">Side</button>
+              <button class="view-button" data-view="top">Top</button>
+              <button class="view-button" data-view="inside">Inside</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="features" class="features">
+        <h2 class="section-title">Premium Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3 class="feature-title">Ultra-Durable Construction</h3>
+            <p class="feature-description">
+              Built with advanced materials inspired by crystal structures for exceptional durability without the weight.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3 class="feature-title">Smart Tracking</h3>
+            <p class="feature-description">
+              Integrated location tracking ensures you always know where your luggage is, accessible via our mobile app.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3 class="feature-title">Modular Interior</h3>
+            <p class="feature-description">
+              Customizable compartments that adapt to your packing needs, maximizing space efficiency.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="logo">Crystal<span>Case</span></div>
+            <p>Redefining travel with precision-engineered suitcases inspired by nature's most resilient structures.</p>
+          </div>
+          
+          <div class="footer-links">
+            <h4>Navigation</h4>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#customize">Customize</a>
+          </div>
+          
+          <div class="footer-links">
+            <h4>Contact</h4>
+            <a href="mailto:info@crystalcase.com">info@crystalcase.com</a>
+            <a href="tel:+18885550123">+1 (888) 555-0123</a>
+            <a href="#">123 Innovation Drive, Tech City</a>
+          </div>
+        </div>
+        
+        <div class="footer-copy">
+          &copy; <span id="year"></span> CrystalCase. All rights reserved.
+        </div>
+      </div>
+    </footer>
+    
+    <script>
+      // Set current year in footer
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Handle navbar scroll effect
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 20) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+      
+      // Suitcase customization
+      let currentColor = 'purple';
+      let currentView = 'front';
+      
+      // Color selection
+      const colorOptions = document.querySelectorAll('.color-option');
+      colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          // Update selected state
+          document.querySelector('.color-circle.selected').classList.remove('selected');
+          this.querySelector('.color-circle').classList.add('selected');
+          
+          // Update current color
+          currentColor = this.dataset.color;
+          updateSuitcaseImage();
+        });
+      });
+      
+      // View selection
+      const viewButtons = document.querySelectorAll('.view-button');
+      viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Update selected state
+          document.querySelector('.view-button.selected').classList.remove('selected');
+          this.classList.add('selected');
+          
+          // Update current view
+          currentView = this.dataset.view;
+          updateSuitcaseImage();
+        });
+      });
+      
+      // Update suitcase image
+      function updateSuitcaseImage() {
+        const imageUrl = `https://placehold.co/600x400/e2e8f0/1e293b?text=${currentColor.toUpperCase()}+${currentView.toUpperCase()}+View`;
+        document.getElementById('suitcaseImage').src = imageUrl;
+      }
+      
+      // Smooth scrolling for navigation
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80, // Offset for navbar
+              behavior: 'smooth'
+            });
+            
+            // Update active nav link
+            document.querySelector('.nav-link.active').classList.remove('active');
+            this.classList.add('active');
+          }
+        });
+      });
     </script>
   </body>
 </html>

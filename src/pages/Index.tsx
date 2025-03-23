@@ -73,7 +73,7 @@ const Index = () => {
                 </Button>
                 <Link 
                   to="/configure" 
-                  className="text-crystal-dark/80 hover:text-crystal-purple font-medium flex items-center gap-1.5 px-4 py-2 rounded-lg hover:bg-crystal-light/50 transition-all duration-300"
+                  className="text-crystal-dark/80 dark:text-white/80 hover:text-crystal-purple dark:hover:text-crystal-purple font-medium flex items-center gap-1.5 px-4 py-2 rounded-lg hover:bg-crystal-light/50 dark:hover:bg-crystal-dark/50 transition-all duration-300"
                 >
                   Customize Now
                   <ChevronRight className="w-4 h-4" />

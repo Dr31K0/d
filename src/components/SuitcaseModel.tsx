@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial, MeshPhysicalMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -37,13 +37,58 @@ const Model = () => {
   const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#B794F6';
+        return '#9b87f5';
       case 'blue':
         return '#7AB7FF';
       case 'orange':
         return '#FFAC74';
       default:
-        return '#B794F6';
+        return '#9b87f5';
+    }
+  };
+  
+  const getMetallicProperties = () => {
+    switch (color) {
+      case 'purple':
+        return {
+          color: '#9b87f5',
+          emissive: '#6E59A5',
+          metalness: 0.85,
+          roughness: 0.2,
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.2,
+          reflectivity: 0.8,
+        };
+      case 'blue':
+        return {
+          color: '#7AB7FF',
+          emissive: '#4A7EAB',
+          metalness: 0.85,
+          roughness: 0.2,
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.2,
+          reflectivity: 0.8,
+        };
+      case 'orange':
+        return {
+          color: '#FFAC74',
+          emissive: '#D98246',
+          metalness: 0.85,
+          roughness: 0.2,
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.2,
+          reflectivity: 0.8,
+        };
+      default:
+        return {
+          color: '#9b87f5',
+          emissive: '#6E59A5',
+          metalness: 0.85,
+          roughness: 0.2,
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.2,
+          reflectivity: 0.8,
+        };
     }
   };
   
@@ -52,23 +97,35 @@ const Model = () => {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
+        const properties = getMetallicProperties();
+        
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
             if (mesh.material) {
-              if (mesh.material instanceof MeshStandardMaterial) {
-                mesh.material.color.set(getColorValue());
-                mesh.material.emissive.set(getColorValue());
-                mesh.material.emissiveIntensity = 0.2;
-                mesh.material.metalness = 0.4;
-                mesh.material.roughness = 0.3;
-                mesh.material.needsUpdate = true;
-                console.log('Applied brightened color to:', mesh.name);
-              } else {
-                console.log('Material is not MeshStandardMaterial:', mesh.material);
+              const oldMaterial = mesh.material;
+              const physicalMaterial = new MeshPhysicalMaterial({
+                color: properties.color,
+                emissive: properties.emissive,
+                emissiveIntensity: 0.2,
+                metalness: properties.metalness,
+                roughness: properties.roughness,
+                clearcoat: properties.clearcoat,
+                clearcoatRoughness: properties.clearcoatRoughness,
+                reflectivity: properties.reflectivity,
+                envMapIntensity: 1.0,
+              });
+              
+              if (oldMaterial instanceof MeshStandardMaterial) {
+                physicalMaterial.map = oldMaterial.map;
+                physicalMaterial.normalMap = oldMaterial.normalMap;
+                physicalMaterial.aoMap = oldMaterial.aoMap;
               }
+              
+              mesh.material = physicalMaterial;
+              console.log('Applied metallic material to:', mesh.name);
             } else {
               console.log('Mesh has no material:', mesh.name);
             }
@@ -114,25 +171,47 @@ const Model = () => {
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
-  const getColorValue = () => {
+  const getMetallicProperties = () => {
     switch (color) {
       case 'purple':
-        return '#B794F6';
+        return {
+          color: '#9b87f5',
+          emissive: '#6E59A5',
+        };
       case 'blue':
-        return '#7AB7FF';
+        return {
+          color: '#7AB7FF',
+          emissive: '#4A7EAB',
+        };
       case 'orange':
-        return '#FFAC74';
+        return {
+          color: '#FFAC74',
+          emissive: '#D98246',
+        };
       default:
-        return '#B794F6';
+        return {
+          color: '#9b87f5',
+          emissive: '#6E59A5',
+        };
     }
   };
   
+  const properties = getMetallicProperties();
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
+      <meshPhysicalMaterial 
+        color={properties.color} 
+        emissive={properties.emissive} 
+        emissiveIntensity={0.2}
+        metalness={0.85}
+        roughness={0.2}
+        clearcoat={0.8}
+        clearcoatRoughness={0.2}
+        reflectivity={0.8}
+      />
     </mesh>
   );
 };

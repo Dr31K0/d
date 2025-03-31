@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, MeshPhysicalMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -58,23 +58,16 @@ const Model = () => {
             console.log('Found mesh:', mesh.name);
             
             if (mesh.material) {
-              if (mesh.material instanceof MeshPhysicalMaterial ) {
+              if (mesh.material instanceof MeshStandardMaterial) {
                 mesh.material.color.set(getColorValue());
-                //mesh.material.emissive.set(getColorValue());
-                //mesh.material.emissiveIntensity = 0.2;
-                //mesh.material.metalness = 0.4;
-               // mesh.material.roughness = 0.3;
-                //color: 0x5e2a82, // purple tint
-                mesh.material.metalness = 0.3;   // a bit of metallic feel
-                mesh.material.roughness = 0.25;  // smooth but not mirror-like
-                mesh.material.clearcoat = 0.6;   // adds that plastic "sheen"
-                mesh.material.clearcoatRoughness = 0.1;
-                mesh.material.reflectivity = 0.4;
-                mesh.material.sheen = 0.5;
+                mesh.material.emissive.set(getColorValue());
+                mesh.material.emissiveIntensity = 0.2;
+                mesh.material.metalness = 0.4;
+                mesh.material.roughness = 0.3;
                 mesh.material.needsUpdate = true;
                 console.log('Applied brightened color to:', mesh.name);
               } else {
-                console.log('Material is not MeshPhysicalMaterial:');
+                console.log('Material is not MeshStandardMaterial:', mesh.material);
               }
             } else {
               console.log('Mesh has no material:', mesh.name);
@@ -105,7 +98,7 @@ const Model = () => {
     return (
       <mesh>
         <boxGeometry args={[1, 0.6, 0.2]} />
-        <meshPhysicalMaterial color="red" />
+        <meshStandardMaterial color="red" />
         <Html position={[0, 1, 0]}>
           <div style={{ color: 'white', background: 'rgba(0,0,0,0.7)', padding: '10px', borderRadius: '5px' }}>
             Error loading model: {error}
@@ -139,7 +132,7 @@ const ModelFallback = () => {
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshPhysicalMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
+      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
     </mesh>
   );
 };

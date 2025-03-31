@@ -105,7 +105,7 @@ const Model = () => {
     return (
       <mesh>
         <boxGeometry args={[1, 0.6, 0.2]} />
-        <meshStandardMaterial color="red" />
+        <meshPhysicalMaterial color="red" />
         <Html position={[0, 1, 0]}>
           <div style={{ color: 'white', background: 'rgba(0,0,0,0.7)', padding: '10px', borderRadius: '5px' }}>
             Error loading model: {error}
@@ -139,7 +139,7 @@ const ModelFallback = () => {
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
+      <meshPhysicalMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
     </mesh>
   );
 };

@@ -74,7 +74,7 @@ const Model = () => {
                 mesh.material.needsUpdate = true;
                 console.log('Applied brightened color to:', mesh.name);
               } else {
-                console.log('Material is not MeshPhysicalMaterial:', mesh.material);
+                console.log('Material is not MeshPhysicalMaterial:');
               }
             } else {
               console.log('Mesh has no material:', mesh.name);

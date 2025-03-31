@@ -58,13 +58,12 @@ const Model = () => {
             console.log('Found mesh:', mesh.name);
             
             if (mesh.material) {
-              if (mesh.material instanceof MeshPhysicalMaterial) {
+              if (mesh.material instanceof MeshPhysicalMaterial ) {
                 mesh.material.color.set(getColorValue());
                 //mesh.material.emissive.set(getColorValue());
                 //mesh.material.emissiveIntensity = 0.2;
                 //mesh.material.metalness = 0.4;
                // mesh.material.roughness = 0.3;
-                mesh.material.needsUpdate = true;
                 //color: 0x5e2a82, // purple tint
                 mesh.material.metalness: 0.3;   // a bit of metallic feel
                 mesh.material.roughness: 0.25;  // smooth but not mirror-like
@@ -72,9 +71,10 @@ const Model = () => {
                 mesh.material.clearcoatRoughness: 0.1;
                 mesh.material.reflectivity: 0.4;
                 mesh.material.sheen: 0.5;
+                mesh.material.needsUpdate = true;
                 console.log('Applied brightened color to:', mesh.name);
               } else {
-                console.log('Material is not MeshStandardMaterial:', mesh.material);
+                console.log('Material is not MeshStandardMaterial or MeshPhysicalMaterial:', mesh.material);
               }
             } else {
               console.log('Mesh has no material:', mesh.name);

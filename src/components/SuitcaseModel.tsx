@@ -65,12 +65,12 @@ const Model = () => {
                 //mesh.material.metalness = 0.4;
                // mesh.material.roughness = 0.3;
                 //color: 0x5e2a82, // purple tint
-                mesh.material.metalness: 0.3;   // a bit of metallic feel
-                mesh.material.roughness: 0.25;  // smooth but not mirror-like
-                mesh.material.clearcoat: 0.6;   // adds that plastic "sheen"
-                mesh.material.clearcoatRoughness: 0.1;
-                mesh.material.reflectivity: 0.4;
-                mesh.material.sheen: 0.5;
+                mesh.material.metalness = 0.3;   // a bit of metallic feel
+                mesh.material.roughness = 0.25;  // smooth but not mirror-like
+                mesh.material.clearcoat = 0.6;   // adds that plastic "sheen"
+                mesh.material.clearcoatRoughness = 0.1;
+                mesh.material.reflectivity = 0.4;
+                mesh.material.sheen = 0.5;
                 mesh.material.needsUpdate = true;
                 console.log('Applied brightened color to:', mesh.name);
               } else {

@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial, MeshPhysicalMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -58,13 +58,20 @@ const Model = () => {
             console.log('Found mesh:', mesh.name);
             
             if (mesh.material) {
-              if (mesh.material instanceof MeshStandardMaterial) {
+              if (mesh.material instanceof MeshPhysicalMaterial) {
                 mesh.material.color.set(getColorValue());
-                mesh.material.emissive.set(getColorValue());
-                mesh.material.emissiveIntensity = 0.2;
-                mesh.material.metalness = 0.4;
-                mesh.material.roughness = 0.3;
+                //mesh.material.emissive.set(getColorValue());
+                //mesh.material.emissiveIntensity = 0.2;
+                //mesh.material.metalness = 0.4;
+               // mesh.material.roughness = 0.3;
                 mesh.material.needsUpdate = true;
+                //color: 0x5e2a82, // purple tint
+                mesh.material.metalness: 0.3,   // a bit of metallic feel
+                mesh.material.roughness: 0.25,  // smooth but not mirror-like
+                mesh.material.clearcoat: 0.6,   // adds that plastic "sheen"
+                mesh.material.clearcoatRoughness: 0.1,
+                mesh.material.reflectivity: 0.4,
+                mesh.material.sheen: 0.5,
                 console.log('Applied brightened color to:', mesh.name);
               } else {
                 console.log('Material is not MeshStandardMaterial:', mesh.material);

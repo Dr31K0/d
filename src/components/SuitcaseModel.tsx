@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
@@ -95,23 +96,9 @@ const Model = () => {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            if (mesh.material) {
-              if (mesh.material instanceof MeshStandardMaterial) {
-                // Enhance material properties but keep original texture and color
-                mesh.material.metalness = 0.9;
-                mesh.material.roughness = 0.2;
-                mesh.material.needsUpdate = true;
-                
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                
-                console.log('Applied material settings to:', mesh.name);
-              } else {
-                console.log('Material is not MeshStandardMaterial:', mesh.material);
-              }
-            } else {
-              console.log('Mesh has no material:', mesh.name);
-            }
+            // Just set up shadow casting, but don't modify the material at all
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
           }
         });
         

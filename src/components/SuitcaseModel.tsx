@@ -1,37 +1,102 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh } from 'three';
+import { Group, Mesh, MeshStandardMaterial, TextureLoader } from 'three';
 
-// Use the texture GLB as the main model instead
-const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
-const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
+const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
+const SUITCASE_TEXTURE_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
+const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
 
 interface SuitcaseModelProps {
   className?: string;
 }
 
-// Extremely minimal lighting setup
 const SuitcaseLights = () => {
+  const spotLightRef1 = useRef();
+  const spotLightRef2 = useRef();
+  const pointLightRef = useRef();
+  const directionalRef = useRef();
+
   return (
     <>
-      {/* Default, neutral lighting that won't overpower the model's textures */}
-      <ambientLight intensity={1} />
-      <directionalLight position={[0, 10, 10]} intensity={1} />
+      <spotLight
+        ref={spotLightRef1}
+        position={[3, 5, 3]}
+        angle={0.5}
+        penumbra={0.5}
+        intensity={8}
+        castShadow
+        shadow-bias={-0.0001}
+      />
+      
+      <spotLight
+        ref={spotLightRef2}
+        position={[-3, 3, -1]}
+        angle={0.6}
+        penumbra={0.8}
+        intensity={6}
+        castShadow
+      />
+      
+      <pointLight
+        ref={pointLightRef}
+        position={[0, 4, -5]}
+        intensity={4}
+      />
+      
+      <directionalLight
+        ref={directionalRef}
+        position={[5, 8, 5]}
+        intensity={3}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0001}
+      />
+      
+      <ambientLight intensity={1.5} />
+      
+      <pointLight position={[-2, 1, 1]} intensity={2} color="#9b87f5" />
+      <pointLight position={[2, 0, -2]} intensity={1.5} color="#D6BCFA" />
     </>
   );
 };
 
 const Model = () => {
+  const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  // Load the model without any special configuration
-  const { scene } = useGLTF(SUITCASE_MODEL_URL);
+  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  
+  const [textureLoaded, setTextureLoaded] = useState(false);
+  
+  useEffect(() => {
+    const loadTexture = async () => {
+      try {
+        const textureGLTF = await useGLTF.preload(SUITCASE_TEXTURE_URL);
+        if (textureGLTF) {  // Added null check
+          console.log('Texture GLB loaded:', textureGLTF);
+          setTextureLoaded(true);
+          
+          if (textureGLTF.scene) {  // Added null check
+            textureGLTF.scene.traverse((node) => {
+              if ((node as Mesh).isMesh && (node as Mesh).material) {
+                console.log('Found material in texture GLB:', (node as Mesh).material);
+              }
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load texture GLB:', err);
+      }
+    };
+    
+    loadTexture();
+  }, []);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -47,25 +112,64 @@ const Model = () => {
   
   const modelRef = useRef<Group>(null);
   
+  const getColorValue = () => {
+    switch (color) {
+      case 'purple':
+        return '#B794F6';
+      case 'blue':
+        return '#7AB7FF';
+      case 'orange':
+        return '#FFAC74';
+      default:
+        return '#B794F6';
+    }
+  };
+  
   useEffect(() => {
     try {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        scene.traverse((node) => {
-          if ((node as Mesh).isMesh) {
-            // Just log mesh information, don't modify anything
-            const mesh = node as Mesh;
-            console.log('Found mesh:', mesh.name);
+        const textureLoader = new TextureLoader();
+        
+        textureLoader.load(
+          SUITCASE_TEXTURE_URL,
+          (texture) => {
+            console.log('Texture loaded successfully:', texture);
             
-            if (mesh.material) {
-              console.log(`Material for ${mesh.name}:`, mesh.material);
-              // Log more details about the material to help debug
-              console.log(`Material type: ${mesh.material.type}`);
-              console.log(`Has map texture: ${mesh.material.map ? 'Yes' : 'No'}`);
-            }
+            scene.traverse((node) => {
+              if ((node as Mesh).isMesh) {
+                const mesh = node as Mesh;
+                console.log('Found mesh:', mesh.name);
+                
+                if (mesh.material) {
+                  if (mesh.material instanceof MeshStandardMaterial) {
+                    mesh.material.map = texture;
+                    mesh.material.color.set(getColorValue());
+                    mesh.material.emissive.set(getColorValue());
+                    mesh.material.emissiveIntensity = 0.2;
+                    mesh.material.metalness = 0.9;
+                    mesh.material.roughness = 0.2;
+                    mesh.material.needsUpdate = true;
+                    
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+                    
+                    console.log('Applied texture and material settings to:', mesh.name);
+                  } else {
+                    console.log('Material is not MeshStandardMaterial:', mesh.material);
+                  }
+                } else {
+                  console.log('Mesh has no material:', mesh.name);
+                }
+              }
+            });
+          },
+          undefined,
+          (error) => {
+            console.error('Error loading texture as image:', error);
           }
-        });
+        );
         
         setLoaded(true);
       } else {
@@ -77,9 +181,8 @@ const Model = () => {
       setError(error.message);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
-  }, [scene]);
+  }, [scene, color]);
   
-  // Simple rotation animation
   useFrame((state) => {
     if (modelRef.current) {
       const t = state.clock.getElapsedTime();
@@ -101,17 +204,31 @@ const Model = () => {
     );
   }
   
-  // Render the model exactly as it is, with no modifications
   return <primitive ref={modelRef} object={scene} scale={2.0} position={[0, 0, 0]} />;
 };
 
 const ModelFallback = () => {
+  const { color } = useSuitcase();
+  
+  const getColorValue = () => {
+    switch (color) {
+      case 'purple':
+        return '#B794F6';
+      case 'blue':
+        return '#7AB7FF';
+      case 'orange':
+        return '#FFAC74';
+      default:
+        return '#B794F6';
+    }
+  };
+  
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color="#B794F6" />
+      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
     </mesh>
   );
 };
@@ -196,10 +313,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     >
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 40 }}
+        shadows
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
-          // Set a neutral background color
-          state.gl.setClearColor('#ffffff', 0);
         }}
         onError={handleCanvasCreationError}
       >
@@ -208,7 +324,17 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>
             <Model />
+            <ContactShadows
+              position={[0, -1.0, 0]}
+              opacity={0.6}
+              scale={10}
+              blur={3}
+              far={4}
+              resolution={512}
+              color="#555"
+            />
           </group>
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}
@@ -233,8 +359,14 @@ try {
   console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
   useGLTF.preload(SUITCASE_MODEL_URL);
   
-  console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
-  useGLTF.preload(FALLBACK_MODEL_URL);
+  console.log("Attempting to preload texture:", SUITCASE_TEXTURE_URL);
+  useGLTF.preload(SUITCASE_TEXTURE_URL);
 } catch (error) {
-  console.error("Failed to preload model:", error);
+  console.error("Failed to preload model or texture:", error);
+  try {
+    console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
+    useGLTF.preload(FALLBACK_MODEL_URL);
+  } catch (fallbackError) {
+    console.error("Failed to preload fallback model:", fallbackError);
+  }
 }

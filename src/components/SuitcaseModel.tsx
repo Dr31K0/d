@@ -1,11 +1,11 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, TextureLoader } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
@@ -15,51 +15,18 @@ interface SuitcaseModelProps {
 }
 
 const SuitcaseLights = () => {
-  const spotLightRef1 = useRef();
-  const spotLightRef2 = useRef();
-  const pointLightRef = useRef();
-  const directionalRef = useRef();
-
   return (
     <>
-      <spotLight
-        ref={spotLightRef1}
-        position={[3, 5, 3]}
-        angle={0.5}
-        penumbra={0.5}
-        intensity={8}
-        castShadow
-        shadow-bias={-0.0001}
-      />
-      
-      <spotLight
-        ref={spotLightRef2}
-        position={[-3, 3, -1]}
-        angle={0.6}
-        penumbra={0.8}
-        intensity={6}
-        castShadow
-      />
-      
-      <pointLight
-        ref={pointLightRef}
-        position={[0, 4, -5]}
-        intensity={4}
-      />
-      
-      <directionalLight
-        ref={directionalRef}
-        position={[5, 8, 5]}
-        intensity={3}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0001}
-      />
-      
       <ambientLight intensity={1.5} />
-      
-      <pointLight position={[-2, 1, 1]} intensity={2} color="#9b87f5" />
-      <pointLight position={[2, 0, -2]} intensity={1.5} color="#D6BCFA" />
+      <directionalLight 
+        position={[5, 5, 5]} 
+        intensity={1} 
+        castShadow 
+      />
+      <directionalLight 
+        position={[-5, 5, -5]} 
+        intensity={0.5} 
+      />
     </>
   );
 };
@@ -67,111 +34,31 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
   
-  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
-  
-  const [textureLoaded, setTextureLoaded] = useState(false);
-  
-  useEffect(() => {
-    const loadTexture = async () => {
-      try {
-        // Fix: Cast the result to any to avoid TypeScript errors
-        const textureGLTF: any = await useGLTF.preload(SUITCASE_MODEL_URL);
-        if (textureGLTF) {
-          console.log('Texture GLB loaded:', textureGLTF);
-          setTextureLoaded(true);
-          
-          if (textureGLTF.scene) {
-            textureGLTF.scene.traverse((node: any) => {
-              if ((node as Mesh).isMesh && (node as Mesh).material) {
-                console.log('Found material in texture GLB:', (node as Mesh).material);
-              }
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load texture GLB:', err);
-      }
-    };
-    
-    loadTexture();
-  }, []);
-  
-  useEffect(() => {
-    const handleModelError = (e: ErrorEvent) => {
-      if (e.message && e.message.includes('GLB')) {
-        console.error("Error loading model:", e);
-        setError("Failed to load 3D model: " + e.message);
-      }
-    };
-    
-    window.addEventListener('error', handleModelError);
-    return () => window.removeEventListener('error', handleModelError);
-  }, []);
-  
-  const modelRef = useRef<Group>(null);
-  
-  const getColorValue = () => {
-    switch (color) {
-      case 'purple':
-        return '#B794F6';
-      case 'blue':
-        return '#7AB7FF';
-      case 'orange':
-        return '#FFAC74';
-      default:
-        return '#B794F6';
-    }
-  };
+  // Load the 3D model
+  const { scene } = useGLTF(SUITCASE_MODEL_URL);
   
   useEffect(() => {
     try {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        const textureLoader = new TextureLoader();
-        
-        textureLoader.load(
-          SUITCASE_MODEL_URL,
-          (texture) => {
-            console.log('Texture loaded successfully:', texture);
+        // Apply color tint to the model based on user selection
+        scene.traverse((node) => {
+          if ((node as Mesh).isMesh) {
+            const mesh = node as Mesh;
+            console.log('Found mesh:', mesh.name);
             
-            scene.traverse((node) => {
-              if ((node as Mesh).isMesh) {
-                const mesh = node as Mesh;
-                console.log('Found mesh:', mesh.name);
-                
-                if (mesh.material) {
-                  if (mesh.material instanceof MeshStandardMaterial) {
-                    mesh.material.map = texture;
-                    mesh.material.color.set(getColorValue());
-                    mesh.material.emissive.set(getColorValue());
-                    mesh.material.emissiveIntensity = 0.2;
-                    mesh.material.metalness = 0.9;
-                    mesh.material.roughness = 0.2;
-                    mesh.material.needsUpdate = true;
-                    
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-                    
-                    console.log('Applied texture and material settings to:', mesh.name);
-                  } else {
-                    console.log('Material is not MeshStandardMaterial:', mesh.material);
-                  }
-                } else {
-                  console.log('Mesh has no material:', mesh.name);
-                }
-              }
-            });
-          },
-          undefined,
-          (error) => {
-            console.error('Error loading texture as image:', error);
+            // Log the material details to help with debugging
+            if (mesh.material) {
+              console.log('Material type:', mesh.material.type);
+              console.log('Material properties:', mesh.material);
+            }
+            
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
           }
-        );
-        
-        setLoaded(true);
+        });
       } else {
         console.warn('Scene is undefined');
       }
@@ -182,6 +69,8 @@ const Model = () => {
       logError(error, 'SuitcaseModel:ApplyColor');
     }
   }, [scene, color]);
+  
+  const modelRef = useRef<Group>(null);
   
   useFrame((state) => {
     if (modelRef.current) {
@@ -228,7 +117,7 @@ const ModelFallback = () => {
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
+      <meshStandardMaterial color={getColorValue()} />
     </mesh>
   );
 };
@@ -280,9 +169,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     } catch (e) {
       console.error("Error checking WebGL support:", e);
     }
-    
-    return () => {
-    };
   }, []);
   
   if (canvasError) {
@@ -301,8 +187,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       </div>
     );
   }
-  
-  console.log("Rendering SuitcaseModel component");
   
   return (
     <div 

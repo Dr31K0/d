@@ -1,7 +1,7 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
@@ -15,18 +15,13 @@ interface SuitcaseModelProps {
   className?: string;
 }
 
+// Extremely minimal lighting setup
 const SuitcaseLights = () => {
   return (
     <>
-      {/* Intense lighting setup to properly illuminate the model */}
-      <ambientLight intensity={4} />
-      <directionalLight position={[10, 10, 5]} intensity={6} />
-      <directionalLight position={[-10, 10, -5]} intensity={6} />
-      <directionalLight position={[0, 10, 0]} intensity={6} />
-      <pointLight position={[0, 0, 5]} intensity={4} />
-      <pointLight position={[0, 0, -5]} intensity={4} />
-      <pointLight position={[5, 0, 0]} intensity={4} />
-      <pointLight position={[-5, 0, 0]} intensity={4} />
+      {/* Default, neutral lighting that won't overpower the model's textures */}
+      <ambientLight intensity={1} />
+      <directionalLight position={[0, 10, 10]} intensity={1} />
     </>
   );
 };
@@ -35,8 +30,8 @@ const Model = () => {
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
-  // Using suitcase_texture.glb directly as our model
-  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  // Load the model without any special configuration
+  const { scene } = useGLTF(SUITCASE_MODEL_URL);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -59,16 +54,15 @@ const Model = () => {
         
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
+            // Just log mesh information, don't modify anything
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // ONLY enable shadows, don't modify ANY material properties
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            
-            // Just log material info without changing anything
             if (mesh.material) {
               console.log(`Material for ${mesh.name}:`, mesh.material);
+              // Log more details about the material to help debug
+              console.log(`Material type: ${mesh.material.type}`);
+              console.log(`Has map texture: ${mesh.material.map ? 'Yes' : 'No'}`);
             }
           }
         });
@@ -85,6 +79,7 @@ const Model = () => {
     }
   }, [scene]);
   
+  // Simple rotation animation
   useFrame((state) => {
     if (modelRef.current) {
       const t = state.clock.getElapsedTime();
@@ -106,6 +101,7 @@ const Model = () => {
     );
   }
   
+  // Render the model exactly as it is, with no modifications
   return <primitive ref={modelRef} object={scene} scale={2.0} position={[0, 0, 0]} />;
 };
 
@@ -200,10 +196,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     >
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 40 }}
-        shadows
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
-          // Set a very bright background color
+          // Set a neutral background color
           state.gl.setClearColor('#ffffff', 0);
         }}
         onError={handleCanvasCreationError}
@@ -213,17 +208,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>
             <Model />
-            <ContactShadows
-              position={[0, -1.0, 0]}
-              opacity={0.6}
-              scale={10}
-              blur={3}
-              far={4}
-              resolution={512}
-              color="#555"
-            />
           </group>
-          <Environment preset="sunset" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

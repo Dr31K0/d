@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -7,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-// Use the GitHub repository where images are stored
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase_texture.glb';
 
 interface SuitcaseModelProps {
@@ -34,6 +32,8 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
+  
+  console.log("Attempting to load model from:", SUITCASE_MODEL_URL);
   
   const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);

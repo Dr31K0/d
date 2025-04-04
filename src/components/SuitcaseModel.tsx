@@ -7,9 +7,8 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-// Use a relative path that works with base URL setting in Vite
-const SUITCASE_MODEL_URL = './models/suitcase_texture.glb';
-const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
+// Use the GitHub repository where images are stored
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase_texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -35,17 +34,10 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
-  const [modelUrl, setModelUrl] = useState(SUITCASE_MODEL_URL);
   
-  const { scene } = useGLTF(modelUrl, undefined, undefined, (e) => {
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
-    
-    // Try fallback URL if main URL fails
-    if (modelUrl !== FALLBACK_MODEL_URL) {
-      console.log("Attempting to load fallback model...");
-      setModelUrl(FALLBACK_MODEL_URL);
-    }
   });
   
   useEffect(() => {
@@ -252,10 +244,4 @@ try {
   useGLTF.preload(SUITCASE_MODEL_URL);
 } catch (error) {
   console.error("Failed to preload model or texture:", error);
-  try {
-    console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
-    useGLTF.preload(FALLBACK_MODEL_URL);
-  } catch (fallbackError) {
-    console.error("Failed to preload fallback model:", fallbackError);
-  }
 }

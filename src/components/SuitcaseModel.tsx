@@ -7,8 +7,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, MeshStandardMaterial, TextureLoader } from 'three';
 
-const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
-const SUITCASE_TEXTURE_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
+const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
 
 interface SuitcaseModelProps {

@@ -20,6 +20,7 @@ const SuitcaseContext = createContext<SuitcaseContextType | undefined>(undefined
 
 // Provider component
 export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
+  // Setting default color to purple
   const [color, setColor] = useState<SuitcaseColor>('purple');
   const [view, setView] = useState<SuitcaseView>('front');
 

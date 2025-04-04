@@ -16,51 +16,30 @@ interface SuitcaseModelProps {
 }
 
 const SuitcaseLights = () => {
-  const spotLightRef1 = useRef();
-  const spotLightRef2 = useRef();
-  const pointLightRef = useRef();
-  const directionalRef = useRef();
-
   return (
     <>
-      <spotLight
-        ref={spotLightRef1}
-        position={[3, 5, 3]}
-        angle={0.5}
-        penumbra={0.5}
-        intensity={8}
-        castShadow
-        shadow-bias={-0.0001}
-      />
+      {/* Enhanced lighting setup */}
+      <ambientLight intensity={2} />
       
-      <spotLight
-        ref={spotLightRef2}
-        position={[-3, 3, -1]}
-        angle={0.6}
-        penumbra={0.8}
-        intensity={6}
-        castShadow
-      />
-      
-      <pointLight
-        ref={pointLightRef}
-        position={[0, 4, -5]}
-        intensity={4}
-      />
-      
-      <directionalLight
-        ref={directionalRef}
-        position={[5, 8, 5]}
-        intensity={3}
-        castShadow
+      <directionalLight 
+        position={[5, 10, 5]} 
+        intensity={3} 
+        castShadow 
         shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0001}
       />
       
-      <ambientLight intensity={1.5} />
+      <directionalLight 
+        position={[-5, 5, -5]} 
+        intensity={2}
+      />
       
-      <pointLight position={[-2, 1, 1]} intensity={2} color="#9b87f5" />
-      <pointLight position={[2, 0, -2]} intensity={1.5} color="#D6BCFA" />
+      <pointLight position={[0, 5, 0]} intensity={2} color="#ffffff" />
+      
+      {/* Light to illuminate the front */}
+      <pointLight position={[0, 0, 5]} intensity={2} color="#ffffff" />
+      
+      {/* Light to illuminate the back */}
+      <pointLight position={[0, 0, -5]} intensity={2} color="#ffffff" />
     </>
   );
 };
@@ -96,9 +75,20 @@ const Model = () => {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Just set up shadow casting, but don't modify the material at all
+            // Important: Don't modify material properties, just enable shadows
             mesh.castShadow = true;
             mesh.receiveShadow = true;
+            
+            // Log material information for debugging
+            if (mesh.material) {
+              console.log(`Material for ${mesh.name}:`, mesh.material);
+              if (mesh.material instanceof MeshStandardMaterial) {
+                console.log(`- Material type: MeshStandardMaterial`);
+                console.log(`- Map: ${mesh.material.map ? 'Present' : 'None'}`);
+                console.log(`- Metalness: ${mesh.material.metalness}`);
+                console.log(`- Roughness: ${mesh.material.roughness}`);
+              }
+            }
           }
         });
         
@@ -232,6 +222,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         shadows
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
+          // Set default clear color to light gray instead of black
+          state.gl.setClearColor('#f5f5f5', 0.1);
         }}
         onError={handleCanvasCreationError}
       >

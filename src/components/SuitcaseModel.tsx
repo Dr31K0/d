@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight } from '@react-three/drei';
@@ -26,7 +27,7 @@ const SuitcaseLights = () => {
         position={[3, 5, 3]}
         angle={0.5}
         penumbra={0.5}
-        intensity={8}
+        intensity={5} // Reduced from 8
         castShadow
         shadow-bias={-0.0001}
       />
@@ -36,29 +37,29 @@ const SuitcaseLights = () => {
         position={[-3, 3, -1]}
         angle={0.6}
         penumbra={0.8}
-        intensity={6}
+        intensity={3} // Reduced from 6
         castShadow
       />
       
       <pointLight
         ref={pointLightRef}
         position={[0, 4, -5]}
-        intensity={4}
+        intensity={2} // Reduced from 4
       />
       
       <directionalLight
         ref={directionalRef}
         position={[5, 8, 5]}
-        intensity={3}
+        intensity={2} // Reduced from 3
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0001}
       />
       
-      <ambientLight intensity={1.5} />
+      <ambientLight intensity={0.8} /> // Reduced from 1.5
       
-      <pointLight position={[-2, 1, 1]} intensity={2} color="#9b87f5" />
-      <pointLight position={[2, 0, -2]} intensity={1.5} color="#D6BCFA" />
+      <pointLight position={[-2, 1, 1]} intensity={1.5} color="#7a6bc4" /> // Darker purple
+      <pointLight position={[2, 0, -2]} intensity={1} color="#B094F0" /> // Darker lavender
     </>
   );
 };
@@ -87,13 +88,13 @@ const Model = () => {
   const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#B794F6';
+        return '#9678d9'; // Darker purple
       case 'blue':
-        return '#7AB7FF';
+        return '#6096e0'; // Darker blue
       case 'orange':
-        return '#FFAC74';
+        return '#e68a4e'; // Darker orange
       default:
-        return '#B794F6';
+        return '#9678d9'; // Darker purple default
     }
   };
   
@@ -111,9 +112,9 @@ const Model = () => {
               if (mesh.material instanceof MeshStandardMaterial) {
                 mesh.material.color.set(getColorValue());
                 mesh.material.emissive.set(getColorValue());
-                mesh.material.emissiveIntensity = 0.2;
+                mesh.material.emissiveIntensity = 0.1; // Reduced from 0.2
                 mesh.material.metalness = 0.9;
-                mesh.material.roughness = 0.2;
+                mesh.material.roughness = 0.3; // Increased slightly from 0.2
                 mesh.material.needsUpdate = true;
                 
                 mesh.castShadow = true;
@@ -284,12 +285,12 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
             <Model />
             <ContactShadows
               position={[0, -1.0, 0]}
-              opacity={0.6}
+              opacity={0.7} // Increased from 0.6
               scale={10}
               blur={3}
               far={4}
               resolution={512}
-              color="#555"
+              color="#333" // Darker shadow color
             />
           </group>
           <Environment preset="city" />

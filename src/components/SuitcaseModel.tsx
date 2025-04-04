@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase_texture.glb';
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;

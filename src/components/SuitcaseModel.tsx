@@ -1,10 +1,10 @@
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useHelper } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, SpotLightHelper, DirectionalLightHelper, PointLightHelper } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -18,11 +18,6 @@ const SuitcaseLights = () => {
   const spotLightRef2 = useRef();
   const pointLightRef = useRef();
   const directionalRef = useRef();
-
-  useHelper(spotLightRef1, SpotLightHelper, 'white');
-  useHelper(spotLightRef2, SpotLightHelper, 'white');
-  useHelper(pointLightRef, PointLightHelper, 1, 'red');
-  useHelper(directionalRef, DirectionalLightHelper, 1, 'blue');
 
   return (
     <>
@@ -117,8 +112,8 @@ const Model = () => {
                 mesh.material.color.set(getColorValue());
                 mesh.material.emissive.set(getColorValue());
                 mesh.material.emissiveIntensity = 0.2;
-                mesh.material.metalness = 0.7;
-                mesh.material.roughness = 0.3;
+                mesh.material.metalness = 0.9;
+                mesh.material.roughness = 0.2;
                 mesh.material.needsUpdate = true;
                 
                 mesh.castShadow = true;

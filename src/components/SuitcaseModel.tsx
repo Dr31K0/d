@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, Color } from 'three';
+import { Group, Mesh, MeshStandardMaterial } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -13,60 +13,12 @@ interface SuitcaseModelProps {
   className?: string;
 }
 
-const SuitcaseLights = () => {
-  return (
-    <>
-      {/* Very bright ambient light to ensure model is visible */}
-      <ambientLight intensity={5} />
-      
-      {/* Main directional light */}
-      <directionalLight 
-        position={[10, 10, 10]} 
-        intensity={50} 
-        color="#ffffff" 
-      />
-      
-      {/* Fill lights from multiple angles */}
-      <directionalLight 
-        position={[-10, 10, 10]} 
-        intensity={50} 
-        color="#ffffff" 
-      />
-      
-      <directionalLight 
-        position={[0, 10, -10]} 
-        intensity={50} 
-        color="#ffffff" 
-      />
-      
-      {/* Bottom light */}
-      <directionalLight 
-        position={[0, -10, 0]} 
-        intensity={30} 
-        color="#ffffff" 
-      />
-      
-      {/* Purple-tinted lights for accent */}
-      <pointLight 
-        position={[5, 5, 5]} 
-        intensity={40} 
-        color="#b28aff" 
-      />
-      
-      <pointLight 
-        position={[-5, -5, -5]} 
-        intensity={40} 
-        color="#b28aff" 
-      />
-    </>
-  );
-};
-
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   
-  const { scene } = useGLTF(SUITCASE_MODEL_URL);
+  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -82,16 +34,16 @@ const Model = () => {
   
   const modelRef = useRef<Group>(null);
   
-  const getBasicColorValue = () => {
+  const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#9b87f5';
+        return '#B794F6';
       case 'blue':
         return '#7AB7FF';
       case 'orange':
         return '#FFAC74';
       default:
-        return '#9b87f5';
+        return '#B794F6';
     }
   };
   
@@ -100,29 +52,30 @@ const Model = () => {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        const colorValue = getBasicColorValue();
-        
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Create a simple standard material with strong color
-            const simpleMaterial = new MeshStandardMaterial({
-              color: colorValue,
-              emissive: colorValue,
-              emissiveIntensity: 0.5,
-              roughness: 0.3,
-              metalness: 0.6,
-            });
-            
-            // Apply the material and ensure it casts/receives shadows
-            mesh.material = simpleMaterial;
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            console.log('Applied simple material to:', mesh.name, 'with color:', colorValue);
+            if (mesh.material) {
+              if (mesh.material instanceof MeshStandardMaterial) {
+                mesh.material.color.set(getColorValue());
+                mesh.material.emissive.set(getColorValue());
+                mesh.material.emissiveIntensity = 0.2;
+                mesh.material.metalness = 0.4;
+                mesh.material.roughness = 0.3;
+                mesh.material.needsUpdate = true;
+                console.log('Applied brightened color to:', mesh.name);
+              } else {
+                console.log('Material is not MeshStandardMaterial:', mesh.material);
+              }
+            } else {
+              console.log('Mesh has no material:', mesh.name);
+            }
           }
         });
+        
+        setLoaded(true);
       } else {
         console.warn('Scene is undefined');
       }
@@ -161,32 +114,25 @@ const Model = () => {
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
-  const getBasicColorValue = () => {
+  const getColorValue = () => {
     switch (color) {
       case 'purple':
-        return '#9b87f5';
+        return '#B794F6';
       case 'blue':
         return '#7AB7FF';
       case 'orange':
         return '#FFAC74';
       default:
-        return '#9b87f5';
+        return '#B794F6';
     }
   };
   
-  const colorValue = getBasicColorValue();
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial 
-        color={colorValue}
-        emissive={colorValue}
-        emissiveIntensity={0.5}
-        metalness={0.6}
-        roughness={0.3}
-      />
+      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
     </mesh>
   );
 };
@@ -238,6 +184,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     } catch (e) {
       console.error("Error checking WebGL support:", e);
     }
+    
+    return () => {
+    };
   }, []);
   
   if (canvasError) {
@@ -262,7 +211,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   return (
     <div 
       className={cn(
-        'relative w-full h-[500px] rounded-xl overflow-hidden bg-white',
+        'relative w-full h-[500px] rounded-xl overflow-hidden bg-crystal-light/30',
         className
       )}
     >
@@ -274,10 +223,34 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onError={handleCanvasCreationError}
       >
-        <color attach="background" args={['#ffffff']} />
-        
-        {/* Use the SuitcaseLights component */}
-        <SuitcaseLights />
+        <ambientLight intensity={2.0} />
+        <spotLight 
+          position={[10, 10, 10]} 
+          angle={0.15} 
+          penumbra={1} 
+          intensity={3.5} 
+          castShadow 
+          shadow-mapSize={1024}
+        />
+        <spotLight 
+          position={[-10, 5, -10]} 
+          angle={0.15} 
+          penumbra={1} 
+          intensity={2.5} 
+          castShadow 
+        />
+        <pointLight position={[0, 5, 0]} intensity={2.5} />
+        <directionalLight
+          position={[5, 5, 5]}
+          intensity={2.5}
+          castShadow
+          shadow-mapSize={1024}
+        />
+        <directionalLight
+          position={[0, -3, 0]}
+          intensity={1.0}
+          castShadow={false}
+        />
         
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>
@@ -292,7 +265,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="sunset" intensity={2} />
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

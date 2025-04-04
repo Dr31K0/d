@@ -1,10 +1,14 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, softShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
+
+// Enable better quality shadows
+softShadows();
 
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
 
@@ -15,16 +19,24 @@ interface SuitcaseModelProps {
 const SuitcaseLights = () => {
   return (
     <>
-      <ambientLight intensity={1.5} />
+      <ambientLight intensity={0.8} />
       <directionalLight 
-        position={[5, 5, 5]} 
-        intensity={1} 
+        position={[10, 10, 5]} 
+        intensity={1.5} 
         castShadow 
-      />
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0001}
+      >
+        <orthographicCamera 
+          attach="shadow-camera" 
+          args={[-10, 10, 10, -10, 0.1, 50]} 
+        />
+      </directionalLight>
       <directionalLight 
         position={[-5, 5, -5]} 
-        intensity={0.5} 
+        intensity={0.7} 
       />
+      <pointLight position={[0, 5, 0]} intensity={0.5} />
     </>
   );
 };
@@ -32,8 +44,7 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
-  
-  console.log("Attempting to load model from:", SUITCASE_MODEL_URL);
+  const modelRef = useRef<Group>(null);
   
   const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
@@ -43,23 +54,13 @@ const Model = () => {
   useEffect(() => {
     try {
       if (scene) {
-        console.log('Model loaded successfully:', scene);
-        
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
-            console.log('Found mesh:', mesh.name);
-            
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            
-            if (mesh.material) {
-              console.log('Material found:', mesh.material);
-            }
           }
         });
-      } else {
-        console.warn('Scene is undefined');
       }
     } catch (e) {
       const error = e as Error;
@@ -68,8 +69,6 @@ const Model = () => {
       logError(error, 'SuitcaseModel:ApplyColor');
     }
   }, [scene]);
-  
-  const modelRef = useRef<Group>(null);
   
   useFrame((state) => {
     if (modelRef.current) {
@@ -92,7 +91,8 @@ const Model = () => {
     );
   }
   
-  return <primitive ref={modelRef} object={scene} scale={2.0} position={[0, 0, 0]} />;
+  // Scale down to 1.2 from original 2.0
+  return <primitive ref={modelRef} object={scene} scale={1.2} position={[0, -0.3, 0]} />;
 };
 
 const ModelFallback = () => {
@@ -111,10 +111,8 @@ const ModelFallback = () => {
     }
   };
   
-  console.log("Showing fallback model");
-  
   return (
-    <mesh>
+    <mesh castShadow receiveShadow>
       <boxGeometry args={[1, 0.6, 0.2]} />
       <meshStandardMaterial color={getColorValue()} />
     </mesh>
@@ -162,8 +160,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       if (!gl) {
         console.error("WebGL not supported");
         setCanvasError("WebGL not supported by your browser. Please try a different browser or enable hardware acceleration.");
-      } else {
-        console.log("WebGL is supported");
       }
     } catch (e) {
       console.error("Error checking WebGL support:", e);
@@ -195,13 +191,19 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       )}
     >
       <Canvas
-        camera={{ position: [0, 0, 3.5], fov: 40 }}
+        camera={{ position: [0, 0, 3], fov: 35 }}
         shadows
-        gl={{ preserveDrawingBuffer: true, alpha: true }}
+        gl={{ 
+          preserveDrawingBuffer: true, 
+          alpha: true,
+          antialias: true, 
+          powerPreference: "high-performance" 
+        }}
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
         }}
         onError={handleCanvasCreationError}
+        dpr={[1, 2]}
       >
         <SuitcaseLights />
         
@@ -209,13 +211,13 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           <group position={[0, 0, 0]}>
             <Model />
             <ContactShadows
-              position={[0, -1.0, 0]}
-              opacity={0.6}
+              position={[0, -0.8, 0]}
+              opacity={0.7}
               scale={10}
-              blur={3}
+              blur={2.5}
               far={4}
               resolution={512}
-              color="#555"
+              color="#333333"
             />
           </group>
           <Environment preset="city" />
@@ -224,8 +226,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           enablePan={false}
           minPolarAngle={Math.PI / 4}
           maxPolarAngle={Math.PI / 2}
-          minDistance={2}
-          maxDistance={5}
+          minDistance={1.5}
+          maxDistance={4}
           target={[0, 0, 0]}
         />
       </Canvas>
@@ -240,7 +242,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 export default SuitcaseModel;
 
 try {
-  console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
   useGLTF.preload(SUITCASE_MODEL_URL);
 } catch (error) {
   console.error("Failed to preload model or texture:", error);

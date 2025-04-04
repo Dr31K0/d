@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
@@ -75,13 +76,14 @@ const Model = () => {
   useEffect(() => {
     const loadTexture = async () => {
       try {
-        const textureGLTF = await useGLTF.preload(SUITCASE_MODEL_URL);
+        // Fix: Cast the result to any to avoid TypeScript errors
+        const textureGLTF: any = await useGLTF.preload(SUITCASE_MODEL_URL);
         if (textureGLTF) {
           console.log('Texture GLB loaded:', textureGLTF);
           setTextureLoaded(true);
           
           if (textureGLTF.scene) {
-            textureGLTF.scene.traverse((node) => {
+            textureGLTF.scene.traverse((node: any) => {
               if ((node as Mesh).isMesh && (node as Mesh).material) {
                 console.log('Found material in texture GLB:', (node as Mesh).material);
               }

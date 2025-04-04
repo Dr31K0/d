@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -350,7 +349,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="city" intensity={1.2} />
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

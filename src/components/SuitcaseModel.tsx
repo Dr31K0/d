@@ -65,7 +65,6 @@ const SuitcaseLights = () => {
 };
 
 const Model = () => {
-  const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
@@ -86,19 +85,6 @@ const Model = () => {
   
   const modelRef = useRef<Group>(null);
   
-  const getColorValue = () => {
-    switch (color) {
-      case 'purple':
-        return '#B794F6';
-      case 'blue':
-        return '#7AB7FF';
-      case 'orange':
-        return '#FFAC74';
-      default:
-        return '#B794F6';
-    }
-  };
-  
   useEffect(() => {
     try {
       if (scene) {
@@ -111,10 +97,7 @@ const Model = () => {
             
             if (mesh.material) {
               if (mesh.material instanceof MeshStandardMaterial) {
-                // Apply color from context while keeping the texture
-                mesh.material.color.set(getColorValue());
-                mesh.material.emissive.set(getColorValue());
-                mesh.material.emissiveIntensity = 0.2;
+                // Enhance material properties but keep original texture and color
                 mesh.material.metalness = 0.9;
                 mesh.material.roughness = 0.2;
                 mesh.material.needsUpdate = true;
@@ -142,7 +125,7 @@ const Model = () => {
       setError(error.message);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
-  }, [scene, color]);
+  }, [scene]);
   
   useFrame((state) => {
     if (modelRef.current) {
@@ -169,27 +152,12 @@ const Model = () => {
 };
 
 const ModelFallback = () => {
-  const { color } = useSuitcase();
-  
-  const getColorValue = () => {
-    switch (color) {
-      case 'purple':
-        return '#B794F6';
-      case 'blue':
-        return '#7AB7FF';
-      case 'orange':
-        return '#FFAC74';
-      default:
-        return '#B794F6';
-    }
-  };
-  
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} emissive={getColorValue()} emissiveIntensity={0.2} />
+      <meshStandardMaterial color="#B794F6" />
     </mesh>
   );
 };

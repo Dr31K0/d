@@ -5,7 +5,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, Material } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
@@ -51,7 +51,12 @@ const Model = () => {
             
             // Log the material details to help with debugging
             if (mesh.material) {
-              console.log('Material type:', mesh.material.type);
+              // Check if material is an array
+              if (Array.isArray(mesh.material)) {
+                console.log('Material is an array');
+              } else {
+                console.log('Material type:', mesh.material.type);
+              }
               console.log('Material properties:', mesh.material);
             }
             

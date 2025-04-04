@@ -5,7 +5,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, Material } from 'three';
+import { Group, Mesh } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
@@ -36,32 +36,30 @@ const Model = () => {
   const [error, setError] = useState<string | null>(null);
   
   // Load the 3D model
-  const { scene } = useGLTF(SUITCASE_MODEL_URL);
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
+    console.error('Error loading model:', e);
+    setError(e.message);
+  });
   
   useEffect(() => {
     try {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        // Apply color tint to the model based on user selection
+        // Apply suitcase settings and enable shadows but DON'T modify the materials
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Log the material details to help with debugging
-            if (mesh.material) {
-              // Check if material is an array
-              if (Array.isArray(mesh.material)) {
-                console.log('Material is an array');
-              } else {
-                console.log('Material type:', mesh.material.type);
-              }
-              console.log('Material properties:', mesh.material);
-            }
-            
+            // Enable shadows on all meshes
             mesh.castShadow = true;
             mesh.receiveShadow = true;
+            
+            // Just log the material info for debugging - don't modify it
+            if (mesh.material) {
+              console.log('Material found:', mesh.material);
+            }
           }
         });
       } else {
@@ -73,7 +71,7 @@ const Model = () => {
       setError(error.message);
       logError(error, 'SuitcaseModel:ApplyColor');
     }
-  }, [scene, color]);
+  }, [scene]);
   
   const modelRef = useRef<Group>(null);
   
@@ -203,6 +201,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 40 }}
         shadows
+        gl={{ preserveDrawingBuffer: true, alpha: true }}
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
         }}

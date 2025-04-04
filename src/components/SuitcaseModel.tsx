@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -7,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
+const SUITCASE_MODEL_URL = '/models/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
 
 interface SuitcaseModelProps {
@@ -35,10 +34,9 @@ const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   
-  // Load the 3D model
   const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
-    setError(e.message);
+    setError(e instanceof Error ? e.message : 'Unknown error loading model');
   });
   
   useEffect(() => {
@@ -46,17 +44,14 @@ const Model = () => {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        // Apply suitcase settings and enable shadows but DON'T modify the materials
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Enable shadows on all meshes
             mesh.castShadow = true;
             mesh.receiveShadow = true;
             
-            // Just log the material info for debugging - don't modify it
             if (mesh.material) {
               console.log('Material found:', mesh.material);
             }

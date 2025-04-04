@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
@@ -7,9 +6,9 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, MeshStandardMaterial, TextureLoader } from 'three';
 
-const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
-const SUITCASE_TEXTURE_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
-const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
+// Use the texture GLB as the main model instead
+const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
+const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -70,33 +69,8 @@ const Model = () => {
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   
+  // Using suitcase_texture.glb directly as our model
   const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
-  
-  const [textureLoaded, setTextureLoaded] = useState(false);
-  
-  useEffect(() => {
-    const loadTexture = async () => {
-      try {
-        const textureGLTF = await useGLTF.preload(SUITCASE_TEXTURE_URL);
-        if (textureGLTF) {  // Added null check
-          console.log('Texture GLB loaded:', textureGLTF);
-          setTextureLoaded(true);
-          
-          if (textureGLTF.scene) {  // Added null check
-            textureGLTF.scene.traverse((node) => {
-              if ((node as Mesh).isMesh && (node as Mesh).material) {
-                console.log('Found material in texture GLB:', (node as Mesh).material);
-              }
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load texture GLB:', err);
-      }
-    };
-    
-    loadTexture();
-  }, []);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -130,46 +104,33 @@ const Model = () => {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        const textureLoader = new TextureLoader();
-        
-        textureLoader.load(
-          SUITCASE_TEXTURE_URL,
-          (texture) => {
-            console.log('Texture loaded successfully:', texture);
+        scene.traverse((node) => {
+          if ((node as Mesh).isMesh) {
+            const mesh = node as Mesh;
+            console.log('Found mesh:', mesh.name);
             
-            scene.traverse((node) => {
-              if ((node as Mesh).isMesh) {
-                const mesh = node as Mesh;
-                console.log('Found mesh:', mesh.name);
+            if (mesh.material) {
+              if (mesh.material instanceof MeshStandardMaterial) {
+                // Apply color from context while keeping the texture
+                mesh.material.color.set(getColorValue());
+                mesh.material.emissive.set(getColorValue());
+                mesh.material.emissiveIntensity = 0.2;
+                mesh.material.metalness = 0.9;
+                mesh.material.roughness = 0.2;
+                mesh.material.needsUpdate = true;
                 
-                if (mesh.material) {
-                  if (mesh.material instanceof MeshStandardMaterial) {
-                    mesh.material.map = texture;
-                    mesh.material.color.set(getColorValue());
-                    mesh.material.emissive.set(getColorValue());
-                    mesh.material.emissiveIntensity = 0.2;
-                    mesh.material.metalness = 0.9;
-                    mesh.material.roughness = 0.2;
-                    mesh.material.needsUpdate = true;
-                    
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-                    
-                    console.log('Applied texture and material settings to:', mesh.name);
-                  } else {
-                    console.log('Material is not MeshStandardMaterial:', mesh.material);
-                  }
-                } else {
-                  console.log('Mesh has no material:', mesh.name);
-                }
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                
+                console.log('Applied material settings to:', mesh.name);
+              } else {
+                console.log('Material is not MeshStandardMaterial:', mesh.material);
               }
-            });
-          },
-          undefined,
-          (error) => {
-            console.error('Error loading texture as image:', error);
+            } else {
+              console.log('Mesh has no material:', mesh.name);
+            }
           }
-        );
+        });
         
         setLoaded(true);
       } else {
@@ -359,14 +320,8 @@ try {
   console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
   useGLTF.preload(SUITCASE_MODEL_URL);
   
-  console.log("Attempting to preload texture:", SUITCASE_TEXTURE_URL);
-  useGLTF.preload(SUITCASE_TEXTURE_URL);
+  console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
+  useGLTF.preload(FALLBACK_MODEL_URL);
 } catch (error) {
-  console.error("Failed to preload model or texture:", error);
-  try {
-    console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
-    useGLTF.preload(FALLBACK_MODEL_URL);
-  } catch (fallbackError) {
-    console.error("Failed to preload fallback model:", fallbackError);
-  }
+  console.error("Failed to preload model:", error);
 }

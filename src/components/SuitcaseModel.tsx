@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -6,7 +7,8 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-const SUITCASE_MODEL_URL = '/models/suitcase_texture.glb';
+// Use a relative path that works with base URL setting in Vite
+const SUITCASE_MODEL_URL = './models/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
 
 interface SuitcaseModelProps {
@@ -33,10 +35,17 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
+  const [modelUrl, setModelUrl] = useState(SUITCASE_MODEL_URL);
   
-  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
+  const { scene } = useGLTF(modelUrl, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
+    
+    // Try fallback URL if main URL fails
+    if (modelUrl !== FALLBACK_MODEL_URL) {
+      console.log("Attempting to load fallback model...");
+      setModelUrl(FALLBACK_MODEL_URL);
+    }
   });
   
   useEffect(() => {

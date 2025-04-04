@@ -1,6 +1,7 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, Lightformer } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
@@ -53,45 +54,45 @@ const Model = () => {
         return {
           color: '#9b87f5',
           emissive: '#6E59A5',
-          metalness: 0.4,
-          roughness: 0.1,
-          clearcoat: 1.5,
-          clearcoatRoughness: 0.05,
+          metalness: 0.6,
+          roughness: 0.05,
+          clearcoat: 2.0,
+          clearcoatRoughness: 0.03,
           reflectivity: 1.0,
-          envMapIntensity: 2.0,
+          envMapIntensity: 3.0,
         };
       case 'blue':
         return {
           color: '#7AB7FF',
           emissive: '#4A7EAB',
-          metalness: 0.4,
-          roughness: 0.1,
-          clearcoat: 1.5,
-          clearcoatRoughness: 0.05,
+          metalness: 0.6,
+          roughness: 0.05,
+          clearcoat: 2.0,
+          clearcoatRoughness: 0.03,
           reflectivity: 1.0,
-          envMapIntensity: 2.0,
+          envMapIntensity: 3.0,
         };
       case 'orange':
         return {
           color: '#FFAC74',
           emissive: '#D98246',
-          metalness: 0.4,
-          roughness: 0.1,
-          clearcoat: 1.5,
-          clearcoatRoughness: 0.05,
+          metalness: 0.6,
+          roughness: 0.05,
+          clearcoat: 2.0,
+          clearcoatRoughness: 0.03,
           reflectivity: 1.0,
-          envMapIntensity: 2.0,
+          envMapIntensity: 3.0,
         };
       default:
         return {
           color: '#9b87f5',
           emissive: '#6E59A5',
-          metalness: 0.4,
-          roughness: 0.1,
-          clearcoat: 1.5,
-          clearcoatRoughness: 0.05,
+          metalness: 0.6,
+          roughness: 0.05,
+          clearcoat: 2.0,
+          clearcoatRoughness: 0.03,
           reflectivity: 1.0,
-          envMapIntensity: 2.0,
+          envMapIntensity: 3.0,
         };
     }
   };
@@ -114,7 +115,7 @@ const Model = () => {
               const physicalMaterial = new MeshPhysicalMaterial({
                 color: properties.color,
                 emissive: properties.emissive,
-                emissiveIntensity: 0.5,
+                emissiveIntensity: 0.8,
                 metalness: properties.metalness,
                 roughness: properties.roughness,
                 clearcoat: properties.clearcoat,
@@ -136,7 +137,7 @@ const Model = () => {
               mesh.material = new MeshPhysicalMaterial({
                 color: properties.color,
                 emissive: properties.emissive,
-                emissiveIntensity: 0.5,
+                emissiveIntensity: 0.8,
                 metalness: properties.metalness,
                 roughness: properties.roughness,
               });
@@ -302,7 +303,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   return (
     <div 
       className={cn(
-        'relative w-full h-[500px] rounded-xl overflow-hidden bg-crystal-light/30',
+        'relative w-full h-[500px] rounded-xl overflow-hidden bg-white',
         className
       )}
     >
@@ -314,13 +315,13 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onError={handleCanvasCreationError}
       >
-        <color attach="background" args={['#f8f8ff']} />
-        <ambientLight intensity={3.0} />
+        <color attach="background" args={['#ffffff']} />
+        <ambientLight intensity={5.0} />
         <spotLight 
           position={[10, 10, 10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={5.0} 
+          intensity={8.0} 
           castShadow 
           shadow-mapSize={1024}
         />
@@ -328,30 +329,32 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           position={[-10, 5, -10]} 
           angle={0.15} 
           penumbra={1} 
-          intensity={4.0} 
+          intensity={6.0} 
           castShadow 
         />
-        <pointLight position={[0, 5, 0]} intensity={4.0} />
+        <pointLight position={[0, 5, 0]} intensity={6.0} color="#ffffff" />
         <directionalLight
           position={[5, 5, 5]}
-          intensity={4.0}
+          intensity={6.0}
           castShadow
           shadow-mapSize={1024}
+          color="#ffffff"
         />
         <directionalLight
           position={[0, -3, 0]}
-          intensity={2.5}
+          intensity={3.5}
           castShadow={false}
+          color="#ffffff"
         />
         <directionalLight 
           position={[-5, 0, 5]} 
-          intensity={3.0} 
+          intensity={5.0} 
           color="#9b87f5" 
         />
         <directionalLight 
           position={[5, 0, -5]} 
-          intensity={3.0} 
-          color="#ffffff" 
+          intensity={5.0} 
+          color="#9b87f5" 
         />
         
         <Suspense fallback={<ModelFallback />}>
@@ -367,7 +370,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="studio" />
+          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

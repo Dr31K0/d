@@ -1,11 +1,10 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useHelper } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, MeshPhysicalMaterial, Color, SpotLightHelper, PointLight } from 'three';
+import { Group, Mesh, MeshStandardMaterial, Color } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -15,46 +14,50 @@ interface SuitcaseModelProps {
 }
 
 const SuitcaseLights = () => {
-  const spotLightRef = useRef();
-  // useHelper(spotLightRef, SpotLightHelper, 'white'); // Uncomment for debugging
-
   return (
     <>
-      {/* Key light - main light source */}
-      <spotLight
-        ref={spotLightRef}
-        position={[5, 5, 5]}
-        angle={0.3}
-        penumbra={1}
-        intensity={30}
-        castShadow
-        shadow-mapSize={1024}
+      {/* Very bright ambient light to ensure model is visible */}
+      <ambientLight intensity={5} />
+      
+      {/* Main directional light */}
+      <directionalLight 
+        position={[10, 10, 10]} 
+        intensity={50} 
+        color="#ffffff" 
       />
-
-      {/* Fill light - softer light from opposite side */}
-      <spotLight 
-        position={[-5, 3, 0]} 
-        angle={0.5} 
-        penumbra={1} 
-        intensity={20} 
-        castShadow={false}
+      
+      {/* Fill lights from multiple angles */}
+      <directionalLight 
+        position={[-10, 10, 10]} 
+        intensity={50} 
+        color="#ffffff" 
       />
-
-      {/* Rim light - from behind to create outline */}
-      <spotLight
-        position={[0, 2, -5]}
-        angle={0.5}
-        penumbra={1}
-        intensity={15}
-        castShadow={false}
+      
+      <directionalLight 
+        position={[0, 10, -10]} 
+        intensity={50} 
+        color="#ffffff" 
       />
-
-      {/* Bottom light for fill */}
-      <pointLight position={[0, -3, 0]} intensity={10} />
-
-      {/* Colored lights */}
-      <pointLight position={[3, 0, 3]} intensity={10} color="#b28aff" />
-      <pointLight position={[-3, 0, -3]} intensity={10} color="#b28aff" />
+      
+      {/* Bottom light */}
+      <directionalLight 
+        position={[0, -10, 0]} 
+        intensity={30} 
+        color="#ffffff" 
+      />
+      
+      {/* Purple-tinted lights for accent */}
+      <pointLight 
+        position={[5, 5, 5]} 
+        intensity={40} 
+        color="#b28aff" 
+      />
+      
+      <pointLight 
+        position={[-5, -5, -5]} 
+        intensity={40} 
+        color="#b28aff" 
+      />
     </>
   );
 };
@@ -62,9 +65,8 @@ const SuitcaseLights = () => {
 const Model = () => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
   
-  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  const { scene } = useGLTF(SUITCASE_MODEL_URL);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -80,7 +82,7 @@ const Model = () => {
   
   const modelRef = useRef<Group>(null);
   
-  const getColorValue = () => {
+  const getBasicColorValue = () => {
     switch (color) {
       case 'purple':
         return '#9b87f5';
@@ -93,113 +95,34 @@ const Model = () => {
     }
   };
   
-  const getMetallicProperties = () => {
-    switch (color) {
-      case 'purple':
-        return {
-          color: '#9b87f5',
-          emissive: '#6E59A5',
-          metalness: 0.8,
-          roughness: 0.2,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.1,
-          reflectivity: 1.0,
-          envMapIntensity: 1.0,
-          emissiveIntensity: 0.5,
-        };
-      case 'blue':
-        return {
-          color: '#7AB7FF',
-          emissive: '#4A7EAB',
-          metalness: 0.8,
-          roughness: 0.2,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.1,
-          reflectivity: 1.0,
-          envMapIntensity: 1.0,
-          emissiveIntensity: 0.5,
-        };
-      case 'orange':
-        return {
-          color: '#FFAC74',
-          emissive: '#D98246',
-          metalness: 0.8,
-          roughness: 0.2,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.1,
-          reflectivity: 1.0,
-          envMapIntensity: 1.0,
-          emissiveIntensity: 0.5,
-        };
-      default:
-        return {
-          color: '#9b87f5',
-          emissive: '#6E59A5',
-          metalness: 0.8,
-          roughness: 0.2,
-          clearcoat: 1.0,
-          clearcoatRoughness: 0.1,
-          reflectivity: 1.0,
-          envMapIntensity: 1.0,
-          emissiveIntensity: 0.5,
-        };
-    }
-  };
-  
   useEffect(() => {
     try {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        const properties = getMetallicProperties();
-        const colorObj = new Color(properties.color);
+        const colorValue = getBasicColorValue();
         
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            if (mesh.material) {
-              const physicalMaterial = new MeshPhysicalMaterial({
-                color: properties.color,
-                emissive: properties.emissive,
-                emissiveIntensity: properties.emissiveIntensity,
-                metalness: properties.metalness,
-                roughness: properties.roughness,
-                clearcoat: properties.clearcoat,
-                clearcoatRoughness: properties.clearcoatRoughness,
-                reflectivity: properties.reflectivity,
-                envMapIntensity: properties.envMapIntensity,
-              });
-              
-              // If old material had maps, preserve them
-              if (mesh.material instanceof MeshStandardMaterial) {
-                const oldMaterial = mesh.material;
-                physicalMaterial.map = oldMaterial.map;
-                physicalMaterial.normalMap = oldMaterial.normalMap;
-                physicalMaterial.aoMap = oldMaterial.aoMap;
-              }
-              
-              mesh.material = physicalMaterial;
-              mesh.castShadow = true;
-              mesh.receiveShadow = true;
-              console.log('Applied metallic material to:', mesh.name, 'with color:', properties.color);
-            } else {
-              console.log('Mesh has no material:', mesh.name);
-              mesh.material = new MeshPhysicalMaterial({
-                color: properties.color,
-                emissive: properties.emissive,
-                emissiveIntensity: properties.emissiveIntensity,
-                metalness: properties.metalness,
-                roughness: properties.roughness,
-              });
-              mesh.castShadow = true;
-              mesh.receiveShadow = true;
-            }
+            // Create a simple standard material with strong color
+            const simpleMaterial = new MeshStandardMaterial({
+              color: colorValue,
+              emissive: colorValue,
+              emissiveIntensity: 0.5,
+              roughness: 0.3,
+              metalness: 0.6,
+            });
+            
+            // Apply the material and ensure it casts/receives shadows
+            mesh.material = simpleMaterial;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            console.log('Applied simple material to:', mesh.name, 'with color:', colorValue);
           }
         });
-        
-        setLoaded(true);
       } else {
         console.warn('Scene is undefined');
       }
@@ -238,46 +161,31 @@ const Model = () => {
 const ModelFallback = () => {
   const { color } = useSuitcase();
   
-  const getMetallicProperties = () => {
+  const getBasicColorValue = () => {
     switch (color) {
       case 'purple':
-        return {
-          color: '#9b87f5',
-          emissive: '#6E59A5',
-        };
+        return '#9b87f5';
       case 'blue':
-        return {
-          color: '#7AB7FF',
-          emissive: '#4A7EAB',
-        };
+        return '#7AB7FF';
       case 'orange':
-        return {
-          color: '#FFAC74',
-          emissive: '#D98246',
-        };
+        return '#FFAC74';
       default:
-        return {
-          color: '#9b87f5',
-          emissive: '#6E59A5',
-        };
+        return '#9b87f5';
     }
   };
   
-  const properties = getMetallicProperties();
+  const colorValue = getBasicColorValue();
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshPhysicalMaterial 
-        color={properties.color} 
-        emissive={properties.emissive} 
-        emissiveIntensity={0.3}
-        metalness={0.9}
-        roughness={0.15}
-        clearcoat={1.0}
-        clearcoatRoughness={0.1}
-        reflectivity={1.0}
+      <meshStandardMaterial 
+        color={colorValue}
+        emissive={colorValue}
+        emissiveIntensity={0.5}
+        metalness={0.6}
+        roughness={0.3}
       />
     </mesh>
   );
@@ -330,9 +238,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     } catch (e) {
       console.error("Error checking WebGL support:", e);
     }
-    
-    return () => {
-    };
   }, []);
   
   if (canvasError) {
@@ -370,9 +275,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         onError={handleCanvasCreationError}
       >
         <color attach="background" args={['#ffffff']} />
-        <ambientLight intensity={5.0} />
         
-        {/* Add the dedicated lights component for better organization */}
+        {/* Use the SuitcaseLights component */}
         <SuitcaseLights />
         
         <Suspense fallback={<ModelFallback />}>
@@ -388,7 +292,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="city" />
+          <Environment preset="sunset" intensity={2} />
         </Suspense>
         <OrbitControls 
           enablePan={false}

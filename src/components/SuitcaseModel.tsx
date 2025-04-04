@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
@@ -7,8 +6,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-// Direct link to the raw file from the GitHub repository
-const SUITCASE_MODEL_URL = 'https://github.com/Dr31K0/models/raw/main/suitcase-texture.glb';
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;

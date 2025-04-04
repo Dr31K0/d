@@ -1,10 +1,10 @@
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useHelper } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial } from 'three';
+import { Group, Mesh, MeshStandardMaterial, SpotLightHelper, DirectionalLightHelper, PointLightHelper } from 'three';
 
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/model.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/model.glb';
@@ -12,6 +12,61 @@ const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/
 interface SuitcaseModelProps {
   className?: string;
 }
+
+const SuitcaseLights = () => {
+  const spotLightRef1 = useRef();
+  const spotLightRef2 = useRef();
+  const pointLightRef = useRef();
+  const directionalRef = useRef();
+
+  useHelper(spotLightRef1, SpotLightHelper, 'white');
+  useHelper(spotLightRef2, SpotLightHelper, 'white');
+  useHelper(pointLightRef, PointLightHelper, 1, 'red');
+  useHelper(directionalRef, DirectionalLightHelper, 1, 'blue');
+
+  return (
+    <>
+      <spotLight
+        ref={spotLightRef1}
+        position={[3, 5, 3]}
+        angle={0.5}
+        penumbra={0.5}
+        intensity={8}
+        castShadow
+        shadow-bias={-0.0001}
+      />
+      
+      <spotLight
+        ref={spotLightRef2}
+        position={[-3, 3, -1]}
+        angle={0.6}
+        penumbra={0.8}
+        intensity={6}
+        castShadow
+      />
+      
+      <pointLight
+        ref={pointLightRef}
+        position={[0, 4, -5]}
+        intensity={4}
+      />
+      
+      <directionalLight
+        ref={directionalRef}
+        position={[5, 8, 5]}
+        intensity={3}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0001}
+      />
+      
+      <ambientLight intensity={1.5} />
+      
+      <pointLight position={[-2, 1, 1]} intensity={2} color="#9b87f5" />
+      <pointLight position={[2, 0, -2]} intensity={1.5} color="#D6BCFA" />
+    </>
+  );
+};
 
 const Model = () => {
   const { color } = useSuitcase();
@@ -62,10 +117,14 @@ const Model = () => {
                 mesh.material.color.set(getColorValue());
                 mesh.material.emissive.set(getColorValue());
                 mesh.material.emissiveIntensity = 0.2;
-                mesh.material.metalness = 0.4;
+                mesh.material.metalness = 0.7;
                 mesh.material.roughness = 0.3;
                 mesh.material.needsUpdate = true;
-                console.log('Applied brightened color to:', mesh.name);
+                
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                
+                console.log('Applied color and material settings to:', mesh.name);
               } else {
                 console.log('Material is not MeshStandardMaterial:', mesh.material);
               }
@@ -223,34 +282,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onError={handleCanvasCreationError}
       >
-        <ambientLight intensity={2.0} />
-        <spotLight 
-          position={[10, 10, 10]} 
-          angle={0.15} 
-          penumbra={1} 
-          intensity={3.5} 
-          castShadow 
-          shadow-mapSize={1024}
-        />
-        <spotLight 
-          position={[-10, 5, -10]} 
-          angle={0.15} 
-          penumbra={1} 
-          intensity={2.5} 
-          castShadow 
-        />
-        <pointLight position={[0, 5, 0]} intensity={2.5} />
-        <directionalLight
-          position={[5, 5, 5]}
-          intensity={2.5}
-          castShadow
-          shadow-mapSize={1024}
-        />
-        <directionalLight
-          position={[0, -3, 0]}
-          intensity={1.0}
-          castShadow={false}
-        />
+        <SuitcaseLights />
         
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>

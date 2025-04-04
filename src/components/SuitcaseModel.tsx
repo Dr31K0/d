@@ -1,12 +1,13 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
+// Use the texture GLB as the main model instead
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
 const FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/3DSuitcase/main/suitcase_texture.glb';
 
@@ -14,54 +15,59 @@ interface SuitcaseModelProps {
   className?: string;
 }
 
+// Extremely minimal lighting setup
 const SuitcaseLights = () => {
   return (
     <>
-      <ambientLight intensity={1.5} />
-      <directionalLight 
-        position={[5, 5, 5]} 
-        intensity={1} 
-        castShadow 
-      />
-      <directionalLight 
-        position={[-5, 5, -5]} 
-        intensity={0.5} 
-      />
+      {/* Default, neutral lighting that won't overpower the model's textures */}
+      <ambientLight intensity={1} />
+      <directionalLight position={[0, 10, 10]} intensity={1} />
     </>
   );
 };
 
 const Model = () => {
-  const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   
-  // Load the 3D model
-  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
-    console.error('Error loading model:', e);
-    setError(e.message);
-  });
+  // Load the model without any special configuration
+  const { scene } = useGLTF(SUITCASE_MODEL_URL);
+  
+  useEffect(() => {
+    const handleModelError = (e: ErrorEvent) => {
+      if (e.message && e.message.includes('GLB')) {
+        console.error("Error loading model:", e);
+        setError("Failed to load 3D model: " + e.message);
+      }
+    };
+    
+    window.addEventListener('error', handleModelError);
+    return () => window.removeEventListener('error', handleModelError);
+  }, []);
+  
+  const modelRef = useRef<Group>(null);
   
   useEffect(() => {
     try {
       if (scene) {
         console.log('Model loaded successfully:', scene);
         
-        // Apply suitcase settings and enable shadows but DON'T modify the materials
         scene.traverse((node) => {
           if ((node as Mesh).isMesh) {
+            // Just log mesh information, don't modify anything
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Enable shadows on all meshes
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            
-            // Just log the material info for debugging - don't modify it
             if (mesh.material) {
-              console.log('Material found:', mesh.material);
+              console.log(`Material for ${mesh.name}:`, mesh.material);
+              // Log more details about the material to help debug
+              console.log(`Material type: ${mesh.material.type}`);
+              console.log(`Has map texture: ${mesh.material.map ? 'Yes' : 'No'}`);
             }
           }
         });
+        
+        setLoaded(true);
       } else {
         console.warn('Scene is undefined');
       }
@@ -73,8 +79,7 @@ const Model = () => {
     }
   }, [scene]);
   
-  const modelRef = useRef<Group>(null);
-  
+  // Simple rotation animation
   useFrame((state) => {
     if (modelRef.current) {
       const t = state.clock.getElapsedTime();
@@ -96,31 +101,17 @@ const Model = () => {
     );
   }
   
+  // Render the model exactly as it is, with no modifications
   return <primitive ref={modelRef} object={scene} scale={2.0} position={[0, 0, 0]} />;
 };
 
 const ModelFallback = () => {
-  const { color } = useSuitcase();
-  
-  const getColorValue = () => {
-    switch (color) {
-      case 'purple':
-        return '#B794F6';
-      case 'blue':
-        return '#7AB7FF';
-      case 'orange':
-        return '#FFAC74';
-      default:
-        return '#B794F6';
-    }
-  };
-  
   console.log("Showing fallback model");
   
   return (
     <mesh>
       <boxGeometry args={[1, 0.6, 0.2]} />
-      <meshStandardMaterial color={getColorValue()} />
+      <meshStandardMaterial color="#B794F6" />
     </mesh>
   );
 };
@@ -172,6 +163,9 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     } catch (e) {
       console.error("Error checking WebGL support:", e);
     }
+    
+    return () => {
+    };
   }, []);
   
   if (canvasError) {
@@ -191,6 +185,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     );
   }
   
+  console.log("Rendering SuitcaseModel component");
+  
   return (
     <div 
       className={cn(
@@ -200,10 +196,10 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     >
       <Canvas
         camera={{ position: [0, 0, 3.5], fov: 40 }}
-        shadows
-        gl={{ preserveDrawingBuffer: true, alpha: true }}
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
+          // Set a neutral background color
+          state.gl.setClearColor('#ffffff', 0);
         }}
         onError={handleCanvasCreationError}
       >
@@ -212,17 +208,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         <Suspense fallback={<ModelFallback />}>
           <group position={[0, 0, 0]}>
             <Model />
-            <ContactShadows
-              position={[0, -1.0, 0]}
-              opacity={0.6}
-              scale={10}
-              blur={3}
-              far={4}
-              resolution={512}
-              color="#555"
-            />
           </group>
-          <Environment preset="city" />
         </Suspense>
         <OrbitControls 
           enablePan={false}
@@ -246,12 +232,9 @@ export default SuitcaseModel;
 try {
   console.log("Attempting to preload model:", SUITCASE_MODEL_URL);
   useGLTF.preload(SUITCASE_MODEL_URL);
+  
+  console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
+  useGLTF.preload(FALLBACK_MODEL_URL);
 } catch (error) {
-  console.error("Failed to preload model or texture:", error);
-  try {
-    console.log("Attempting to preload fallback model:", FALLBACK_MODEL_URL);
-    useGLTF.preload(FALLBACK_MODEL_URL);
-  } catch (fallbackError) {
-    console.error("Failed to preload fallback model:", fallbackError);
-  }
+  console.error("Failed to preload model:", error);
 }

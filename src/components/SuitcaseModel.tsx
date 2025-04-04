@@ -1,11 +1,11 @@
 
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, SpotLight, useTexture } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, MeshStandardMaterial, TextureLoader } from 'three';
+import { Group, Mesh } from 'three';
 
 // Use the texture GLB as the main model instead
 const SUITCASE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/Dr31K0/3DSuitcase@main/suitcase_texture.glb';
@@ -18,28 +18,15 @@ interface SuitcaseModelProps {
 const SuitcaseLights = () => {
   return (
     <>
-      {/* Enhanced lighting setup */}
-      <ambientLight intensity={2} />
-      
-      <directionalLight 
-        position={[5, 10, 5]} 
-        intensity={3} 
-        castShadow 
-        shadow-mapSize={[1024, 1024]}
-      />
-      
-      <directionalLight 
-        position={[-5, 5, -5]} 
-        intensity={2}
-      />
-      
-      <pointLight position={[0, 5, 0]} intensity={2} color="#ffffff" />
-      
-      {/* Light to illuminate the front */}
-      <pointLight position={[0, 0, 5]} intensity={2} color="#ffffff" />
-      
-      {/* Light to illuminate the back */}
-      <pointLight position={[0, 0, -5]} intensity={2} color="#ffffff" />
+      {/* Intense lighting setup to properly illuminate the model */}
+      <ambientLight intensity={4} />
+      <directionalLight position={[10, 10, 5]} intensity={6} />
+      <directionalLight position={[-10, 10, -5]} intensity={6} />
+      <directionalLight position={[0, 10, 0]} intensity={6} />
+      <pointLight position={[0, 0, 5]} intensity={4} />
+      <pointLight position={[0, 0, -5]} intensity={4} />
+      <pointLight position={[5, 0, 0]} intensity={4} />
+      <pointLight position={[-5, 0, 0]} intensity={4} />
     </>
   );
 };
@@ -49,7 +36,7 @@ const Model = () => {
   const [loaded, setLoaded] = useState(false);
   
   // Using suitcase_texture.glb directly as our model
-  const { scene, nodes } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, true);
   
   useEffect(() => {
     const handleModelError = (e: ErrorEvent) => {
@@ -75,19 +62,13 @@ const Model = () => {
             const mesh = node as Mesh;
             console.log('Found mesh:', mesh.name);
             
-            // Important: Don't modify material properties, just enable shadows
+            // ONLY enable shadows, don't modify ANY material properties
             mesh.castShadow = true;
             mesh.receiveShadow = true;
             
-            // Log material information for debugging
+            // Just log material info without changing anything
             if (mesh.material) {
               console.log(`Material for ${mesh.name}:`, mesh.material);
-              if (mesh.material instanceof MeshStandardMaterial) {
-                console.log(`- Material type: MeshStandardMaterial`);
-                console.log(`- Map: ${mesh.material.map ? 'Present' : 'None'}`);
-                console.log(`- Metalness: ${mesh.material.metalness}`);
-                console.log(`- Roughness: ${mesh.material.roughness}`);
-              }
             }
           }
         });
@@ -222,8 +203,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         shadows
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
-          // Set default clear color to light gray instead of black
-          state.gl.setClearColor('#f5f5f5', 0.1);
+          // Set a very bright background color
+          state.gl.setClearColor('#ffffff', 0);
         }}
         onError={handleCanvasCreationError}
       >
@@ -242,7 +223,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#555"
             />
           </group>
-          <Environment preset="city" />
+          <Environment preset="sunset" />
         </Suspense>
         <OrbitControls 
           enablePan={false}

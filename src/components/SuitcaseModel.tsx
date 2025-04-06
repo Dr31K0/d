@@ -1,14 +1,14 @@
 
 import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-// Constant for model URL to avoid string duplication
-const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
+// Constant for model URL using local path
+const SUITCASE_MODEL_URL = '/models/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -63,8 +63,8 @@ const Model = React.memo(() => {
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
   
-  // Explicitly handle loading with error handling
-  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, (e) => {
+  // Fixed loading with correct error handling parameter
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
   });

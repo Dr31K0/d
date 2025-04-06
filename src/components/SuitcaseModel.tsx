@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, SoftShadows } from '@react-three/drei';
@@ -6,8 +7,12 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh } from 'three';
 
-// Enable better quality shadows
-SoftShadows();
+// Enable better quality shadows with proper configuration
+SoftShadows({
+  size: 25, // shadow map size
+  focus: 0.5, // shadow focus
+  samples: 16 // default is 8
+});
 
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
 

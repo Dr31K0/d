@@ -5,7 +5,7 @@ import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-thre
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, PCFSoftShadowMap, Vector3 } from 'three';
+import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
 // Constant for model URL to avoid string duplication
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
@@ -111,8 +111,8 @@ const Model = React.memo(() => {
     );
   }
   
-  // Reduced scale to make the model appear smaller
-  return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, -0.5, 0]} />;
+  // Position adjusted to be higher in the view (y value changed from -0.5 to 0)
+  return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, 0, 0]} />;
 });
 
 Model.displayName = 'Model';
@@ -226,7 +226,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     >
       <Canvas
         camera={{ position: [0, 0, 4.5], fov: 30 }} // Increased z-distance and reduced FOV for "zoomed out" effect
-        shadows={{ type: PCFSoftShadowMap, normalBias: 0.02 }} // Using proper THREE.PCFSoftShadowMap type
+        shadows={{ type: PCFSoftShadowMap }} // Fixed: Removed normalBias which is not in WebGLShadowMap type
         gl={{ 
           preserveDrawingBuffer: true, 
           alpha: true,
@@ -262,7 +262,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           maxPolarAngle={Math.PI / 1.8} // Allow more top-down view
           minDistance={2.5} // Allow zooming out more
           maxDistance={6} // Allow zooming out more
-          target={[0, -0.2, 0]} // Adjust target to center better
+          target={[0, 0, 0]} // Adjusted target to center on the model's new position
           enableDamping // Smooth camera movement
           dampingFactor={0.05}
         />

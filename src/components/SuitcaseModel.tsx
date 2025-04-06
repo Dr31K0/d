@@ -63,7 +63,8 @@ const Model = React.memo(() => {
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
   
-  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
+  // Explicitly handle loading with error handling
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
   });
@@ -111,8 +112,8 @@ const Model = React.memo(() => {
     );
   }
   
-  // Position adjusted to be higher in the view (y value changed from -0.5 to 0)
-  return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, 0, 0]} />;
+  // Position adjusted for better centering vertically
+  return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, 0.3, 0]} />;
 });
 
 Model.displayName = 'Model';
@@ -143,6 +144,7 @@ const ModelFallback = React.memo(() => {
 
 ModelFallback.displayName = 'ModelFallback';
 
+// Import Html component from drei to fix the error
 const Html = ({ children, position }: { children: React.ReactNode, position: [number, number, number] }) => {
   return (
     <group position={position}>
@@ -162,14 +164,12 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
   );
 };
 
-// Environment preset memo to avoid unnecessary re-renders - using fixed type-safe string literal
-const EnvironmentWithPreset = React.memo(() => {
-  // Using a valid preset string literal instead of a generic string
-  const preset = useMemo(() => "city" as const, []);
-  return <Environment preset={preset} />;
+// Fixed Environment component to prevent destructuring errors
+const EnvironmentComponent = React.memo(() => {
+  return <Environment preset="city" />;
 });
 
-EnvironmentWithPreset.displayName = 'EnvironmentWithPreset';
+EnvironmentComponent.displayName = 'EnvironmentComponent';
 
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
@@ -225,8 +225,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
       )}
     >
       <Canvas
-        camera={{ position: [0, 0, 4.5], fov: 30 }} // Increased z-distance and reduced FOV for "zoomed out" effect
-        shadows={{ type: PCFSoftShadowMap }} // Fixed: Removed normalBias which is not in WebGLShadowMap type
+        camera={{ position: [0, 0, 4.5], fov: 30 }}
+        shadows={{ type: PCFSoftShadowMap }}
         gl={{ 
           preserveDrawingBuffer: true, 
           alpha: true,
@@ -245,7 +245,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           <group position={[0, 0, 0]}>
             <Model />
             <ContactShadows
-              position={[0, -1.0, 0]} // Lower shadow position
+              position={[0, -1.0, 0]}
               opacity={0.75}
               scale={10}
               blur={3}
@@ -254,16 +254,16 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
               color="#333333"
             />
           </group>
-          <EnvironmentWithPreset />
+          <EnvironmentComponent />
         </Suspense>
         <OrbitControls 
           enablePan={false}
-          minPolarAngle={Math.PI / 4.5} // Allow more top-down view
-          maxPolarAngle={Math.PI / 1.8} // Allow more top-down view
-          minDistance={2.5} // Allow zooming out more
-          maxDistance={6} // Allow zooming out more
-          target={[0, 0, 0]} // Adjusted target to center on the model's new position
-          enableDamping // Smooth camera movement
+          minPolarAngle={Math.PI / 4.5}
+          maxPolarAngle={Math.PI / 1.8}
+          minDistance={2.5}
+          maxDistance={6}
+          target={[0, 0.2, 0]} // Adjusted target to center on the model's new position
+          enableDamping
           dampingFactor={0.05}
         />
       </Canvas>

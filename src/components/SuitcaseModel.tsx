@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
@@ -143,26 +142,6 @@ const ModelFallback = React.memo(() => {
 });
 
 ModelFallback.displayName = 'ModelFallback';
-
-// Import Html component from drei to fix the error
-const Html = ({ children, position }: { children: React.ReactNode, position: [number, number, number] }) => {
-  return (
-    <group position={position}>
-      <mesh>
-        <planeGeometry args={[0.1, 0.1]} />
-        <meshBasicMaterial visible={false} />
-      </mesh>
-      <div className="html-content" style={{
-        position: 'absolute',
-        fontSize: '12px',
-        transform: 'translate(-50%, -50%)',
-        pointerEvents: 'none'
-      }}>
-        {children}
-      </div>
-    </group>
-  );
-};
 
 // Fixed Environment component to prevent destructuring errors
 const EnvironmentComponent = React.memo(() => {

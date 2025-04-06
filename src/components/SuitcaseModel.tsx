@@ -1,11 +1,11 @@
 
 import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows, Stats } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
 import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
-import { Group, Mesh, DirectionalLightHelper, SpotLightHelper, Vector3 } from 'three';
+import { Group, Mesh, PCFSoftShadowMap, Vector3 } from 'three';
 
 // Constant for model URL to avoid string duplication
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
@@ -14,7 +14,8 @@ interface SuitcaseModelProps {
   className?: string;
 }
 
-const SuitcaseLights = () => {
+// Separate component for lighting setup
+const SuitcaseLights = React.memo(() => {
   return (
     <>
       {/* Ambient light provides overall soft illumination */}
@@ -53,9 +54,11 @@ const SuitcaseLights = () => {
       />
     </>
   );
-};
+});
 
-const Model = () => {
+SuitcaseLights.displayName = 'SuitcaseLights';
+
+const Model = React.memo(() => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
@@ -108,11 +111,13 @@ const Model = () => {
     );
   }
   
-  // Reduced scale from 1.2 to 0.9 for smaller appearance
+  // Reduced scale to make the model appear smaller
   return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, -0.5, 0]} />;
-};
+});
 
-const ModelFallback = () => {
+Model.displayName = 'Model';
+
+const ModelFallback = React.memo(() => {
   const { color } = useSuitcase();
   
   const getColorValue = () => {
@@ -134,7 +139,9 @@ const ModelFallback = () => {
       <meshStandardMaterial color={getColorValue()} />
     </mesh>
   );
-};
+});
+
+ModelFallback.displayName = 'ModelFallback';
 
 const Html = ({ children, position }: { children: React.ReactNode, position: [number, number, number] }) => {
   return (
@@ -155,11 +162,14 @@ const Html = ({ children, position }: { children: React.ReactNode, position: [nu
   );
 };
 
-// Environment preset memo to avoid unnecessary re-renders
-const EnvironmentWithPreset = () => {
-  const preset = useMemo(() => "city", []);
+// Environment preset memo to avoid unnecessary re-renders - using fixed type-safe string literal
+const EnvironmentWithPreset = React.memo(() => {
+  // Using a valid preset string literal instead of a generic string
+  const preset = useMemo(() => "city" as const, []);
   return <Environment preset={preset} />;
-};
+});
+
+EnvironmentWithPreset.displayName = 'EnvironmentWithPreset';
 
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
@@ -216,7 +226,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     >
       <Canvas
         camera={{ position: [0, 0, 4.5], fov: 30 }} // Increased z-distance and reduced FOV for "zoomed out" effect
-        shadows={{ type: 'PCFSoftShadow', normalBias: 0.02 }} // Better shadow quality
+        shadows={{ type: PCFSoftShadowMap, normalBias: 0.02 }} // Using proper THREE.PCFSoftShadowMap type
         gl={{ 
           preserveDrawingBuffer: true, 
           alpha: true,

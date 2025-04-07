@@ -1,4 +1,5 @@
-import React, { Suspense, useRef, useEffect, useState, useCallback } from 'react';
+
+import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
@@ -6,17 +7,21 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
+// Constant for model URL using GitHub repository path with raw content URL
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
 }
 
+// Separate component for lighting setup
 const SuitcaseLights = React.memo(() => {
   return (
     <>
+      {/* Ambient light provides overall soft illumination */}
       <ambientLight intensity={0.6} />
       
+      {/* Main directional light for primary shadows */}
       <directionalLight 
         position={[10, 10, 5]} 
         intensity={1.2} 
@@ -30,13 +35,16 @@ const SuitcaseLights = React.memo(() => {
         />
       </directionalLight>
       
+      {/* Additional directional light from another angle */}
       <directionalLight 
         position={[-5, 5, -5]} 
         intensity={0.5} 
       />
       
+      {/* Soft fill light from below */}
       <pointLight position={[0, -2, 2]} intensity={0.3} />
       
+      {/* Highlight light for the top of the suitcase */}
       <spotLight 
         position={[0, 8, 0]} 
         intensity={0.8}
@@ -54,16 +62,14 @@ const Model = React.memo(() => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
-  const cacheBuster = useCallback(() => `?t=${new Date().getTime()}`, []);
   
-  const modelUrl = `${SUITCASE_MODEL_URL}${cacheBuster()}`;
-  
-  const { scene } = useGLTF(modelUrl, undefined, undefined, (e) => {
+  // Explicitly pass the full URL to ensure correct loading
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
-    logError(e, 'SuitcaseModel:Loading');
   });
   
+  // Apply shadow casting and receiving to all meshes in the model
   useEffect(() => {
     try {
       if (scene) {
@@ -83,9 +89,11 @@ const Model = React.memo(() => {
     }
   }, [scene]);
   
+  // Subtle animation
   useFrame((state) => {
     if (modelRef.current) {
       const t = state.clock.getElapsedTime();
+      // Reduced rotation amount for subtler movement
       modelRef.current.rotation.y = Math.sin(t / 5) * 0.08;
     }
   });
@@ -104,6 +112,7 @@ const Model = React.memo(() => {
     );
   }
   
+  // Position adjusted for better centering vertically
   return <primitive ref={modelRef} object={scene} scale={0.9} position={[0, 0.3, 0]} />;
 });
 
@@ -135,6 +144,7 @@ const ModelFallback = React.memo(() => {
 
 ModelFallback.displayName = 'ModelFallback';
 
+// Fixed Environment component to prevent destructuring errors
 const EnvironmentComponent = React.memo(() => {
   return <Environment preset="city" />;
 });
@@ -155,6 +165,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
     }
   };
   
+  // Check WebGL support
   useEffect(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -246,4 +257,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-useGLTF.preload(SUITCASE_MODEL_URL + `?t=${new Date().getTime()}`);
+// Clear any previous preloading attempts and ensure we're using the correct URL
+// Remove custom resolved path that might be causing the issue - simplify the preloading
+useGLTF.preload(SUITCASE_MODEL_URL);

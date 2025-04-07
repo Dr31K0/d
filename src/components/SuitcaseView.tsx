@@ -33,14 +33,14 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   }, [view, color, currentView, currentColor]);
   
   const getImageUrl = useCallback(() => {
-    return `https://github.com/Dr31K0/models/blob/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-${currentColor}-${currentView}.png${cacheBuster()}`;
+    return `https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-${currentColor}-${currentView}.png${cacheBuster()}`;
   }, [currentColor, currentView, cacheBuster]);
   
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     logError(`Image for ${currentColor} ${currentView} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    e.currentTarget.src = `https://github.com/Dr31K0/models/blob/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-purple-front.png${cacheBuster()}`;
+    e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-purple-front.png${cacheBuster()}`;
   };
   
   const containerVariants = {
@@ -134,7 +134,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
           className="w-full h-full"
         >
           <img
-            src={imgError ? `https://github.com/Dr31K0/models/blob/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-purple-front.png${cacheBuster()}` : getImageUrl()}
+            src={imgError ? `https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-purple-front.png${cacheBuster()}` : getImageUrl()}
             alt={`${currentColor} suitcase ${currentView} view`}
             className="w-full h-full object-contain"
             style={{ mixBlendMode: 'multiply' }}

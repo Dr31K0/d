@@ -21,10 +21,17 @@ export const logError = (error: unknown, context?: string) => {
     console.error(`Try using a different browser or enabling hardware acceleration.`);
   }
   
-  // Add detailed logging for GLB loading errors
-  if ((error instanceof Error && error.message.includes('Could not load')) ||
-      (error instanceof Error && error.message.includes('GLB'))) {
+  // Add detailed logging for GLB loading errors with URL information
+  if ((error instanceof Error && 
+      (error.message.includes('Could not load') || 
+       error.message.includes('GLB') ||
+       error.message.includes('fetch') ||
+       error.message.includes('404')))) {
     console.error(`3D Model Loading Error: Failed to load the suitcase model.`);
+    console.error(`Attempted URL: ${
+      error.message.match(/fetch for "([^"]+)"/)?.[1] || 'Unknown URL'
+    }`);
+    console.error(`Using configured URL: https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-texture.glb`);
     console.error(`Check network connection or try a different model format.`);
   }
 };

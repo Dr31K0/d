@@ -1,4 +1,5 @@
-import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
+
+import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
 import { useSuitcase } from '@/context/SuitcaseContext';
@@ -62,7 +63,7 @@ const Model = React.memo(() => {
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
   
-  // Fixed loading with correct error handling parameter and explicit URL
+  // Explicitly pass the full URL to ensure correct loading
   const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
@@ -241,7 +242,7 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
           maxPolarAngle={Math.PI / 1.8}
           minDistance={2.5}
           maxDistance={6}
-          target={[0, 0.2, 0]} // Adjusted target to center on the model's new position
+          target={[0, 0.2, 0]} 
           enableDamping
           dampingFactor={0.05}
         />
@@ -256,7 +257,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-// Clear any previous preloading attempt and add proper error handling
-useGLTF.preload(SUITCASE_MODEL_URL, undefined, undefined, (err) => {
-  console.error("Failed to preload model:", err);
-});
+// Clear any previous preloading attempts and ensure we're using the correct URL
+// Remove custom resolved path that might be causing the issue - simplify the preloading
+useGLTF.preload(SUITCASE_MODEL_URL);

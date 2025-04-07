@@ -32,14 +32,14 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   }, [view, color, currentView, currentColor]);
   
   const getImageUrl = useCallback(() => {
-    return `/images/suitcase-${currentColor}-${currentView}.png`;
+    return `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-${currentColor}-${currentView}.png`;
   }, [currentColor, currentView]);
   
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     logError(`Image for ${currentColor} ${currentView} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    e.currentTarget.src = `/images/suitcase-purple-front.png`;
+    e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png`;
   };
   
   const containerVariants = {
@@ -133,7 +133,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
           className="w-full h-full"
         >
           <img
-            src={imgError ? `/images/suitcase-purple-front.png` : getImageUrl()}
+            src={imgError ? `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png` : getImageUrl()}
             alt={`${currentColor} suitcase ${currentView} view`}
             className="w-full h-full object-contain"
             style={{ mixBlendMode: 'multiply' }}

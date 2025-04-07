@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-// Constant for model URL using local path
-const SUITCASE_MODEL_URL = '/models/suitcase-texture.glb';
+// Constant for model URL using GitHub repository path
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;

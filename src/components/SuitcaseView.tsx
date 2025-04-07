@@ -18,11 +18,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
   const [isChanging, setIsChanging] = useState(false);
   const [currentView, setCurrentView] = useState(view);
   const [currentColor, setCurrentColor] = useState(color);
-  const [cacheBuster, setCacheBuster] = useState(() => new Date().getTime());
-  
-  useEffect(() => {
-    setCacheBuster(new Date().getTime());
-  }, [color, view]);
+  const cacheBuster = useCallback(() => `?t=${new Date().getTime()}`, []);
   
   useEffect(() => {
     if (currentView !== view || currentColor !== color) {
@@ -31,21 +27,20 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
         setCurrentView(view);
         setCurrentColor(color);
         setIsChanging(false);
-        setCacheBuster(new Date().getTime());
       }, 200);
       return () => clearTimeout(timer);
     }
   }, [view, color, currentView, currentColor]);
   
   const getImageUrl = useCallback(() => {
-    return `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-${currentColor}-${currentView}.png?t=${cacheBuster}`;
+    return `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-${currentColor}-${currentView}.png${cacheBuster()}`;
   }, [currentColor, currentView, cacheBuster]);
   
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     logError(`Image for ${currentColor} ${currentView} not found, using fallback`, 'SuitcaseView');
     console.log(`Image not found: ${getImageUrl()}`);
     setImgError(true);
-    e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png?t=${new Date().getTime()}`;
+    e.currentTarget.src = `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png${cacheBuster()}`;
   };
   
   const containerVariants = {
@@ -131,7 +126,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
       
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${currentColor}-${currentView}-${cacheBuster}`}
+          key={`${currentColor}-${currentView}-${cacheBuster()}`}
           variants={imageVariants}
           initial="initial"
           animate="animate"
@@ -139,7 +134,7 @@ const SuitcaseView: React.FC<SuitcaseViewProps> = ({
           className="w-full h-full"
         >
           <img
-            src={imgError ? `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png?t=${cacheBuster}` : getImageUrl()}
+            src={imgError ? `https://raw.githubusercontent.com/Dr31K0/models/b284a7ad9445681838f7d343907e78e0a3b40ce5/suitcase-purple-front.png${cacheBuster()}` : getImageUrl()}
             alt={`${currentColor} suitcase ${currentView} view`}
             className="w-full h-full object-contain"
             style={{ mixBlendMode: 'multiply' }}

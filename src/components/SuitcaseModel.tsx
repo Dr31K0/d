@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
@@ -7,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-// Base URL for the model
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
@@ -56,15 +54,9 @@ const Model = React.memo(() => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
-  // Use state for the cache buster to force re-render when needed
-  const [cacheBuster, setCacheBuster] = useState(() => new Date().getTime());
+  const cacheBuster = useCallback(() => `?t=${new Date().getTime()}`, []);
   
-  // Force reload of model by updating cache buster
-  useEffect(() => {
-    setCacheBuster(new Date().getTime());
-  }, []);
-  
-  const modelUrl = `${SUITCASE_MODEL_URL}?t=${cacheBuster}`;
+  const modelUrl = `${SUITCASE_MODEL_URL}${cacheBuster()}`;
   
   const { scene } = useGLTF(modelUrl, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
@@ -151,25 +143,6 @@ EnvironmentComponent.displayName = 'EnvironmentComponent';
 
 const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
   const [canvasError, setCanvasError] = useState<string | null>(null);
-  const [cacheBusterKey, setCacheBusterKey] = useState(() => new Date().getTime());
-  
-  // Force rerender of the component on mount
-  useEffect(() => {
-    setCacheBusterKey(new Date().getTime());
-    // Clear browser cache for THREE.js resources
-    try {
-      if (window.caches) {
-        caches.keys().then(names => {
-          names.forEach(name => {
-            caches.delete(name);
-          });
-          console.log('Cache cleared for 3D resources');
-        });
-      }
-    } catch (e) {
-      console.error('Failed to clear cache:', e);
-    }
-  }, []);
   
   const handleCanvasCreationError = (error: any) => {
     console.error("Canvas creation error:", error);
@@ -219,7 +192,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         'relative w-full h-[500px] rounded-xl overflow-hidden bg-crystal-light/30',
         className
       )}
-      key={`suitcase-model-${cacheBusterKey}`}
     >
       <Canvas
         camera={{ position: [0, 0, 4.5], fov: 30 }}
@@ -232,8 +204,6 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
         }}
         onCreated={(state) => {
           console.log("Canvas created successfully", state);
-          // Force THREE.js to not use cached resources
-          state.gl.outputEncoding = 3000; // Random value to force shader recompilation
         }}
         onError={handleCanvasCreationError}
         dpr={[1, 2]}
@@ -276,5 +246,4 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-// Pre-load with cache busting
-useGLTF.preload(`${SUITCASE_MODEL_URL}?t=${new Date().getTime()}`);
+useGLTF.preload(SUITCASE_MODEL_URL + `?t=${new Date().getTime()}`);

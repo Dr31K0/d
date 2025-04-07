@@ -1,3 +1,4 @@
+
 import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
@@ -6,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-// Constant for model URL using GitHub repository path
+// Constant for model URL using GitHub repository path with full path reference
 const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
@@ -62,7 +63,7 @@ const Model = React.memo(() => {
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
   
-  // Fixed loading with correct error handling parameter
+  // Fixed loading with correct error handling parameter and explicit URL
   const { scene } = useGLTF(SUITCASE_MODEL_URL, undefined, undefined, (e) => {
     console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Unknown error loading model');
@@ -256,9 +257,8 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-// Preload model to improve loading performance
-try {
-  useGLTF.preload(SUITCASE_MODEL_URL);
-} catch (error) {
-  console.error("Failed to preload model or texture:", error);
-}
+// Clear any previous preloading attempt and add proper error handling
+useGLTF.preload(SUITCASE_MODEL_URL, undefined, undefined, (err) => {
+  console.error("Failed to preload model:", err);
+});
+

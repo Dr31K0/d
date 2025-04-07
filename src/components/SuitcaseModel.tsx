@@ -1,4 +1,3 @@
-
 import React, { Suspense, useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Html } from '@react-three/drei';
@@ -7,8 +6,8 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-// Constant for model URL using GitHub repository path with full path reference
-const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/dc73874025aed5716d63a7537a4f3f1debd7ee6c/suitcase-texture.glb';
+// Constant for model URL using GitHub repository path with raw content URL
+const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -261,4 +260,3 @@ export default SuitcaseModel;
 useGLTF.preload(SUITCASE_MODEL_URL, undefined, undefined, (err) => {
   console.error("Failed to preload model:", err);
 });
-

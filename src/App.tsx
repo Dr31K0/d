@@ -54,13 +54,26 @@ const SafeComponent = ({ children }: { children: React.ReactNode }) => {
     const handleError = (event: ErrorEvent) => {
       console.error("Global error caught:", event.error);
       setError(event.error);
+      logError(event.error, 'SafeComponent');
+      event.preventDefault();
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error("Unhandled Promise Rejection:", event.reason);
+      const error = event.reason instanceof Error 
+        ? event.reason 
+        : new Error(String(event.reason));
+      setError(error);
+      logError(error, 'UnhandledPromiseRejection');
       event.preventDefault();
     };
 
     window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
     
     return () => {
       window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
   }, []);
 

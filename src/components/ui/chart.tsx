@@ -314,43 +314,30 @@ const ChartLegendContent = React.forwardRef<
 )
 ChartLegendContent.displayName = "ChartLegend"
 
-// Helper to extract item config from a payload.
+type PayloadObject = Record<string, unknown>;
+
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
   key: string
-) {
-  if (typeof payload !== "object" || payload === null) {
-    return undefined
+): ChartConfig[keyof ChartConfig] | undefined {
+  if (!payload || typeof payload !== "object") {
+    return undefined;
   }
 
-  const payloadPayload =
-    "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
-      ? payload.payload
-      : undefined
+  const payloadObject = payload as PayloadObject;
+  const payloadData = 
+    'payload' in payloadObject && 
+    typeof payloadObject.payload === 'object' && 
+    payloadObject.payload !== null
+      ? payloadObject.payload as PayloadObject
+      : payloadObject;
 
-  let configLabelKey: string = key
+  const configKey = key in payloadData && typeof payloadData[key] === 'string'
+    ? payloadData[key] as string
+    : key;
 
-  if (
-    key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
-  ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  } else if (
-    payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-  ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
-  }
-
-  return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config]
+  return configKey in config ? config[configKey] : config[key];
 }
 
 export {

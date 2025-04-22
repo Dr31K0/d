@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-const SUITCASE_MODEL_URL = 'https://raw.githubusercontent.com/Dr31K0/models/4d0eff3896bc68375cff573024b3ca9656cf990d/suitcase-texture.glb';
+const SUITCASE_MODEL_URL = '/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -54,14 +54,22 @@ const Model = React.memo(() => {
   const { color } = useSuitcase();
   const [error, setError] = useState<string | null>(null);
   const modelRef = useRef<Group>(null);
-  const cacheBuster = useCallback(() => `?t=${new Date().getTime()}`, []);
   
-  const modelUrl = `${SUITCASE_MODEL_URL}${cacheBuster()}`;
-  
-  const { scene } = useGLTF(modelUrl, undefined, undefined, (e) => {
-    console.error('Error loading model:', e);
-    setError(e instanceof Error ? e.message : 'Unknown error loading model');
-    logError(e, 'SuitcaseModel:Loading');
+  const { scene } = useGLTF(SUITCASE_MODEL_URL, true, undefined, (e) => {
+    console.error('Error details:', {
+      error: e,
+      url: SUITCASE_MODEL_URL,
+      type: e instanceof Error ? e.name : typeof e
+    });
+    setError(e instanceof Error ? e.message : 'Failed to load model');
+    logError(e, {
+      component: 'SuitcaseModel',
+      action: 'Loading',
+      details: {
+        url: SUITCASE_MODEL_URL,
+        errorType: e instanceof Error ? e.name : typeof e
+      }
+    });
   });
   
   useEffect(() => {
@@ -89,6 +97,24 @@ const Model = React.memo(() => {
       modelRef.current.rotation.y = Math.sin(t / 5) * 0.08;
     }
   });
+  
+  useEffect(() => {
+    // Debug the model loading
+    const debugModelLoading = async () => {
+      try {
+        const response = await fetch(SUITCASE_MODEL_URL);
+        console.log('Model fetch response:', {
+          status: response.status,
+          headers: Object.fromEntries(response.headers.entries()),
+          ok: response.ok
+        });
+      } catch (e) {
+        console.error('Model fetch error:', e);
+      }
+    };
+
+    debugModelLoading();
+  }, []);
   
   if (error) {
     return (
@@ -246,4 +272,4 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-useGLTF.preload(SUITCASE_MODEL_URL + `?t=${new Date().getTime()}`);
+useGLTF.preload(SUITCASE_MODEL_URL, true);

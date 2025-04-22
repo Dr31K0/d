@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available colors for the suitcase
@@ -16,7 +15,7 @@ interface SuitcaseContextType {
 }
 
 // Create the context with a default value
-const SuitcaseContext = createContext<SuitcaseContextType | undefined>(undefined);
+const SuitcaseContext = createContext<SuitcaseContextType | null>(null);
 
 // Provider component
 export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
@@ -38,10 +37,12 @@ export const SuitcaseProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Custom hook to use the suitcase context
-export const useSuitcase = () => {
+export const useSuitcase = (): SuitcaseContextType => {
   const context = useContext(SuitcaseContext);
-  if (context === undefined) {
+  
+  if (context === null) {
     throw new Error('useSuitcase must be used within a SuitcaseProvider');
   }
+  
   return context;
 };

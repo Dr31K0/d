@@ -6,7 +6,9 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-const SUITCASE_MODEL_URL = '/suitcase-texture.glb';
+const SUITCASE_MODEL_URL = import.meta.env.DEV 
+  ? '/suitcase-texture.glb'  // Development path
+  : '/d/suitcase-texture.glb'; // Production path (GitHub Pages)
 
 interface SuitcaseModelProps {
   className?: string;
@@ -272,4 +274,4 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-useGLTF.preload(SUITCASE_MODEL_URL, true);
+useGLTF.preload(SUITCASE_MODEL_URL);

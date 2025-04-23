@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  base: mode === 'development' ? '/' : './', // This ensures assets are loaded correctly in both dev and production
+  base: mode === 'development' ? '/' : '/d/', // Update this line to use your repository name
   plugins: [
     react(),
     mode === 'development' &&

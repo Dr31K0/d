@@ -6,9 +6,7 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-const SUITCASE_MODEL_URL = import.meta.env.DEV 
-  ? '/suitcase-texture.glb'  // Development path
-  : '/d/suitcase-texture.glb'; // Production path (GitHub Pages)
+const SUITCASE_MODEL_URL = '/d/suitcase-texture.glb';
 
 interface SuitcaseModelProps {
   className?: string;
@@ -58,20 +56,8 @@ const Model = React.memo(() => {
   const modelRef = useRef<Group>(null);
   
   const { scene } = useGLTF(SUITCASE_MODEL_URL, true, undefined, (e) => {
-    console.error('Error details:', {
-      error: e,
-      url: SUITCASE_MODEL_URL,
-      type: e instanceof Error ? e.name : typeof e
-    });
+    console.error('Error loading model:', e);
     setError(e instanceof Error ? e.message : 'Failed to load model');
-    logError(e, {
-      component: 'SuitcaseModel',
-      action: 'Loading',
-      details: {
-        url: SUITCASE_MODEL_URL,
-        errorType: e instanceof Error ? e.name : typeof e
-      }
-    });
   });
   
   useEffect(() => {
@@ -274,4 +260,4 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-useGLTF.preload(SUITCASE_MODEL_URL);
+useGLTF.preload('/d/suitcase-texture.glb');

@@ -52,7 +52,7 @@ export const logError = (error: unknown, context?: ErrorContext) => {
     console.error({
       type: 'MODEL_LOADING_ERROR',
       attemptedUrl: urlMatch?.[1] || 'Unknown URL',
-      fallbackUrl: 'https://raw.githubusercontent.com/Dr31K0/models/main/suitcase-texture.glb',
+      fallbackUrl: '/d/suitcase-texture.glb',
       suggestion: 'Check network connection or try a different model format'
     });
   }

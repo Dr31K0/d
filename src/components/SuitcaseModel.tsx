@@ -6,7 +6,9 @@ import { cn } from '@/lib/utils';
 import { logError } from '@/utils/errorLogger';
 import { Group, Mesh, PCFSoftShadowMap } from 'three';
 
-const SUITCASE_MODEL_URL = '/d/suitcase-texture.glb';
+// Get the base URL from Vite
+const BASE_URL = import.meta.env.BASE_URL;
+const SUITCASE_MODEL_URL = `${BASE_URL}suitcase-texture.glb`;
 
 interface SuitcaseModelProps {
   className?: string;
@@ -56,7 +58,11 @@ const Model = React.memo(() => {
   const modelRef = useRef<Group>(null);
   
   const { scene } = useGLTF(SUITCASE_MODEL_URL, true, undefined, (e) => {
-    console.error('Error loading model:', e);
+    console.error('Error loading model:', {
+      error: e,
+      url: SUITCASE_MODEL_URL,
+      baseUrl: BASE_URL
+    });
     setError(e instanceof Error ? e.message : 'Failed to load model');
   });
   
@@ -260,4 +266,4 @@ const SuitcaseModel: React.FC<SuitcaseModelProps> = ({ className }) => {
 
 export default SuitcaseModel;
 
-useGLTF.preload('/d/suitcase-texture.glb');
+useGLTF.preload(SUITCASE_MODEL_URL);
